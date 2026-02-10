@@ -7,6 +7,6 @@
     "esModuleInterop": true,    // for imports
     "skipLibCheck": true        // speeds up compilation
   },
-  "include": ["**/*.ts"],       // compile all TS files
+  "include": ["**/*.ts", "**/*.d.ts"],       // compile all TS files
   "exclude": ["node_modules", "dist"]
 }

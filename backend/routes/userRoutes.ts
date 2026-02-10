@@ -43,21 +43,14 @@ router.post("/signup", async (req, res) => {
     });
 
   } catch (err) {
-    if (err instanceof Error) {
-      res.status(400).json({
+    res.status(400).json({
       success: false,
       message: "Failed to create user",
-      error: err.message
-      });
-    } else {
-      res.status(400).json({
-      success: false,
-      message: "Failed to create user",
-      error: err
-      });
-    }
+      error: err instanceof Error ? err.message : String(err)
+    });
   }  
 });
+
 
 //Login
 router.post("/login", async (req, res) => {
