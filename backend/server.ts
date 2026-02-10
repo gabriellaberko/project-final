@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import listEndpoints from "express-list-endpoints";
 import userRoutes from "./routes/userRoutes";
+import tripRoutes from "./routes/tripRoutes";
 
 
 const port = process.env.PORT || 8080;
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
 
 
 app.use("/users", userRoutes);
+app.use("/trips", tripRoutes);
 
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/final-project";
