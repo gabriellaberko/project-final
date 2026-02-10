@@ -3,12 +3,15 @@ import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
 import listEndpoints from "express-list-endpoints";
+import userRoutes from "./routes/userRoutes";
 
 const port = process.env.PORT || 8080;
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+/* --- Routes ---*/
 
 app.get("/", (req, res) => {
   const endpoints = listEndpoints(app);
@@ -17,6 +20,9 @@ app.get("/", (req, res) => {
     endpoints: endpoints,
   });
 });
+
+
+app.use("/users", userRoutes);
 
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/final-project";
