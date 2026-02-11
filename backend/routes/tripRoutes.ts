@@ -238,5 +238,7 @@ router.post("/:tripId/days/:dayId/activities", authenticateUser, async (req: Req
   }
 });
 
+// TODO: add route for update and delete an activity
+
 
 export default router;
