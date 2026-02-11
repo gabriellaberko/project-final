@@ -43,8 +43,8 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
 });
 
 
-// TO DO: A route to add days, i.e. update the trip's "days" field with a new day
-router.post("/:id/days", authenticateUser, async (req: Request, res: Response) => {
+// Route to add days, i.e. update the trip's "days" field with a new day
+router.post("/:tripId/days", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
