@@ -30,11 +30,11 @@ app.use("/trips", tripRoutes);
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/final-project";
 mongoose.connect(mongoUrl)
-  .then(() => { 
+  .then(() => {
     console.log("MongoDB Connected");
     // Start the server
     app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-});
+      console.log(`Server running on http://localhost:${port}`);
+    });
   })
   .catch(err => console.error('MongoDB connection error:', err));

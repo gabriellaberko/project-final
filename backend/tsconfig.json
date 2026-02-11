@@ -1,12 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2020",         // modern Node
-    "module": "CommonJS",       // Node.js module system
-    "outDir": "./dist",         // compiled JS goes here
-    "strict": true,             // type safety
-    "esModuleInterop": true,    // for imports
-    "skipLibCheck": true        // speeds up compilation
+    "target": "ES2020", // modern Node
+    "module": "CommonJS", // Node.js module system
+    "outDir": "./dist", // compiled JS goes here
+    "strict": true, // type safety
+    "esModuleInterop": true, // for imports
+    "skipLibCheck": true // speeds up compilation
   },
-  "include": ["**/*.ts", "**/*.d.ts"],       // compile all TS files
-  "exclude": ["node_modules", "dist"]
+  "ts-node": {
+    "files": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts"
+  ], // compile all TS files
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

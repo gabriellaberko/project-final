@@ -1,12 +1,12 @@
 import { User } from "./models/User";
+import "express-serve-static-core";
 
 // Extending the Request type to also include user (for TypeScript)
-declare global {
-  namespace Express {
-    interface Request {
-      user?: User;
-    }
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: User;
   }
 }
 
-export {}; 
+
+export { }; 
