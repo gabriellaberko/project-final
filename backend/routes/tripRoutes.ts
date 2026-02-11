@@ -46,9 +46,9 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
 // Route to add days, i.e. update the trip's "days" field with a new day
 router.post("/:tripId/days", authenticateUser, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { tripId } = req.params;
 
-    const trip = await Trip.findById(id);
+    const trip = await Trip.findById(tripId);
 
     if (!trip) {
       return res.status(404).json({
@@ -75,7 +75,10 @@ router.post("/:tripId/days", authenticateUser, async (req: Request, res: Respons
     trip.days.push(newDay);
 
     const updatedTrip = await trip.save();
-    return res.status(200).json(updatedTrip);
+    return res.status(200).json({
+      succes: true,
+      response: updatedTrip
+    });
 
   } catch (err) {
     return res.status(500).json({
@@ -86,6 +89,58 @@ router.post("/:tripId/days", authenticateUser, async (req: Request, res: Respons
   }
 });
 
+// Route to delete a day
+router.delete("/:tripId/days/:dayId", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId, dayId } = req.params;
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        response: null,
+        message: "Trip not found"
+      });
+    }
+
+    if (!trip.creator.equals(req.user!._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized"
+      });
+    }
+
+    const day = trip.days.id(dayId as any);
+
+    if (!day) {
+      return res.status(404).json({
+        success: false,
+        message: "Day not found"
+      });
+    }
+
+    day?.deleteOne();
+
+    // Renumber remaining days
+    trip.days.forEach((day, index) => {
+      day.dayNumber = index + 1;
+    })
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete day",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
 
 
 export default router;
