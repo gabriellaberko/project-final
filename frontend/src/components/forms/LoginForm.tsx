@@ -2,7 +2,7 @@ import { useState, FormEvent } from "react";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 
-export const SignupForm = () => {
+export const LoginForm = () => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid user credentials");
   const [userName, setUserName] = useState("");
@@ -70,6 +70,7 @@ export const SignupForm = () => {
         />
       </div>
       {error && <FormErrorMessage errorMessage={errorMessage} />}
+      <button type="submit">Log in</button>
     </form>
   )
 };

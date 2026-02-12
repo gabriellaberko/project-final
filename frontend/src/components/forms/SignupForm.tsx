@@ -90,6 +90,7 @@ export const SignupForm = () => {
         <p>ⓘ Password must be at least 8 characters</p>
       </div>
       {error && <FormErrorMessage errorMessage={errorMessage} />}
+      <button type="submit">Sign up</button>
     </form>
   )
 };
