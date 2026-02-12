@@ -158,7 +158,7 @@ router.delete("/:tripId/days/:dayId", authenticateUser, async (req: Request, res
       });
     }
 
-    day?.deleteOne();
+    day.deleteOne();
 
     // Renumber remaining days
     trip.days.forEach((day, index) => {
@@ -168,7 +168,8 @@ router.delete("/:tripId/days/:dayId", authenticateUser, async (req: Request, res
     const updatedTrip = await trip.save();
     return res.status(200).json({
       success: true,
-      response: updatedTrip
+      response: updatedTrip,
+      message: "Day deleted successfully"
     });
 
   } catch (err) {
@@ -242,7 +243,6 @@ router.post("/:tripId/days/:dayId/activities", authenticateUser, async (req: Req
 router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId, dayId, activityId } = req.params;
-    const { name, description, category, time, googleMapLink } = req.body;
 
     const trip = await Trip.findById(tripId);
 
@@ -272,11 +272,102 @@ router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, as
 
     const activity = day.activities.id(activityId as any);
 
-  } catch (err) {
+    if (!activity) {
+      return res.status(404).json({
+        success: false,
+        message: "Activity not found"
+      });
+    }
 
+    type ActivityKeys = "name" | "description" | "category" | "time" | "googleMapLink";
+
+    const allowedUpdates: ActivityKeys[] = [
+      "name",
+      "description",
+      "category",
+      "time",
+      "googleMapLink"
+    ];
+
+    allowedUpdates.forEach((field) => {
+      if (field in req.body) {
+        activity[field] = req.body[field];
+      }
+    });
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Activity updated successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update activity",
+      error: err instanceof Error ? err.message : String(err)
+    });
   }
 });
 
+// Route to delete an acitivity
+router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId, dayId, activityId } = req.params;
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        response: null,
+        message: "Trip not found"
+      });
+    }
+
+    if (!trip.creator.equals(req.user!._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized"
+      });
+    }
+
+    const day = trip.days.id(dayId as any);
+
+    if (!day) {
+      return res.status(404).json({
+        success: false,
+        message: "Day not found"
+      });
+    }
+
+    const activity = day.activities.id(activityId as any);
+
+    if (!activity) {
+      return res.status(404).json({
+        success: false,
+        message: "Activity not found"
+      });
+    }
+
+    activity.deleteOne();
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Activity deleted successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Could not delete activity",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
 
 
 // TODO: add route for overview of your own created trips
