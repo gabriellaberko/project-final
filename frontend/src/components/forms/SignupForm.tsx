@@ -18,7 +18,7 @@ export const SignupForm = () => {
   };
 
   const postNewUser = async () => { 
-    const url = `http://localhost:8080//users/signup`; // Replace with deployed API link 
+    const url = `http://localhost:8080/users/signup`; // Replace with deployed API link 
 
     if (password.length < 8) {
       setErrorMessage("Password must be a minimum of 8 characters");

@@ -17,7 +17,7 @@ export const LoginForm = () => {
   };
 
   const loginUser = async () => { 
-    const url = `http://localhost:8080//users/login`; // Replace with deployed API link 
+    const url = `http://localhost:8080/users/login`; // Replace with deployed API link 
     try {
 
       const response = await fetch(url, {
