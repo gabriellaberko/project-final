@@ -1,4 +1,4 @@
-export const FormErrorMessage = ({ errorMessage }) => { 
+export const FormErrorMessage = ({ errorMessage }: { errorMessage: string }) => { 
   return (
     <div>
       <p>{errorMessage}</p>

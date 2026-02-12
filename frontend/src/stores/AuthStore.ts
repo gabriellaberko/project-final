@@ -4,6 +4,9 @@ interface AuthState {
   accessToken: string | null;
   isAuthenticated: boolean;
   userName: string | null;
+  login: (payload: { accessToken: string; userName: string }) => void;
+  logout: () => void;
+  checkAuthStatus: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({

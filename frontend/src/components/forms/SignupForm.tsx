@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { FormErrorMessage } from "./FormErrorMessage";
+import { useAuthStore } from "../../stores/AuthStore";
 
 export const SignupForm = () => {
   const [error, setError] = useState(false);
@@ -8,8 +9,10 @@ export const SignupForm = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
+  const login = useAuthStore(state => state.login);
 
-  const handleSubmit = (e) => { 
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => { 
     e.preventDefault();
     postNewUser();
   };
@@ -41,7 +44,7 @@ export const SignupForm = () => {
 
       const newUser = await response.json();
       // Retrieve accessToken from response and login the the newly created user
-      login({ accessToken: newUser.accessToken, name: newUser.name });
+      login({ accessToken: newUser.accessToken, userName: newUser.userName });
       setError(false);
 
     } catch (err) {
