@@ -40,6 +40,8 @@ export const SignupForm = () => {
       }
 
       const newUser = await response.json();
+      // Retrieve accessToken from response and login the the newly created user
+      login({ accessToken: newUser.accessToken, name: newUser.name });
       setError(false);
 
     } catch (err) {
