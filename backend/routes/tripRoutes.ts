@@ -239,6 +239,48 @@ router.post("/:tripId/days/:dayId/activities", authenticateUser, async (req: Req
 });
 
 // TODO: add route for update and delete an activity
+router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId, dayId, activityId } = req.params;
+    const { name, description, category, time, googleMapLink } = req.body;
 
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        response: null,
+        message: "Trip not found"
+      });
+    }
+
+    if (!trip.creator.equals(req.user!._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized"
+      });
+    }
+
+    const day = trip.days.id(dayId as any);
+
+    if (!day) {
+      return res.status(404).json({
+        success: false,
+        message: "Day not found"
+      });
+    }
+
+    const activity = day.activities.id(activityId as any);
+
+  } catch (err) {
+
+  }
+});
+
+
+
+// TODO: add route for overview of your own created trips
+
+// TODO: add route for overview of all your liked trips from others
 
 export default router;
