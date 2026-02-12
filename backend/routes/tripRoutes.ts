@@ -7,8 +7,38 @@ import { authenticateUser } from "../middlewares/authMiddleware";
 const router = express.Router();
 
 
-// TODO: a route to get all trips for view only when not authenticated. 
+// Route to get all trips for view only when not authenticated.
+router.get("/", async (req: Request, res: Response) => {
+  try {
+    const { destination } = req.query; // If it should be possible to filter on destination, can add more
 
+    const query: any = { isPublic: true };
+
+    if (typeof destination === "string") {
+      query.destination = {
+        $regex: destination, // Enables partial matching
+        $options: "i" // Case-insensitive search
+      }
+    }
+
+    const publicTrips = await Trip
+      .find(query)
+      .populate("creator", "userName"); // If we want to show who created the trip, otherwise remove
+
+    return res.status(200).json({
+      success: true,
+      response: publicTrips,
+      message: "Success"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch public trips",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
 
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
