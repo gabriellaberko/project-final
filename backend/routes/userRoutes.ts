@@ -1,5 +1,5 @@
 import express from "express";
-import bcrypt from "bcrypt"; 
+import bcrypt from "bcrypt";
 import { User } from "../models/User";
 
 
@@ -48,7 +48,7 @@ router.post("/signup", async (req, res) => {
       message: "Failed to create user",
       error: err instanceof Error ? err.message : String(err)
     });
-  }  
+  }
 });
 
 
@@ -86,5 +86,6 @@ router.post("/login", async (req, res) => {
 });
 
 
+// TODO: add route for profile info?  
 
 export default router;

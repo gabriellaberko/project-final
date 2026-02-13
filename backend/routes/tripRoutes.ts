@@ -2,10 +2,36 @@ import express from "express";
 import { Trip } from "../models/Trip";
 import { Request, Response, NextFunction } from "express";
 import { authenticateUser } from "../middlewares/authMiddleware";
+import mongoose from "mongoose";
 
 
 const router = express.Router();
 
+// Repetetive ownership logic
+const getTripIfOwner = async (
+  tripId: string,
+  userId: mongoose.Types.ObjectId,
+  res: Response
+) => {
+  const trip = await Trip.findById(tripId);
+
+  if (!trip) {
+    res.status(404).json({
+      message: "Trip not found"
+    });
+    return null;
+  }
+
+  if (!trip.creator.equals(userId)) {
+    res.status(403).json({
+      success: false,
+      message: "Not authorized"
+    });
+    return null;
+  }
+
+  return trip;
+};
 
 // Route to get all trips for view only when not authenticated.
 router.get("/", async (req: Request, res: Response) => {
@@ -39,6 +65,69 @@ router.get("/", async (req: Request, res: Response) => {
     });
   }
 });
+
+
+// Route to get a single trip
+router.get("/:tripId", async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+
+    const trip = await Trip.findById(tripId).populate("creator", "userName");
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    // if public, anyone can see
+    if (trip.isPublic) {
+      return res.status(200).json({
+        success: true,
+        response: trip,
+        message: "Success"
+      });
+    }
+
+    // if private and not logged in -> forbidden
+    if (!req.user) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    // if private and logged in, but not owner -> forbidden
+    if (!trip.creator.equals(req.user!._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      response: trip,
+      message: "Success"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch trip",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// TODO: add route for overview of your own created trips
+
+// TODO: add route for overview of all your liked trips from others
+
+// TODO: add route to remove liked (starred) trip
+
 
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
@@ -115,35 +204,27 @@ router.post("/:tripId/days", authenticateUser, async (req: Request, res: Respons
   try {
     const { tripId } = req.params;
 
-    const trip = await Trip.findById(tripId);
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
 
-    if (!trip) {
-      return res.status(404).json({
-        success: false,
-        response: null,
-        message: "Trip not found"
-      });
-    }
-
-    if (!trip.creator.equals(req.user!._id)) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized"
-      });
-    }
+    if (!trip) return; // important
 
     const nextDayNumber = trip.days.length + 1;
 
     const newDay = {
       dayNumber: nextDayNumber,
       activities: [],
-    }
+    };
 
     trip.days.push(newDay);
 
     const updatedTrip = await trip.save();
+
     return res.status(200).json({
-      succes: true,
+      success: true,
       response: updatedTrip
     });
 
@@ -162,22 +243,13 @@ router.delete("/:tripId/days/:dayId", authenticateUser, async (req: Request, res
   try {
     const { tripId, dayId } = req.params;
 
-    const trip = await Trip.findById(tripId);
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
 
-    if (!trip) {
-      return res.status(404).json({
-        success: false,
-        response: null,
-        message: "Trip not found"
-      });
-    }
-
-    if (!trip.creator.equals(req.user!._id)) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized"
-      });
-    }
+    if (!trip) return;
 
     const day = trip.days.id(dayId as any);
 
@@ -217,22 +289,13 @@ router.post("/:tripId/days/:dayId/activities", authenticateUser, async (req: Req
     const { tripId, dayId } = req.params;
     const { name, description, category, time, googleMapLink } = req.body;
 
-    const trip = await Trip.findById(tripId);
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
 
-    if (!trip) {
-      return res.status(404).json({
-        success: false,
-        response: null,
-        message: "Trip not found"
-      });
-    }
-
-    if (!trip.creator.equals(req.user!._id)) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized"
-      });
-    }
+    if (!trip) return;
 
     const day = trip.days.id(dayId as any);
 
@@ -269,27 +332,18 @@ router.post("/:tripId/days/:dayId/activities", authenticateUser, async (req: Req
   }
 });
 
-// TODO: add route for update and delete an activity
+// Route to update an activity
 router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId, dayId, activityId } = req.params;
 
-    const trip = await Trip.findById(tripId);
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
 
-    if (!trip) {
-      return res.status(404).json({
-        success: false,
-        response: null,
-        message: "Trip not found"
-      });
-    }
-
-    if (!trip.creator.equals(req.user!._id)) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized"
-      });
-    }
+    if (!trip) return;
 
     const day = trip.days.id(dayId as any);
 
@@ -346,22 +400,13 @@ router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, a
   try {
     const { tripId, dayId, activityId } = req.params;
 
-    const trip = await Trip.findById(tripId);
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
 
-    if (!trip) {
-      return res.status(404).json({
-        success: false,
-        response: null,
-        message: "Trip not found"
-      });
-    }
-
-    if (!trip.creator.equals(req.user!._id)) {
-      return res.status(403).json({
-        success: false,
-        message: "Not authorized"
-      });
-    }
+    if (!trip) return;
 
     const day = trip.days.id(dayId as any);
 
@@ -399,9 +444,5 @@ router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, a
   }
 });
 
-
-// TODO: add route for overview of your own created trips
-
-// TODO: add route for overview of all your liked trips from others
 
 export default router;
