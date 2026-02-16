@@ -73,7 +73,7 @@ export const CreateTripForm = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2 className="text-red-500">Create trip</h2>
+      <h2>Create trip</h2>
       <div>
         <label htmlFor="tripname">Name of the trip</label>
         <input
