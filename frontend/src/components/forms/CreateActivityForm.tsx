@@ -1,5 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { FormErrorMessage } from "./FormErrorMessage";
+import { useAuthStore } from "../../stores/AuthStore";
+
 
 type Props = {
   tripId: string;
@@ -7,6 +9,7 @@ type Props = {
 };
 
 export const CreateActivityForm = ({ tripId, dayId }: Props) => {
+  const accessToken = useAuthStore(state => state.accessToken) || undefined;
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
@@ -14,8 +17,9 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
     description: "",
     category: "",
     time: "",
-    link: ""
+    googleMapLink: ""
   });
+
 
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,19 +34,20 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
 };
 
   const postNewActivity = async () => { 
-    const url = `http://localhost:8080/trips/69932865593a38eb7660fdad/days/69932865593a38eb7660fdae/activities`; // Replace with deployed API link 
+    const url = `http://localhost:8080/trips/${tripId}/days/${dayId}/activities`; // Replace with deployed API link 
     try {
       const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
-          email: formData.name,
-          password: formData.description,
+          name: formData.name,
+          description: formData.description,
           category: formData.category,
           time: formData.time,
-          link: formData.link
+          googleMapLink: formData.googleMapLink
         }),
         headers: {
           "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
       });
 
@@ -108,13 +113,12 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
         />
       </div>
       <div>
-        <label htmlFor="link">Google Map Link</label>
+        <label htmlFor="googleMapLink">Google Map Link</label>
         <input 
-          id="link" 
+          id="googleMapLink" 
           type="url"
-          name="link"
+          name="googleMapLink"
           placeholder="https://www.google.com/maps/..." 
-          required 
           onChange={handleOnChange}
         />
       </div>
