@@ -17,6 +17,7 @@ const getTripIfOwner = async (
 
   if (!trip) {
     res.status(404).json({
+      success: false,
       message: "Trip not found"
     });
     return null;
@@ -32,6 +33,10 @@ const getTripIfOwner = async (
 
   return trip;
 };
+
+// TODO: add route for overview of all your liked trips from others
+// TODO: add route to remove liked (starred) trip
+
 
 // Route to get all trips for view only when not authenticated.
 router.get("/", async (req: Request, res: Response) => {
@@ -61,6 +66,36 @@ router.get("/", async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch public trips",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to get my trips
+router.get("/my", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
+
+    const myTrips = await Trip.find({
+      creator: req.user._id
+    }).sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      response: myTrips,
+      message: "Success"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch trips",
       error: err instanceof Error ? err.message : String(err)
     });
   }
@@ -122,13 +157,6 @@ router.get("/:tripId", async (req: Request, res: Response) => {
 });
 
 
-// TODO: add route for overview of your own created trips
-
-// TODO: add route for overview of all your liked trips from others
-
-// TODO: add route to remove liked (starred) trip
-
-
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
   try {
@@ -149,15 +177,19 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
       tripName,
       destination,
       days,
-      creator: req.user!._id, // TO DO: Fix TS error - Think this is fixed now
+      creator: req.user!._id,
       isPublic
     });
 
     const savedNewTrip = await newTrip.save();
-    res.status(201).json(savedNewTrip);
+    return res.status(201).json({
+      success: true,
+      response: savedNewTrip,
+      message: "Trip created successfully"
+    });
 
   } catch (err) {
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: "Failed to save trip to database",
       error: err instanceof Error ? err.message : String(err)
