@@ -22,15 +22,19 @@ const daySchema = new Schema({
 
 
 const tripSchema = new Schema({
+  tripName: {
+    type: String,
+    trim: true
+  },
   destination: {
     type: String,
     required: true
   },
   days: [daySchema],
   creator: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
   },
   isPublic: {
     type: Boolean,

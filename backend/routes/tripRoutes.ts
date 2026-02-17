@@ -132,7 +132,7 @@ router.get("/:tripId", async (req: Request, res: Response) => {
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
   try {
-    const { destination, isPublic, numberOfDays } = req.body;
+    const { tripName, destination, isPublic, numberOfDays } = req.body;
 
     // Possible to not add any days, change this if we want to have min number of days = 1. 
     const totalDays = Number(numberOfDays) || 0;
@@ -146,11 +146,11 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
     }
 
     const newTrip = new Trip({
-      destination: destination,
-      days: days,
+      tripName,
+      destination,
+      days,
       creator: req.user!._id, // TO DO: Fix TS error - Think this is fixed now
-      isPublic: isPublic ? isPublic : true
-
+      isPublic
     });
 
     const savedNewTrip = await newTrip.save();
@@ -210,7 +210,7 @@ router.post("/:tripId/days", authenticateUser, async (req: Request, res: Respons
       res
     );
 
-    if (!trip) return; // important
+    if (!trip) return;
 
     const nextDayNumber = trip.days.length + 1;
 
