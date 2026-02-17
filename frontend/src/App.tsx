@@ -3,6 +3,7 @@ import { useAuthStore } from "./stores/AuthStore";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MyTripsPage } from "./pages/MyTripsPage";
 import { TripDetailsPage } from "./pages/TripDetailsPage";
+import { AuthenticationPage } from "./pages/AuthenticationPage";
 
 // TO DO: Create more pages and implement routing
 
@@ -19,6 +20,7 @@ export const App = () => {
       <Routes>
         <Route path="/mytrips" element={<MyTripsPage/>} />
         <Route path="/trip/:id" element={<TripDetailsPage/>} />
+        <Route path="/auth" element={<AuthenticationPage/>} />
       </Routes>
     </BrowserRouter>
   );
