@@ -46,6 +46,8 @@ const tripSchema = new Schema({
       ref: "User"
     }
   ]
-});
+},
+  { timestamps: true }
+);
 
 export const Trip = mongoose.model("Trip", tripSchema);
