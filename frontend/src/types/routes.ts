@@ -1,0 +1,1 @@
+export type RouteKey = "Home" | "My Trips" | "Favorites" | "Explore";
