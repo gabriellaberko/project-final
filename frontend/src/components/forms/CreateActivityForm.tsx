@@ -24,20 +24,13 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
   const accessToken = useAuthStore(state => state.accessToken) || undefined;
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    category: "",
-    time: "",
-    googleMapLink: ""
-  });
+  // Form data:
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [time, setTime] = useState("");
+  const [googleMapLink, setGoogleMapLink] = useState("");
 
-
-  const handleOnChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-
-    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,11 +46,11 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
       const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          category: formData.category,
-          time: formData.time,
-          googleMapLink: formData.googleMapLink
+          name: name,
+          description: description,
+          category: category,
+          time: time,
+          googleMapLink: googleMapLink
         }),
         headers: {
           "Content-Type": "application/json",
@@ -73,7 +66,7 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
       setError(false);
 
     } catch (err) { 
-      console.error("Sending error:", error);
+      console.error("Sending error:", err);
       setErrorMessage("Could not create new activity");
       setError(true);
     }
@@ -96,7 +89,7 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
               name="name"
               placeholder="Enter name of activity" 
               required 
-              onChange={handleOnChange}
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
@@ -105,7 +98,7 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
               id="description" 
               name="description"
               placeholder="Enter description of activity" 
-              onChange={handleOnChange}
+              onChange={(e) => setDescription(e.target.value)}
               minRows={3}
             />
           </div>
@@ -114,7 +107,10 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
             <Select
               id="category"
               name="category"
-            >
+              value={category}
+              onChange={(e, value) => setCategory(value ?? "")}  //Special case for MUI Joy Select
+              >
+              <Option value="" disabled>-- Select an option --</Option>
               <Option value="Culture & Events">Culture & Events</Option>
               <Option value="Sightseeing">Sightseeing</Option>
               <Option value="Food & Drinks">Food & Drinks</Option>
@@ -130,7 +126,8 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
               id="time"
               type="time"
               name="time"
-            />
+              onChange={(e) => setTime(e.target.value)}
+        />
           </div>
           <div>
             <FormLabel htmlFor="googleMapLink">Google Map Link</FormLabel>
@@ -139,7 +136,7 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
               type="url"
               name="googleMapLink"
               placeholder="https://www.google.com/maps/..." 
-              onChange={handleOnChange}
+              onChange={(e) => setGoogleMapLink(e.target.value)}
             />
           </div>
           {error && <FormErrorMessage errorMessage={errorMessage} />}
