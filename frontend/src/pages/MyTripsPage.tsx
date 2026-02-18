@@ -9,7 +9,6 @@ interface Trip {
 }
 
 export const MyTripsPage = () => {
-  console.log("mytrips page render")
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +20,8 @@ export const MyTripsPage = () => {
       setLoading(false);
       return;
     }
+
+    setLoading(true);
 
     const url = `http://localhost:8080/trips/my`;
 
@@ -36,9 +37,6 @@ export const MyTripsPage = () => {
 
         const data = await response.json();
 
-        console.log("Status:", response.status);
-        console.log("Response data:", data);
-
         if (!response.ok) {
           throw new Error(data?.message || `Request failed with status ${response.status}`);
         }
@@ -47,7 +45,6 @@ export const MyTripsPage = () => {
         setError(null);
 
       } catch (err) {
-        console.log("catch triggered")
         setError(err instanceof Error ? err.message : "Something went wrong")
       } finally {
         setLoading(false);
