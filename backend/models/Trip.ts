@@ -7,7 +7,7 @@ const activitySchema = new Schema({
   },
   description: String,
   category: String,
-  time: Date,
+  time: String,
   googleMapLink: String
 });
 
