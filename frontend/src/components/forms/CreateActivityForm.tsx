@@ -3,6 +3,15 @@ import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useTripStore } from "../../stores/TripStore";
 
+// MUI imports
+import Input from "@mui/joy/Input";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
+import Stack from "@mui/joy/Stack"
+import FormLabel from "@mui/joy/FormLabel";
+import Card from "@mui/joy/Card";
+import Button from "@mui/joy/Button";
+import Textarea from "@mui/joy/Textarea"
 
 type Props = {
   tripId: string;
@@ -24,7 +33,7 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
   });
 
 
-  const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -71,64 +80,80 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Create new activity</h2>
-      <div>
-        <label htmlFor="name">Name</label>
-        <input 
-          id="name" 
-          type="text" 
-          name="name"
-          placeholder="Enter name of activity" 
-          required 
-          onChange={handleOnChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="description">Description</label>
-        <input 
-          id="description" 
-          type="text"
-          name="description"
-          placeholder="Enter description of activity" 
-          onChange={handleOnChange}
-        />
-      </div>
-      <div>
-        <label htmlFor="category">Category</label>
-        <select
-          id="category"
-          name="category"
-        >
-          <option>Culture & Events</option>
-          <option>Sightseeing</option>
-          <option>Food & Drinks</option>
-          <option>Nature</option>
-          <option>Adventure</option>
-          <option>Entertainment</option>
-          <option>Relaxation</option>
-        </select>
-      </div>
-      <div>
-        <label htmlFor="time">Time</label>
-        <input
-          id="time"
-          type="time"
-          name="time"
-        />
-      </div>
-      <div>
-        <label htmlFor="googleMapLink">Google Map Link</label>
-        <input 
-          id="googleMapLink" 
-          type="url"
-          name="googleMapLink"
-          placeholder="https://www.google.com/maps/..." 
-          onChange={handleOnChange}
-        />
-      </div>
-      {error && <FormErrorMessage errorMessage={errorMessage} />}
-      <button type="submit">Save</button>
+    <form 
+      onSubmit={handleSubmit}
+      className="flex justify-center items-center"
+      style={{ height: "100vh" }}
+    >
+      <Card sx={{ width: "600px" }}>
+        <Stack gap={2}>
+          <h2>Create new activity</h2>
+          <div>
+            <FormLabel htmlFor="name">Name</FormLabel>
+            <Input 
+              id="name" 
+              type="text" 
+              name="name"
+              placeholder="Enter name of activity" 
+              required 
+              onChange={handleOnChange}
+            />
+          </div>
+          <div>
+            <FormLabel htmlFor="description">Description</FormLabel>
+            <Textarea 
+              id="description" 
+              name="description"
+              placeholder="Enter description of activity" 
+              onChange={handleOnChange}
+              minRows={3}
+            />
+          </div>
+          <div>
+            <FormLabel htmlFor="category">Category</FormLabel>
+            <Select
+              id="category"
+              name="category"
+            >
+              <Option value="Culture & Events">Culture & Events</Option>
+              <Option value="Sightseeing">Sightseeing</Option>
+              <Option value="Food & Drinks">Food & Drinks</Option>
+              <Option value="Nature">Nature</Option>
+              <Option value="Adventure">Adventure</Option>
+              <Option value="Entertainment">Entertainment</Option>
+              <Option value="Relaxation">Relaxation</Option>
+            </Select>
+          </div>
+          <div>
+            <FormLabel htmlFor="time">Time</FormLabel>
+            <Input
+              id="time"
+              type="time"
+              name="time"
+            />
+          </div>
+          <div>
+            <FormLabel htmlFor="googleMapLink">Google Map Link</FormLabel>
+            <Input 
+              id="googleMapLink" 
+              type="url"
+              name="googleMapLink"
+              placeholder="https://www.google.com/maps/..." 
+              onChange={handleOnChange}
+            />
+          </div>
+          {error && <FormErrorMessage errorMessage={errorMessage} />}
+          <div className="flex justify-end">
+            <Button 
+              type="submit"
+              size="lg"
+              sx={{ width: "40%" }}
+              >
+                Save
+              </Button>
+          </div>
+        </Stack>
+      </Card>
     </form>
   )
 };
