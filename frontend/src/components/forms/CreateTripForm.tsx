@@ -2,6 +2,14 @@ import { useState, FormEvent } from "react";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 
+// MUI imports
+import Input from "@mui/joy/Input";
+import Stack from "@mui/joy/Stack";
+import FormLabel from "@mui/joy/FormLabel";
+import FormHelperText from "@mui/joy/FormHelperText";
+import Card from "@mui/joy/Card";
+import Button from "@mui/joy/Button";
+
 export const CreateTripForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,81 +80,154 @@ export const CreateTripForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Create trip</h2>
-      <div>
-        <label htmlFor="tripname">Name of the trip</label>
-        <input
-          id="tripname"
-          type="text"
-          value={tripName}
-          placeholder="..."
-          onChange={(e) => setTripName(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="destination">Destination</label>
-        <input
-          id="destination"
-          type="text"
-          value={destination}
-          placeholder="Paris"
-          required
-          onChange={(e) => {
-            setDestination(e.target.value);
-            setErrorMessage(null);
-          }}
-        />
-      </div>
-      <div>
-        <label htmlFor="days">Amount of days</label>
-        <input
-          id="days"
-          type="number"
-          value={numberOfDays}
-          min="1"
-          required
-          onChange={(e) => setNumberOfDays(e.target.value)}
-        />
-        <span>days</span>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium">
-          Public / Private
-        </span>
-
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={isPublic}
-            onChange={(e) => setIsPublic(e.target.checked)}
-            className="sr-only peer"
-          />
-
-          <div className="
-            w-12 h-7 bg-gray-300 rounded-full 
-            peer-checked:bg-blue-500 
-            transition-colors duration-300
-            "
-          >
+    <form 
+      onSubmit={handleSubmit}
+      className="flex justify-center items-center"
+      style={{ height: "100vh" }}
+    >
+      <Card sx={{ width: 600 }}>
+        <Stack gap={4}>
+          <h2>Create trip</h2>
+          <div>
+            <FormLabel htmlFor="tripname">Name of the trip</FormLabel>
+            <Input
+              id="tripname"
+              type="text"
+              value={tripName}
+              placeholder="..."
+              onChange={(e) => setTripName(e.target.value)}
+              sx={{
+                '&::before': {
+                border: '1.5px solid var(--Input-focusedHighlight)',
+                transform: 'scaleX(0)',
+                left: '2.5px',
+                right: '2.5px',
+                bottom: 0,
+                top: 'unset',
+                transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                borderRadius: 0,
+                borderBottomLeftRadius: '64px 20px',
+                borderBottomRightRadius: '64px 20px',
+              },
+              '&:focus-within::before': {
+                transform: 'scaleX(1)',
+              },
+            }}
+            />
+          </div>
+          <div>
+            <FormLabel htmlFor="destination">Destination</FormLabel>
+            <Input
+              id="destination"
+              type="text"
+              value={destination}
+              placeholder="Paris"
+              required
+              onChange={(e) => {
+                setDestination(e.target.value);
+                setErrorMessage(null);
+              }}
+              sx={{
+                '&::before': {
+                border: '1.5px solid var(--Input-focusedHighlight)',
+                transform: 'scaleX(0)',
+                left: '2.5px',
+                right: '2.5px',
+                bottom: 0,
+                top: 'unset',
+                transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                borderRadius: 0,
+                borderBottomLeftRadius: '64px 20px',
+                borderBottomRightRadius: '64px 20px',
+              },
+              '&:focus-within::before': {
+                transform: 'scaleX(1)',
+              },
+            }}
+            />
+          </div>
+          <div>
+            <FormLabel htmlFor="days">Amount of days</FormLabel>
+            <div className="flex col gap-2">
+              <Input
+                id="days"
+                type="number"
+                value={numberOfDays}
+                required
+                onChange={(e) => {
+                  const value = Math.max(1, Number(e.target.value));
+                  setNumberOfDays(value.toString());
+                }}
+                sx={{
+                  '&::before': {
+                  border: '1.5px solid var(--Input-focusedHighlight)',
+                  transform: 'scaleX(0)',
+                  left: '2.5px',
+                  right: '2.5px',
+                  bottom: 0,
+                  top: 'unset',
+                  transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                  borderRadius: 0,
+                  borderBottomLeftRadius: '64px 20px',
+                  borderBottomRightRadius: '64px 20px',
+                },
+                '&:focus-within::before': {
+                  transform: 'scaleX(1)',
+                },
+              }}
+              />
+              <FormHelperText>days</FormHelperText>
+            </div>
           </div>
 
-          <div className="
-            absolute top-1 left-1 w-5 h-5 bg-white rounded-full 
-            transition-transform duration-300 
-            peer-checked:translate-x-5
-            "
-          >
+          <div className="flex flex-row items-center gap-2">
+            <span className="text-sm font-medium">
+              Public
+            </span>
+
+            <FormLabel className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+                className="sr-only peer"
+              />
+
+              <div className="
+                w-12 h-7 bg-gray-300 rounded-full 
+                peer-checked:bg-blue-500 
+                transition-colors duration-300
+                "
+              >
+              </div>
+
+              <div className="
+                absolute top-1 left-1 w-5 h-5 bg-white rounded-full 
+                transition-transform duration-300 
+                peer-checked:translate-x-5
+                "
+              >
+              </div>
+            </FormLabel>
+            <span className="text-sm font-medium">
+              Private
+            </span>
           </div>
-        </label>
-      </div>
-      {errorMessage && (
-        <FormErrorMessage errorMessage={errorMessage} />
-      )}
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? "Saving.." : "Save"}
-      </button>
+          {errorMessage && (
+            <FormErrorMessage errorMessage={errorMessage} />
+          )}
+          <div className="flex justify-end">
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              size="lg"
+              sx={{ width: "40%" }}
+            >
+              {isLoading ? "Saving.." : "Save"}
+            </Button>
+          </div>
+        </Stack>
+      </Card>
     </form>
   );
 };
