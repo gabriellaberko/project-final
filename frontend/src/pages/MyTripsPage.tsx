@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../stores/AuthStore";
+import { TripsGrid } from "../components/common/TripsGrid";
 
 interface Trip {
   _id: string;
@@ -111,32 +112,10 @@ export const MyTripsPage = () => {
 
         {/* Grid State */}
         {!loading && !error && trips.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trips.map((trip) => (
-              <div
-                key={trip._id}
-                className="bg-white rounded-xl shadow-md hover:shadow-lg transition 
-                   h-44 flex flex-col items-center justify-center text-center p-4"
-              >
-                {/* Optional Trip Name */}
-                {trip.tripName?.trim() && (
-                  <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-                    {trip.tripName}
-                  </p>
-                )}
-
-                {/* Destination */}
-                <h3 className="text-lg font-semibold">
-                  {trip.destination}
-                </h3>
-
-                {/* Number of Days */}
-                <p className="text-sm text-gray-500 mt-1">
-                  {trip.days.length} {trip.days.length === 1 ? "day" : "days"}
-                </p>
-              </div>
-            ))}
-          </div>
+          <TripsGrid
+            trips={trips}
+            columns={3}
+          />
         )}
       </div>
     </div>
