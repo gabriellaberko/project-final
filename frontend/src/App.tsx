@@ -10,8 +10,8 @@ import { AuthenticationPage } from "./pages/AuthenticationPage";
 export const App = () => {
 
   const checkAuthStatus = useAuthStore(state => state.checkAuthStatus);
-  
-  useEffect(() => { 
+
+  useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus])
 
