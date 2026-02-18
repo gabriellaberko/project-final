@@ -1,14 +1,17 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
+import { useTripStore } from "../../stores/TripStore";
 
 
 type Props = {
   tripId: string;
   dayId: string;
+  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const CreateActivityForm = ({ tripId, dayId }: Props) => {
+export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
+  const setUpdateData = useTripStore(state => state.setUpdateData);
   const accessToken = useAuthStore(state => state.accessToken) || undefined;
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -28,10 +31,12 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  postNewActivity();
-  e.currentTarget.reset();
-};
+    e.preventDefault();
+    postNewActivity();
+    e.currentTarget.reset();
+    setShowForm(false);
+    setUpdateData();
+  };
 
   const postNewActivity = async () => { 
     const url = `http://localhost:8080/trips/${tripId}/days/${dayId}/activities`; // Replace with deployed API link 
@@ -123,7 +128,7 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
         />
       </div>
       {error && <FormErrorMessage errorMessage={errorMessage} />}
-      <button type="submit">Add activity</button>
+      <button type="submit">Save</button>
     </form>
   )
 };
