@@ -16,6 +16,7 @@ export const App = () => {
   }, [checkAuthStatus])
 
   return (
+
     <BrowserRouter>
       <Routes>
         <Route path="/mytrips" element={<MyTripsPage/>} />
