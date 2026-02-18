@@ -6,7 +6,7 @@ import { useTripStore } from "../stores/TripStore";
 
 export const TripDetailsPage = () => {
 
-  interface ActicityInterface {
+  interface ActivityInterface {
     name: string,
     description: string,
     category: string,
@@ -17,7 +17,7 @@ export const TripDetailsPage = () => {
   interface DayInterface {
   _id: string,
   dayNumber: number,
-  activities: [ActicityInterface]
+  activities: [ActivityInterface]
   };
 
   interface TripInterFace { 
@@ -33,7 +33,7 @@ export const TripDetailsPage = () => {
   const [error, setError] = useState(false);
   const [trip, setTrip] = useState<TripInterFace | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [dayId, setdayId] = useState<string | null>(null);
+  const [dayId, setDayId] = useState<string | null>(null);
   const updateData = useTripStore(state => state.updateData);
 
   // TO DO: Fetch a specific trip from API, based on the tripID
@@ -61,7 +61,7 @@ export const TripDetailsPage = () => {
   }, [updateData]);
 
   const clickToAddActivity = (dayId: string) => { 
-    setdayId(dayId);
+    setDayId(dayId);
     setShowForm(true);
   };
 
@@ -74,7 +74,7 @@ export const TripDetailsPage = () => {
           <div key={day.dayNumber}>
             <h2>Day {day.dayNumber}</h2>
             <h3>Activities:</h3>
-            {day.activities.map((activity: ActicityInterface, index) => (
+            {day.activities.map((activity: ActivityInterface, index) => (
               <div key={index}>
                 {activity.name && <h4>{activity.name}</h4>}
                 {activity.description && <p>{activity.description}</p>}
