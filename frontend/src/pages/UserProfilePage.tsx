@@ -1,5 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"
 import { useAuthStore } from "../stores/AuthStore";
+
+// MUI & Icons
+import Avatar from "@mui/joy/Avatar";
+import Button from "@mui/joy/Button";
+import Input from "@mui/joy/Input";
+import Card from "@mui/joy/Card";
+import FormLabel from "@mui/joy/FormLabel";
+import Typography from "@mui/joy/Typography"
 
 interface Trip {
   _id: string;
@@ -8,181 +17,205 @@ interface Trip {
   tripName?: string; // optional
 }
 
-// MUI import
-import Avatar from "@mui/joy/Avatar";
-import Button from "@mui/joy/Button";
-import Card from "@mui/joy/Card";
-import FormLabel from "@mui/joy/FormLabel";
+interface UserProfile {
+  username: string;
+  bio: string;
+  avatarUrl?: string;
+  isPublic: boolean;
+  followers: number;
+  following: number;
+  trips: Trip[];
+}
+
+const Stat = ({ label, count }: {label: string, count: number}) => (
+  <div className="text-content">
+    <Typography level="body-xs">{count}</Typography>
+    <Typography level="body-xs">{label}</Typography>
+  </div>
+)
+
+const TripCard = ({ trip }: { trip: Trip }) => (
+  <Card variant="outlined">
+    <Typography level="h3">{trip.destination}</Typography>
+    <Typography level="body-xs">{trip.days.length} days</Typography>
+  </Card>
+)
+
 
 export const UserProfilePage = () => {
-  const [bio, setBio] = useState("");
-  const [isPublic, setIsPublic] = useState(false);
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [trips, setTrips] = useState<Trip[]>([]);
-  const [followers, setFollowers] = useState([]);
-  const [following, setFollowing] = useState([]);
-  
-  const accessToken = useAuthStore((state: any) => state.accessToken) || undefined
-  
-  const isOwner = true; // Define isOwner state
+  const { userId } = useParams<{ userId: string }>();
+  const { userId: currentUserId, accessToken } = useAuthStore();
 
-  const editProfile = async () => {
-    const url = `http://localhost:8080/users/profile` // Replace with deployed API link 
+  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [username, setUsername] = useState("")
+  const [bio, setBio] = useState("")
+  const [loading, setLoading] = useState(true);
+  const [trips, setTrips] = useState<Trip[]>([])
+  const [isPublic, setIsPublic] = useState(true)
+
+  const isOwner = currentUserId=== userId
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        setLoading(true)
+        const url = isOwner
+          ? `http://localhost:8080/users/profile`
+          : `http://localhost:8080/users/${userId}`
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setProfile(data);
+        setUsername(data.username)
+        setBio(data.bio || "");
+        setTrips(data.trips || []);
+        setIsPublic(data.isPublic ?? true)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchUserData()
+  }, [userId, isOwner, accessToken])
+
+  const handleSave = async () => {
     try {
+      const url = `http://localhost:8080/users/profile`
       const response = await fetch(url, {
         method: "PATCH",
-        body: JSON.stringify({
-          bio: bio,
-          isPublic: isPublic
-        }),
         headers: {
           "Content-Type": "application/json",
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({ bio })
+      })
+      if (response.ok) setIsEditing(false)
     } catch (err) {
-        console.error("Sending error:", err);
-        setErrorMessage("Could not edit profile");
-        setError(true);
+      console.error(err)
     }
   }
+
+  if (loading) return <div>Loading...</div>
 
   return (
     <>
       <div className='m-10'>
         <h1>UserProfilePage</h1>
+
         <div className='flex row items-center m-5'>
           <Avatar size='lg'/>
+
           <div className='m-5'>
-            <h2>username</h2>
+            {isEditing ? (
+              <Input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+              />
+            ) : (
+              <Typography level="h2">{profile?.username || "Username"}</Typography>
+            )}
             <div className="flex gap-5">
-              <div>
-                <span>0</span>
-                <h3>Trips</h3>
-              </div>
-              <div>
-                <span>0</span>
-                <h3>Followers</h3>
-              </div>
-              <div>
-                <span>0</span>
-                <h3>Following</h3>
+              <div className="flex flex-row gap-5">
+                <Stat label="Trips" count={trips.length} />
+                <Stat label="Followers" count={0} />
+                <Stat label="following" count={0} />
               </div>
             </div>
           </div>
         </div>
 
         {/* editable for owner */}
-        <p>bio</p>
         <div className="flex flex-col gap-2 my-4">
           <FormLabel>Bio</FormLabel>
-          {/* test area should be shown only after the owner wants to edit profile */}
-          <textarea
-            className="border rounded-md p-2 w-full max-w-md"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            placeholder="Tell us about your travels..."
-            disabled={!isOwner}
-          />
+          {isEditing ? (
+            <textarea
+              className="border rounded-md p-2 w-full max-w-md"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Tell us about your travels..."
+              disabled={!isOwner}
+            />
+          ) : (
+            <Typography className="mt-2">{bio || ""}</Typography>
+          )}
         </div>
 
-        {isOwner ? (
-          <div className="flex gap-4 flex-col">
-            <div className="flex flex-row items-center gap-2">
-              <span className="text-sm font-medium">
-                Public
-              </span>
-
-              <FormLabel className="relative inline-flex items-center cursor-pointer">
+        <div>
+          {isOwner ? (
+            <div>
+              <div className="flex items-center gap-3 my-4">
+                <Typography level="body-sm">Public</Typography>
                 <input
                   type="checkbox"
-                  className="sr-only peer"
+                  checked={isPublic} // Public is true by default
+                  onChange={(e) => setIsPublic(!e.target.checked)}
+                  disabled={!isEditing} 
                 />
-
-                <div className="
-                  w-12 h-7 bg-gray-300 rounded-full 
-                  peer-checked:bg-blue-500 
-                  transition-colors duration-300
-                  "
-                >
-                </div>
-
-                <div className="
-                  absolute top-1 left-1 w-5 h-5 bg-white rounded-full 
-                  transition-transform duration-300 
-                  peer-checked:translate-x-5
-                  "
-                >
-                </div>
-              </FormLabel>
-              <span className="text-sm font-medium">
-                Private
-              </span>
-            </div>
-            <Button 
-              type="button"
-              className="m-5"
-            >
-              Edit profile
-            </Button>
-          </div>
-
-        ) : (
-            <div className="flex flex-col mt-3 mb-3">
-              <Button 
-                type="button"
-                className="m-5"
-              >
-                Follow
-              </Button>
-            </div>
-        )}
-
-            <div>
-              <h3>Posts</h3>
-
-              {/* TO DO: fetch trips from my trips */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card>Paris</Card>
-                <Card>Barcelona</Card>
-                <Card>Hawaii</Card>
-                <Card>Tokyo</Card>
+                <Typography level="body-sm">Private</Typography>
               </div>
-              {!loading && !error && trips.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {trips.map((trip) => (
-                    <div
-                      key={trip._id}
-                      className="bg-white rounded-xl shadow-md hover:shadow-lg transition 
-                        h-44 flex flex-col items-center justify-center text-center p-4"
-                    >
-                      {/* Optional Trip Name */}
-                      {trip.tripName?.trim() && (
-                        <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-                          {trip.tripName}
-                        </p>
-                      )}
 
-                      {/* Destination */}
-                      <h3 className="text-lg font-semibold">
-                        {trip.destination}
-                      </h3>
-
-                      {/* Number of Days */}
-                      <p className="text-sm text-gray-500 mt-1">
-                        {trip.days.length} {trip.days.length === 1 ? "day" : "days"}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="flex gap-2">
+                {isEditing ? (
+                  <div className="flex gap-5">
+                    <Button color="success" onClick={handleSave}>
+                      Save Changes
+                    </Button>
+                    <Button onClick={() => setIsEditing(false)}>
+                      Cancel
+                    </Button>
+                  </div>
+                ) : (
+                  <Button 
+                    type="button"
+                    className="m-5"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit Profile
+                  </Button>
+                )}
+              </div>
             </div>
-      </div>
+            ) : (
+              <div className="flex flex-col mt-3 mb-3">
+                <Button 
+                  type="button"
+                  className="m-5"
+                >
+                  Follow
+                </Button>
+              </div>
+          )}
+        </div>
+        
+        {/* Delete cards later */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
+            <Card>Paris</Card>
+            <Card>Barcelona</Card>
+            <Card>Hawaii</Card>
+            <Card>Tokyo</Card>
+          </div>
+          
+          <div>
+            {trips.map(trip => (
+              <TripCard key={trip._id} trip={trip} />
+            ))}  
+          </div>
+        </div>
     </>
   )
 }
