@@ -103,10 +103,10 @@ router.get("/profile", authenticateUser, async (req, res) => {
 // Edit profile
 router.patch("/profile", authenticateUser, async (req, res) => {
   try {
-    const { username, bio, isPublic } = req.body
+    const { userName, bio, isPublic } = req.body
     
     const updates: any = {}
-    if (username) updates.userName = username
+    if (userName) updates.userName = userName
     if (bio !== undefined) updates.bio = bio
     if (isPublic !== undefined) updates.isPublic = isPublic
 
