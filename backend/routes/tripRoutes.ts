@@ -110,7 +110,7 @@ router.get("/my", authenticateUser, async (req: Request, res: Response) => {
 
 
 // Route to get a single trip
-router.get("/:tripId", async (req: Request, res: Response) => {
+router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId } = req.params;
 
