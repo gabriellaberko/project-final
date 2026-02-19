@@ -5,6 +5,7 @@ import { MyTripsPage } from "./pages/MyTripsPage";
 import { TripDetailsPage } from "./pages/TripDetailsPage";
 import { AuthenticationPage } from "./pages/AuthenticationPage";
 import { ExplorePage } from "./pages/ExplorePage";
+import { CreateTripPage } from "./pages/CreateTripPage";
 
 // TO DO: Create more pages and implement routing
 
@@ -21,6 +22,7 @@ export const App = () => {
       <Routes>
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/mytrips" element={<MyTripsPage />} />
+        <Route path="/trips/new" element={<CreateTripPage />} />
         <Route path="/trips/:id" element={<TripDetailsPage />} />
         <Route path="/auth" element={<AuthenticationPage />} />
       </Routes>

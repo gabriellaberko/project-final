@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../stores/AuthStore";
+import { useNavigate } from "react-router-dom";
 import { TripsGrid } from "../components/common/TripsGrid";
+import { MainBtn } from "../components/buttons/MainBtn";
+
 
 interface Trip {
   _id: string;
@@ -13,6 +16,8 @@ export const MyTripsPage = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const accessToken = useAuthStore(state => state.accessToken);
 
@@ -117,6 +122,12 @@ export const MyTripsPage = () => {
             columns={3}
           />
         )}
+
+        <MainBtn
+          onClick={() => navigate("/trips/new")}
+        >
+          Create a new trip
+        </MainBtn>
       </div>
     </div>
   );

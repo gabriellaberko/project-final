@@ -1,4 +1,5 @@
 import { useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 
@@ -17,6 +18,8 @@ export const CreateTripForm = () => {
   const [destination, setDestination] = useState("");
   const [numberOfDays, setNumberOfDays] = useState("1");
   const [isPublic, setIsPublic] = useState(true);
+
+  const navigate = useNavigate();
 
   const accessToken = useAuthStore(state => state.accessToken);
 
@@ -64,11 +67,8 @@ export const CreateTripForm = () => {
         throw new Error(data?.message || `Request failed with status ${response.status}`);
       }
 
-      // Reset form
-      setTripName("");
-      setDestination("");
-      setNumberOfDays("1");
-      setIsPublic(true);
+      // Navigate to the newly created trip's details page
+      navigate(`/trips/${data.response._id}`);
 
     } catch (err) {
       setErrorMessage(
@@ -80,7 +80,7 @@ export const CreateTripForm = () => {
   };
 
   return (
-    <form 
+    <form
       onSubmit={handleSubmit}
       className="flex justify-center items-center"
       style={{ height: "100vh" }}
@@ -98,21 +98,21 @@ export const CreateTripForm = () => {
               onChange={(e) => setTripName(e.target.value)}
               sx={{
                 '&::before': {
-                border: '1.5px solid var(--Input-focusedHighlight)',
-                transform: 'scaleX(0)',
-                left: '2.5px',
-                right: '2.5px',
-                bottom: 0,
-                top: 'unset',
-                transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                borderRadius: 0,
-                borderBottomLeftRadius: '64px 20px',
-                borderBottomRightRadius: '64px 20px',
-              },
-              '&:focus-within::before': {
-                transform: 'scaleX(1)',
-              },
-            }}
+                  border: '1.5px solid var(--Input-focusedHighlight)',
+                  transform: 'scaleX(0)',
+                  left: '2.5px',
+                  right: '2.5px',
+                  bottom: 0,
+                  top: 'unset',
+                  transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                  borderRadius: 0,
+                  borderBottomLeftRadius: '64px 20px',
+                  borderBottomRightRadius: '64px 20px',
+                },
+                '&:focus-within::before': {
+                  transform: 'scaleX(1)',
+                },
+              }}
             />
           </div>
           <div>
@@ -129,21 +129,21 @@ export const CreateTripForm = () => {
               }}
               sx={{
                 '&::before': {
-                border: '1.5px solid var(--Input-focusedHighlight)',
-                transform: 'scaleX(0)',
-                left: '2.5px',
-                right: '2.5px',
-                bottom: 0,
-                top: 'unset',
-                transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                borderRadius: 0,
-                borderBottomLeftRadius: '64px 20px',
-                borderBottomRightRadius: '64px 20px',
-              },
-              '&:focus-within::before': {
-                transform: 'scaleX(1)',
-              },
-            }}
+                  border: '1.5px solid var(--Input-focusedHighlight)',
+                  transform: 'scaleX(0)',
+                  left: '2.5px',
+                  right: '2.5px',
+                  bottom: 0,
+                  top: 'unset',
+                  transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                  borderRadius: 0,
+                  borderBottomLeftRadius: '64px 20px',
+                  borderBottomRightRadius: '64px 20px',
+                },
+                '&:focus-within::before': {
+                  transform: 'scaleX(1)',
+                },
+              }}
             />
           </div>
           <div>
@@ -160,21 +160,21 @@ export const CreateTripForm = () => {
                 }}
                 sx={{
                   '&::before': {
-                  border: '1.5px solid var(--Input-focusedHighlight)',
-                  transform: 'scaleX(0)',
-                  left: '2.5px',
-                  right: '2.5px',
-                  bottom: 0,
-                  top: 'unset',
-                  transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                  borderRadius: 0,
-                  borderBottomLeftRadius: '64px 20px',
-                  borderBottomRightRadius: '64px 20px',
-                },
-                '&:focus-within::before': {
-                  transform: 'scaleX(1)',
-                },
-              }}
+                    border: '1.5px solid var(--Input-focusedHighlight)',
+                    transform: 'scaleX(0)',
+                    left: '2.5px',
+                    right: '2.5px',
+                    bottom: 0,
+                    top: 'unset',
+                    transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                    borderRadius: 0,
+                    borderBottomLeftRadius: '64px 20px',
+                    borderBottomRightRadius: '64px 20px',
+                  },
+                  '&:focus-within::before': {
+                    transform: 'scaleX(1)',
+                  },
+                }}
               />
               <FormHelperText>days</FormHelperText>
             </div>
@@ -217,8 +217,8 @@ export const CreateTripForm = () => {
             <FormErrorMessage errorMessage={errorMessage} />
           )}
           <div className="flex justify-end">
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={isLoading}
               size="lg"
               sx={{ width: "40%" }}
