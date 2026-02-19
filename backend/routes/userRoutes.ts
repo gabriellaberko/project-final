@@ -86,7 +86,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// My profile
+// Get profile
 router.get("/profile", authenticateUser, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password")
@@ -94,7 +94,8 @@ router.get("/profile", authenticateUser, async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Failed to fetch user"
+      message: "Failed to fetch user",
+      error: err instanceof Error ? err.message : String(err)
     })
   }
 })
@@ -125,7 +126,7 @@ router.patch("/profile", authenticateUser, async (req, res) => {
   }
 })
 
-// Get other user's profile
+// Get public profile of another user
 router.get("/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password -email -accessToken")
