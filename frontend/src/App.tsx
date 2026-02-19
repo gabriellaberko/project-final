@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MyTripsPage } from "./pages/MyTripsPage";
 import { TripDetailsPage } from "./pages/TripDetailsPage";
 import { AuthenticationPage } from "./pages/AuthenticationPage";
+import { UserProfilePage } from "./pages/UserProfilePage";
 
 // TO DO: Create more pages and implement routing
 
@@ -18,6 +19,7 @@ export const App = () => {
   return (
 
     <BrowserRouter>
+    <UserProfilePage />
       <Routes>
         <Route path="/mytrips" element={<MyTripsPage/>} />
         <Route path="/trip/:id" element={<TripDetailsPage/>} />
