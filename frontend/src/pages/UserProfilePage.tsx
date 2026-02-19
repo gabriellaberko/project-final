@@ -19,7 +19,7 @@ interface Trip {
 }
 
 interface UserProfile {
-  username: string;
+  userName: string;
   bio: string;
   avatarUrl?: string;
   isPublic: boolean;
@@ -105,13 +105,13 @@ export const UserProfilePage = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
         },
-        body: JSON.stringify({ bio, username, isPublic})
+        body: JSON.stringify({ bio, userName: username, isPublic})
       })
       if (response.ok) {
         const updatedData = await response.json()
         setIsEditing(false)
         setProfile(updatedData)
-        setUsername(updatedData.username)
+        setUsername(updatedData.userName)
         setBio(updatedData.bio || "");
         setIsPublic(updatedData.isPublic ?? true)
       }
@@ -139,7 +139,7 @@ export const UserProfilePage = () => {
                 placeholder="Username"
               />
             ) : (
-              <Typography level="h2">{profile?.username || "Username"}</Typography>
+              <Typography level="h2">{profile?.userName || "Username"}</Typography>
             )}
             <div className="flex gap-5">
               <div className="flex flex-row gap-5">
@@ -174,9 +174,8 @@ export const UserProfilePage = () => {
                 <div className="flex items-center gap-3 my-4">
                   <Typography level="body-sm">Public</Typography>
                   <Switch
-                    checked={!isPublic} // Public is true by default
+                    checked={!isPublic}
                     onChange={(e) => setIsPublic(!e.target.checked)}
-                    // disabled={!isEditing} 
                   />
                   <Typography level="body-sm">Private</Typography>
                 </div>
