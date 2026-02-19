@@ -2,6 +2,7 @@ import express from "express";
 import { Trip } from "../models/Trip";
 import { Request, Response, NextFunction } from "express";
 import { authenticateUser } from "../middlewares/authMiddleware";
+import { optionalAuthenticateUser } from "../middlewares/optionalAuthenticateUser";
 import mongoose from "mongoose";
 
 
@@ -37,13 +38,19 @@ const getTripIfOwner = async (
 // TODO: add route for overview of all your liked trips from others
 // TODO: add route to remove liked (starred) trip
 
-
 // Route to get all trips for view only when not authenticated.
-router.get("/", async (req: Request, res: Response) => {
+router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) => {
   try {
     const { destination } = req.query; // If it should be possible to filter on destination, can add more
 
     const query: any = { isPublic: true };
+
+    // If user is logged in - don't show the users own trips in explore
+    if (req.user) {
+      query.creator = {
+        $ne: req.user._id
+      };
+    }
 
     if (typeof destination === "string") {
       query.destination = {
@@ -54,7 +61,7 @@ router.get("/", async (req: Request, res: Response) => {
 
     const publicTrips = await Trip
       .find(query)
-      .populate("creator", "userName"); // If we want to show who created the trip, otherwise remove
+      .populate("creator", "userName") // If we want to show who created the trip, otherwise remove
 
     return res.status(200).json({
       success: true,
