@@ -100,9 +100,16 @@ export const UserProfilePage = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
         },
-        body: JSON.stringify({ bio })
+        body: JSON.stringify({ bio, username, isPublic})
       })
-      if (response.ok) setIsEditing(false)
+      if (response.ok) {
+        const updatedData = await response.json()
+        setIsEditing(false)
+        setProfile(updatedData)
+        setUsername(updatedData.username)
+        setBio(updatedData.bio || "");
+        setIsPublic(updatedData.isPublic ?? true)
+      }
     } catch (err) {
       console.error(err)
     }
@@ -162,7 +169,7 @@ export const UserProfilePage = () => {
                 <Typography level="body-sm">Public</Typography>
                 <input
                   type="checkbox"
-                  checked={isPublic} // Public is true by default
+                  checked={!isPublic} // Public is true by default
                   onChange={(e) => setIsPublic(!e.target.checked)}
                   disabled={!isEditing} 
                 />
