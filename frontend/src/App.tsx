@@ -19,11 +19,12 @@ export const App = () => {
   return (
 
     <BrowserRouter>
-    <UserProfilePage />
+    {/* <UserProfilePage /> */}
       <Routes>
         <Route path="/mytrips" element={<MyTripsPage/>} />
         <Route path="/trip/:id" element={<TripDetailsPage/>} />
         <Route path="/auth" element={<AuthenticationPage/>} />
+        <Route path="/profile/:userId" element={<UserProfilePage/>} />
       </Routes>
     </BrowserRouter>
   );

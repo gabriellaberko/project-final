@@ -4,6 +4,7 @@ import { useAuthStore } from "../stores/AuthStore";
 
 // MUI & Icons
 import Avatar from "@mui/joy/Avatar";
+import Switch from "@mui/joy/Switch";
 import Button from "@mui/joy/Button";
 import Input from "@mui/joy/Input";
 import Card from "@mui/joy/Card";
@@ -57,6 +58,8 @@ export const UserProfilePage = () => {
   const isOwner = currentUserId=== userId
 
   useEffect(() => {
+    if (!userId || userId === "undefined") return
+
     const fetchUserData = async () => {
       try {
         setLoading(true)
@@ -77,6 +80,7 @@ export const UserProfilePage = () => {
         }
 
         const data = await response.json();
+
         setProfile(data);
         setUsername(data.username)
         setBio(data.bio || "");
@@ -90,6 +94,7 @@ export const UserProfilePage = () => {
     }
     fetchUserData()
   }, [userId, isOwner, accessToken])
+
 
   const handleSave = async () => {
     try {
@@ -165,16 +170,17 @@ export const UserProfilePage = () => {
         <div>
           {isOwner ? (
             <div>
-              <div className="flex items-center gap-3 my-4">
-                <Typography level="body-sm">Public</Typography>
-                <input
-                  type="checkbox"
-                  checked={!isPublic} // Public is true by default
-                  onChange={(e) => setIsPublic(!e.target.checked)}
-                  disabled={!isEditing} 
-                />
-                <Typography level="body-sm">Private</Typography>
-              </div>
+              {isEditing && (
+                <div className="flex items-center gap-3 my-4">
+                  <Typography level="body-sm">Public</Typography>
+                  <Switch
+                    checked={!isPublic} // Public is true by default
+                    onChange={(e) => setIsPublic(!e.target.checked)}
+                    // disabled={!isEditing} 
+                  />
+                  <Typography level="body-sm">Private</Typography>
+                </div>
+              )}
 
               <div className="flex gap-2">
                 {isEditing ? (
