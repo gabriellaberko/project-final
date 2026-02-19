@@ -24,7 +24,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
         <button
           type="submit"
           aria-label="Search destination"
-          className="absolute left-4 top-1/2 -translate-y-1/2"
+          className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer"
         >
           {/* Add SVG here instead*/}
           🔍
@@ -51,7 +51,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
             focus:shadow-md
             focus:border-blue-400
             focus:ring-2 focus:ring-blue-200
-            rounded-full
+            rounded-full 
             pl-12 pr-4 py-3
             outline-none
             transition-all duration-200"

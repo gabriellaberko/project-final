@@ -8,10 +8,9 @@ interface TripCardProps {
   onClick?: () => void;
 }
 
-export const TripCard = ({ trip, onClick }: TripCardProps) => {
+export const TripCard = ({ trip }: TripCardProps) => {
   return (
     <div
-      onClick={onClick}
       className="bg-white rounded-xl shadow-md p-4 h-44 flex flex-col justify-center text-center cursor-pointer hover:shadow-lg transition"
     >
       {trip.tripName?.trim() && (

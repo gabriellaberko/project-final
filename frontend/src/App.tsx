@@ -17,15 +17,13 @@ export const App = () => {
   }, [checkAuthStatus])
 
   return (
-
-    <ExplorePage />
-
-    // <BrowserRouter>
-    //   <Routes>
-    //     <Route path="/mytrips" element={<MyTripsPage/>} />
-    //     <Route path="/trip/:id" element={<TripDetailsPage/>} />
-    //     <Route path="/auth" element={<AuthenticationPage/>} />
-    //   </Routes>
-    // </BrowserRouter>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/mytrips" element={<MyTripsPage />} />
+        <Route path="/trips/:id" element={<TripDetailsPage />} />
+        <Route path="/auth" element={<AuthenticationPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 };

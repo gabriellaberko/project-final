@@ -1,16 +1,12 @@
 import { TripCard } from "./TripsCard";
+import { Link } from "react-router-dom";
 
 interface TripsGridProps {
   trips: any[];
   columns?: 3 | 4;
-  onCardClick?: (trip: any) => void;
 }
 
-export const TripsGrid = ({
-  trips,
-  columns = 4,
-  onCardClick
-}: TripsGridProps) => {
+export const TripsGrid = ({ trips, columns = 4 }: TripsGridProps) => {
 
   const gridClass =
     columns === 4
@@ -20,11 +16,16 @@ export const TripsGrid = ({
   return (
     <div className={gridClass}>
       {trips.map((trip) => (
-        <TripCard
+        <Link
           key={trip._id}
-          trip={trip}
-          onClick={() => onCardClick?.(trip)}
-        />
+          to={`/trips/${trip._id}`}
+          className="block"
+        >
+          <TripCard
+            key={trip._id}
+            trip={trip}
+          />
+        </Link>
       ))}
     </div>
   );
