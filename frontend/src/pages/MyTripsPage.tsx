@@ -18,16 +18,16 @@ export const MyTripsPage = () => {
 
   useEffect(() => {
     if (!accessToken) {
+      setTrips([]);
       setLoading(false);
       return;
     }
-
-    setLoading(true);
 
     const url = `http://localhost:8080/trips/my`;
 
     const fetchMyTrips = async () => {
       try {
+        setLoading(true);
         const response = await fetch(url, {
           method: "GET",
           headers: {
