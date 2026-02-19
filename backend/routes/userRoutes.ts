@@ -1,6 +1,7 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/User";
+import { authenticateUser } from "../middlewares/authMiddleware";
 
 
 const router = express.Router();
@@ -20,7 +21,7 @@ router.post("/signup", async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "An error occured when creating the user",
+        message: "An error occurred when creating the user",
       });
     }
 
@@ -85,7 +86,71 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// My profile
+router.get("/profile", authenticateUser, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password")
+      res.status(200).json(user)
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user"
+    })
+  }
+})
 
-// TODO: add route for profile info?  
+// Edit profile
+router.patch("/profile", authenticateUser, async (req, res) => {
+  try {
+    const { username, bio, isPublic } = req.body
+    
+    const updates: any = {}
+    if (username) updates.userName = username
+    if (bio !== undefined) updates.bio = bio
+    if (isPublic !== undefined) updates.isPublic = isPublic
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-password")
+
+    res.status(200).json(updatedUser)
+    
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile"
+    })
+  }
+})
+
+// Get other user's profile
+router.get("/:userId", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).select("-password -email -accessToken")
+
+    if(!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      })
+    }
+
+    if (!user.isPublic) {
+      return res.status(200).json({
+        userName: user.userName,
+        isPublic: false,
+        message: "This account is private"
+      })
+    }
+    res.status(200).json(user)
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user"
+    })
+  }
+})
 
 export default router;
