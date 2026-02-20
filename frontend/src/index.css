@@ -1,1 +1,66 @@
 @import "tailwindcss";
+
+@layer components {
+  html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;;
+  }
+
+  body {
+    font-family: sans-serif;
+  }
+
+  h1 {
+    font-size: large;
+  }
+
+  h2 {
+    font-size: medium;
+  }
+
+  h3 {
+    font-size: small;
+  }
+
+  p {
+    font-size: x-small;
+  }
+
+  .btn {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    :hover {
+      background-color: white;
+      color: blue;
+    }
+  }
+
+  .form {
+    background-color: lightblue;
+    padding: 20px;
+  }
+  
+  .activity {
+    background-color: pink;
+    padding: 20px;
+  }
+
+  .day {
+    background-color: lightcyan;
+    padding: 20px;
+  }
+
+  .navbar {
+    background-color: lightcoral;
+    padding: 20px;
+  }
+
+
+
+}
