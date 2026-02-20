@@ -12,6 +12,7 @@ import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
 
 export const CreateTripForm = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [tripName, setTripName] = useState("");
@@ -44,7 +45,7 @@ export const CreateTripForm = () => {
 
     setIsLoading(true);
 
-    const url = `http://localhost:8080/trips`;
+    const url = `${API_URL}/trips`;
 
     try {
       const response = await fetch(url, {

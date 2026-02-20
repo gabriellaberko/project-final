@@ -20,6 +20,7 @@ type Props = {
 };
 
 export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const setUpdateData = useTripStore(state => state.setUpdateData);
   const accessToken = useAuthStore(state => state.accessToken) || undefined;
   const [error, setError] = useState(false);
@@ -41,7 +42,7 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
   };
 
   const postNewActivity = async () => { 
-    const url = `http://localhost:8080/trips/${tripId}/days/${dayId}/activities`; // Replace with deployed API link 
+    const url = `${API_URL}/trips/${tripId}/days/${dayId}/activities`; // Replace with deployed API link 
     try {
       const response = await fetch(url, {
         method: "POST",

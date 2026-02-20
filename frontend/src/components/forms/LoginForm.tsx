@@ -10,6 +10,7 @@ import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
 
 export const LoginForm = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Invalid user credentials");
   const [userName, setUserName] = useState("");

@@ -44,6 +44,8 @@ const TripCard = ({ trip }: { trip: Trip }) => (
 
 
 export const UserProfilePage = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const { userId } = useParams<{ userId: string }>();
   const { userId: currentUserId, accessToken } = useAuthStore();
 
@@ -64,8 +66,8 @@ export const UserProfilePage = () => {
       try {
         setLoading(true)
         const url = isOwner
-          ? `http://localhost:8080/users/profile`
-          : `http://localhost:8080/users/${userId}`
+          ? `${API_URL}/users/profile`
+          : `${API_URL}/users/${userId}`
 
         const response = await fetch(url, {
           method: "GET",
@@ -98,7 +100,7 @@ export const UserProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      const url = `http://localhost:8080/users/profile`
+      const url = `${API_URL}/users/profile`
       const response = await fetch(url, {
         method: "PATCH",
         headers: {

@@ -11,6 +11,7 @@ import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
 
 export const SignupForm = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [userName, setUserName] = useState("");
@@ -26,7 +27,7 @@ export const SignupForm = () => {
   };
 
   const postNewUser = async () => { 
-    const url = `http://localhost:8080/users/signup`; // Replace with deployed API link 
+    const url = `${API_URL}/users/signup`; // Replace with deployed API link 
 
     if (password.length < 8) {
       setErrorMessage("Password must be a minimum of 8 characters");

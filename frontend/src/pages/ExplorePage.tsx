@@ -5,6 +5,7 @@ import { SearchBar } from "../components/common/SearchBar";
 
 
 export const ExplorePage = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,7 +13,7 @@ export const ExplorePage = () => {
 
   const accessToken = useAuthStore(state => state.accessToken);
 
-  const url = `http://localhost:8080/trips`;
+  const url = `${API_URL}/trips`;
 
   const fetchPublicTrips = async (destination?: string) => {
     try {

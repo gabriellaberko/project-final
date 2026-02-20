@@ -13,6 +13,7 @@ interface Trip {
 }
 
 export const MyTripsPage = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +29,7 @@ export const MyTripsPage = () => {
       return;
     }
 
-    const url = `http://localhost:8080/trips/my`;
+    const url = `${API_URL}/trips/my`;
 
     const fetchMyTrips = async () => {
       try {
