@@ -42,7 +42,7 @@ export const TripDetailsPage = () => {
   const setUpdateData = useTripStore(state => state.setUpdateData);
   const resetUpdateData = useTripStore(state => state.resetUpdateData);
 
-  // TO DO: Fetch a specific trip from API, based on the tripID
+
   useEffect(() => {
     const fetchTrip = async () => {
       const url = `http://localhost:8080/trips/${tripId}`; // Replace with deployed API link 
@@ -73,6 +73,30 @@ export const TripDetailsPage = () => {
     setShowForm(true);
   };
 
+  const removeDay = async (dayId: string) => { 
+    const url = `http://localhost:8080/trips/${tripId}/days/${dayId}`; // Replace with deployed API link 
+    try {
+      const response = await fetch(url, {
+        method: "Delete",
+        headers: {
+          "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await response.json();
+      setUpdateData();
+
+    } catch (err) { 
+      console.log("Fetch error:", err);
+    }
+  };
+
+
   const removeActivity = async (dayId: string, activityId: string) => { 
     const url = `http://localhost:8080/trips/${tripId}/days/${dayId}/activities/${activityId}`; // Replace with deployed API link 
     try {
@@ -84,7 +108,6 @@ export const TripDetailsPage = () => {
         },
       });
       
-
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -105,12 +128,15 @@ export const TripDetailsPage = () => {
         <div className="flex flex-col md:flex-row items-center md:items-stretch gap-12 p-8">
           {trip.days.map((day: DayInterface) => (
             <div key={day.dayNumber} className="flex flex-col w-max-349 h-max-786 p-8 mx-12 rounded-[14px] shadow-md md:mx-0">
-              <h2>Day {day.dayNumber}</h2>
+              <div className="flex flex-col w-full justify-evenly">
+                <button onClick={() => removeDay(day._id)} className="self-end cursor-pointer text-xl">x</button>
+                <h2 className="self-center">Day {day.dayNumber}</h2>
+              </div>  
               <div className="flex flex-col md:items-stretch gap-2 my-4">
                   <h3>Activities</h3>
                   {day.activities.map((activity: ActivityInterface, index) => (
                     <div key={index} className="flex flex-col gap-2 shadow-sm p-4 items-start">
-                      <button onClick={() => removeActivity(day._id, activity._id)} className="self-end cursor-pointer text-xl">x</button>
+                      <button onClick={() => removeActivity(day._id, activity._id)} className="self-end cursor-pointer">x</button>
                       {activity.name && <h4><b>Name:</b> {activity.name}</h4>}
                       {activity.description && <p><b>Description:</b> {activity.description}</p>}
                       {activity.category && <p><b>Category:</b> {activity.category}</p>}
@@ -123,7 +149,7 @@ export const TripDetailsPage = () => {
                     </div>
                   ))}
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-center">
                 <div>
                   <MainBtn onClick={() => clickToAddActivity(day._id)}>Add activity</MainBtn>
                 </div>
