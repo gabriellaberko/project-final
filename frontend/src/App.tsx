@@ -7,6 +7,9 @@ import { AuthenticationPage } from "./pages/AuthenticationPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
 import { ExplorePage } from "./pages/ExplorePage";
 import { CreateTripPage } from "./pages/CreateTripPage";
+import { AuthLayout } from "./components/layout/AuthLayout";
+import { AppLayout } from "./components/layout/AppLayout";
+import { ProtectedRoute } from "./components/routing/ProtectedRoute";
 import { CreateActivityPage } from "./pages/CreateActivityPage";
 
 // TO DO: Create more pages and implement routing
@@ -22,12 +25,23 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/mytrips" element={<MyTripsPage />} />
-        <Route path="/trips/new" element={<CreateTripPage />} />
-        <Route path="/trips/:id" element={<TripDetailsPage />} />
-        <Route path="/trips/:tripId/day/:dayId/activities/new" element={<CreateActivityPage />} />
-        <Route path="/auth" element={<AuthenticationPage />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/auth" element={<AuthenticationPage />} />
+        </Route>
+
+
+        <Route element={<AppLayout />}>
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/trips/:id" element={<TripDetailsPage />} />
+
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="/mytrips" element={<MyTripsPage />} />
+            <Route path="/trips/new" element={<CreateTripPage />} />
+            <Route path="/trips/:tripId/day/:dayId/activities/new" element={<CreateActivityPage />} />
+          </Route>
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );
