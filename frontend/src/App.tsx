@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MyTripsPage } from "./pages/MyTripsPage";
 import { TripDetailsPage } from "./pages/TripDetailsPage";
 import { AuthenticationPage } from "./pages/AuthenticationPage";
+import { UserProfilePage } from "./pages/UserProfilePage";
 import { ExplorePage } from "./pages/ExplorePage";
 import { CreateTripPage } from "./pages/CreateTripPage";
 
