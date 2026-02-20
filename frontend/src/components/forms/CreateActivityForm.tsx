@@ -1,4 +1,5 @@
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, FormEvent } from "react"
+import { useNavigate } from "react-router-dom";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useTripStore } from "../../stores/TripStore";
@@ -16,11 +17,11 @@ import Textarea from "@mui/joy/Textarea"
 type Props = {
   tripId: string;
   dayId: string;
-  setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
+export const CreateActivityForm = ({ tripId, dayId }: Props) => {
   const API_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
   const setUpdateData = useTripStore(state => state.setUpdateData);
   const accessToken = useAuthStore(state => state.accessToken) || undefined;
   const [error, setError] = useState(false);
@@ -37,7 +38,7 @@ export const CreateActivityForm = ({ tripId, dayId, setShowForm }: Props) => {
     e.preventDefault();
     postNewActivity();
     e.currentTarget.reset();
-    setShowForm(false);
+    navigate(`/trips/${tripId}/`);
     setUpdateData();
   };
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { CreateActivityForm } from "../components/forms/CreateActivityForm";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTripStore } from "../stores/TripStore";
 import { MainBtn } from "../components/buttons/MainBtn";
 import { useAuthStore } from "../stores/AuthStore";
@@ -34,11 +33,10 @@ export const TripDetailsPage = () => {
 
   const API_URL = import.meta.env.VITE_API_URL;
   const { id: tripId } = useParams(); // Retrieve trip ID from the url
+  const navigate = useNavigate();
   const accessToken = useAuthStore(state => state.accessToken);
   const [error, setError] = useState(false);
   const [trip, setTrip] = useState<TripInterFace | null>(null);
-  const [showForm, setShowForm] = useState(false);
-  const [dayId, setDayId] = useState<string | null>(null);
   const updateData = useTripStore(state => state.updateData);
   const setUpdateData = useTripStore(state => state.setUpdateData);
   const resetUpdateData = useTripStore(state => state.resetUpdateData);
@@ -69,10 +67,6 @@ export const TripDetailsPage = () => {
     fetchTrip();
   }, [updateData]);
 
-  const clickToAddActivity = (dayId: string) => { 
-    setDayId(dayId);
-    setShowForm(true);
-  };
 
   const removeDay = async (dayId: string) => { 
     const url = `${API_URL}/trips/${tripId}/days/${dayId}`; // Replace with deployed API link 
@@ -147,7 +141,7 @@ export const TripDetailsPage = () => {
 
   return (
     <>
-      {trip && showForm === false && 
+      {trip &&
       <div className="text-center flex flex-col items-center">
         <h1>My {trip.destination} Trip</h1>
         <div className="flex flex-col md:flex-row items-center md:items-stretch gap-12 p-8">
@@ -177,7 +171,7 @@ export const TripDetailsPage = () => {
                 </div>
                 <div className="flex justify-center">
                   <div>
-                    <MainBtn onClick={() => clickToAddActivity(day._id)}>Add activity</MainBtn>
+                    <MainBtn onClick={() => navigate(`/trips/${tripId}/day/${day._id}/activities/new`)}>Add activity</MainBtn>
                   </div>
                 </div>
               </div>
@@ -189,13 +183,6 @@ export const TripDetailsPage = () => {
           </div>
       </div>
     }
-      {showForm && dayId && tripId && (
-        <CreateActivityForm
-          tripId={tripId} // TO DO: fix TS error
-          dayId={dayId}
-          setShowForm={setShowForm}
-        />
-      )}
     </>
   )
 };
