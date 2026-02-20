@@ -10,6 +10,7 @@ import { CreateTripPage } from "./pages/CreateTripPage";
 import { AuthLayout } from "./components/layout/AuthLayout";
 import { AppLayout } from "./components/layout/AppLayout";
 import { ProtectedRoute } from "./components/routing/ProtectedRoute";
+import { CreateActivityPage } from "./pages/CreateActivityPage";
 
 // TO DO: Create more pages and implement routing
 
@@ -37,6 +38,7 @@ export const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="/mytrips" element={<MyTripsPage />} />
             <Route path="/trips/new" element={<CreateTripPage />} />
+            <Route path="/trips/:tripId/day/:dayId/activities/new" element={<CreateActivityPage />} />
           </Route>
         </Route>
 
