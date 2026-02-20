@@ -1,7 +1,25 @@
 @import "tailwindcss";
+/* @config "../tailwind.config.js"; */
 
-@layer components {
-  html {
+@layer base {
+
+  :root {
+    --text-primary: black;
+    --text-secondary: white;
+    --card-bg: pink;
+    --navbar-bg: lightpink;
+    --activity-bg: blue;
+    --day-bg: lightblue;
+    --form-bg: lightgreen;
+    --btn-primary: beige;
+    --btn-secondary: lightcoral;
+
+    --radius-card: 10px;
+    --shadow-card: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  }
+
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;;
@@ -26,41 +44,41 @@
   p {
     font-size: x-small;
   }
+}
 
+@layer components {
   .btn {
-    background-color: blue;
-    color: white;
+    background-color: var(--btn-primary);
+    color: var(--text-primary);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 
-    :hover {
-      background-color: white;
-      color: blue;
+    &:hover {
+      background-color: var(--btn-secondary);
+      color: var(--text-secondary);
     }
   }
 
   .form {
-    background-color: lightblue;
+    background-color: var(--form-bg);
     padding: 20px;
   }
   
   .activity {
-    background-color: pink;
+    background-color: var(--activity-bg);
     padding: 20px;
   }
 
   .day {
-    background-color: lightcyan;
+    background-color: var(--day-bg);
     padding: 20px;
   }
 
   .navbar {
-    background-color: lightcoral;
+    background-color: var(--navbar-bg);
     padding: 20px;
   }
-
-
 
 }
