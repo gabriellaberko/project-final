@@ -438,7 +438,7 @@ router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, as
 router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId, dayId, activityId } = req.params;
-
+    console.log("test")
     const trip = await getTripIfOwner(
       tripId as string,
       req.user!._id,
