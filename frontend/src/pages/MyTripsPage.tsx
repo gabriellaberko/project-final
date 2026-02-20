@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../stores/AuthStore";
+import { useNavigate } from "react-router-dom";
+import { TripsGrid } from "../components/common/TripsGrid";
+import { MainBtn } from "../components/buttons/MainBtn";
+
 
 interface Trip {
   _id: string;
@@ -13,24 +17,25 @@ export const MyTripsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
   const accessToken = useAuthStore(state => state.accessToken);
 
   useEffect(() => {
     if (!accessToken) {
+      setTrips([]);
       setLoading(false);
       return;
     }
-
-    setLoading(true);
 
     const url = `http://localhost:8080/trips/my`;
 
     const fetchMyTrips = async () => {
       try {
+        setLoading(true);
         const response = await fetch(url, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${accessToken}`
           }
         });
@@ -112,33 +117,17 @@ export const MyTripsPage = () => {
 
         {/* Grid State */}
         {!loading && !error && trips.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trips.map((trip) => (
-              <div
-                key={trip._id}
-                className="bg-white rounded-xl shadow-md hover:shadow-lg transition 
-                   h-44 flex flex-col items-center justify-center text-center p-4"
-              >
-                {/* Optional Trip Name */}
-                {trip.tripName?.trim() && (
-                  <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">
-                    {trip.tripName}
-                  </p>
-                )}
-
-                {/* Destination */}
-                <h3 className="text-lg font-semibold">
-                  {trip.destination}
-                </h3>
-
-                {/* Number of Days */}
-                <p className="text-sm text-gray-500 mt-1">
-                  {trip.days.length} {trip.days.length === 1 ? "day" : "days"}
-                </p>
-              </div>
-            ))}
-          </div>
+          <TripsGrid
+            trips={trips}
+            columns={3}
+          />
         )}
+
+        <MainBtn
+          onClick={() => navigate("/trips/new")}
+        >
+          Create a new trip
+        </MainBtn>
       </div>
     </div>
   );
