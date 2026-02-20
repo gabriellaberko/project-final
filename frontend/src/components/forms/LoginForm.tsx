@@ -25,7 +25,7 @@ export const LoginForm = () => {
   };
 
   const loginUser = async () => { 
-    const url = `http://localhost:8080/users/login`; // Replace with deployed API link 
+    const url = `${API_URL}/users/login`; // Replace with deployed API link 
     try {
 
       const response = await fetch(url, {
@@ -45,7 +45,7 @@ export const LoginForm = () => {
 
       const loggedInUser = await response.json();
       // Retrieve accessToken from response and login the user
-      login({ accessToken: loggedInUser.accessToken, userName: loggedInUser.userName });
+      login({ accessToken: loggedInUser.accessToken, userName: loggedInUser.userName, userId: loggedInUser.userId });
       setError(false);
 
     } catch (err) {
