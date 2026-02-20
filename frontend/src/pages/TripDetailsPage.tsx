@@ -3,11 +3,13 @@ import { useParams } from "react-router-dom";
 import { CreateActivityForm } from "../components/forms/CreateActivityForm";
 import { useTripStore } from "../stores/TripStore";
 import { MainBtn } from "../components/buttons/MainBtn";
+import { useAuthStore } from "../stores/AuthStore";
 
 
 export const TripDetailsPage = () => {
 
   interface ActivityInterface {
+    _id: string,
     name: string,
     description: string,
     category: string,
@@ -31,11 +33,13 @@ export const TripDetailsPage = () => {
   }
 
   const { id: tripId } = useParams(); // Retrieve trip ID from the url
+  const accessToken = useAuthStore(state => state.accessToken);
   const [error, setError] = useState(false);
   const [trip, setTrip] = useState<TripInterFace | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [dayId, setDayId] = useState<string | null>(null);
   const updateData = useTripStore(state => state.updateData);
+  const setUpdateData = useTripStore(state => state.setUpdateData);
   const resetUpdateData = useTripStore(state => state.resetUpdateData);
 
   // TO DO: Fetch a specific trip from API, based on the tripID
@@ -51,7 +55,6 @@ export const TripDetailsPage = () => {
 
         const fetchedTrip = await response.json();
         setTrip(fetchedTrip.response);
-        console.log("fetch",fetchedTrip.response)
 
       } catch (err) {
         console.log("Fetch error:", err);
@@ -70,6 +73,30 @@ export const TripDetailsPage = () => {
     setShowForm(true);
   };
 
+  const removeActivity = async (dayId: string, activityId: string) => { 
+    const url = `http://localhost:8080/trips/${tripId}/days/${dayId}/activities/${activityId}`; // Replace with deployed API link 
+    try {
+      const response = await fetch(url, {
+        method: "Delete",
+        headers: {
+          "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+      });
+      
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await response.json();
+      setUpdateData();
+
+    } catch (err) { 
+      console.log("Fetch error:", err);
+    }
+  };
+
   return (
     <>
       {trip && showForm === false && 
@@ -83,7 +110,7 @@ export const TripDetailsPage = () => {
                   <h3>Activities</h3>
                   {day.activities.map((activity: ActivityInterface, index) => (
                     <div key={index} className="flex flex-col gap-2 shadow-sm p-4 items-start">
-                      <button className="self-end cursor-pointer text-xl">x</button>
+                      <button onClick={() => removeActivity(day._id, activity._id)} className="self-end cursor-pointer text-xl">x</button>
                       {activity.name && <h4><b>Name:</b> {activity.name}</h4>}
                       {activity.description && <p><b>Description:</b> {activity.description}</p>}
                       {activity.category && <p><b>Category:</b> {activity.category}</p>}
