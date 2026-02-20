@@ -133,7 +133,7 @@ export const TripDetailsPage = () => {
           </div>
       </div>
     }
-      {showForm && dayId && (
+      {showForm && dayId && tripId && (
         <CreateActivityForm
           tripId={tripId} // TO DO: fix TS error
           dayId={dayId}
