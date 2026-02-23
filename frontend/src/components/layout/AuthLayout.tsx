@@ -7,5 +7,5 @@ export const AuthLayout = () => {
         <Outlet />
       </div>
     </div>
-  );
+  )
 };

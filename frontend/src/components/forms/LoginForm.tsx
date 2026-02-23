@@ -6,7 +6,6 @@ import { useAuthStore } from "../../stores/AuthStore";
 import Input from "@mui/joy/Input";
 import Stack from "@mui/joy/Stack"
 import FormLabel from "@mui/joy/FormLabel";
-import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
 
 export const LoginForm = () => {
@@ -19,28 +18,28 @@ export const LoginForm = () => {
   const login = useAuthStore(state => state.login);
 
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => { 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loginUser();
   };
 
-  const loginUser = async () => { 
+  const loginUser = async () => {
     const url = `${API_URL}/users/login`; // Replace with deployed API link 
     try {
 
       const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", 
-          },
-          body: JSON.stringify({ 
-            userName: userName,
-            password: password
-          }) 
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userName: userName,
+          password: password
+        })
       });
 
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const loggedInUser = await response.json();
@@ -49,23 +48,21 @@ export const LoginForm = () => {
       setError(false);
 
     } catch (err) {
-        console.error("Sending error:", error);
-        setError(true);
+      console.error("Sending error:", error);
+      setError(true);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <Card sx={{ width: 500 }}>
-
-        <Stack gap={2}>
-          <div>
-            <FormLabel>Username:</FormLabel>
-            <Input
-              placeholder="Enter username"
-              onChange={(e) => setUserName(e.target.value)}
-              sx={{
-                '&::before': {
+      <Stack gap={3}>
+        <div>
+          <FormLabel sx={{ mb: 0.5 }}>Username:</FormLabel>
+          <Input
+            placeholder="Enter username"
+            onChange={(e) => setUserName(e.target.value)}
+            sx={{
+              '&::before': {
                 border: '1.5px solid var(--Input-focusedHighlight)',
                 transform: 'scaleX(0)',
                 left: '2.5px',
@@ -85,7 +82,7 @@ export const LoginForm = () => {
         </div>
 
         <div>
-          <FormLabel>Password:</FormLabel>
+          <FormLabel sx={{ mb: 0.5 }}>Password:</FormLabel>
           <Input
             placeholder="Enter password"
             onChange={(e) => setPassword(e.target.value)}
@@ -104,16 +101,14 @@ export const LoginForm = () => {
               },
               '&:focus-within::before': {
                 transform: 'scaleX(1)',
-                },
-              }}
-            />
-          </div>
+              },
+            }}
+          />
+        </div>
 
-          {error && <FormErrorMessage errorMessage={errorMessage} />}
-            <Button size="lg" type="submit">Log in</Button>
-        </Stack>
-      
-      </Card>
+        {error && <FormErrorMessage errorMessage={errorMessage} />}
+        <Button size="lg" type="submit" sx={{ mt: 2 }}>Log in</Button>
+      </Stack>
     </form>
   )
 };
