@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"
 import { useAuthStore } from "../stores/AuthStore";
+import { TripInterFace } from "../types/interfaces";
+import { UserProfileInterface } from "../types/interfaces";
 
 // MUI & Icons
 import Avatar from "@mui/joy/Avatar";
@@ -11,22 +13,6 @@ import Card from "@mui/joy/Card";
 import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
 
-interface Trip {
-  _id: string;
-  destination: string;
-  days: { dayNumber: number }[];
-  tripName?: string; // optional
-}
-
-interface UserProfile {
-  userName: string;
-  bio: string;
-  avatarUrl?: string;
-  isPublic: boolean;
-  followers: number;
-  following: number;
-  trips: Trip[];
-}
 
 const Stat = ({ label, count }: {label: string, count: number}) => (
   <div className="text-content">
@@ -35,7 +21,7 @@ const Stat = ({ label, count }: {label: string, count: number}) => (
   </div>
 )
 
-const TripCard = ({ trip }: { trip: Trip }) => (
+const TripCard = ({ trip }: { trip: TripInterFace }) => (
   <Card variant="outlined">
     <Typography level="h3">{trip.destination}</Typography>
     <Typography level="body-xs">{trip.days.length} days</Typography>
@@ -49,12 +35,12 @@ export const UserProfilePage = () => {
   const { userId } = useParams<{ userId: string }>();
   const { userId: currentUserId, accessToken } = useAuthStore();
 
-  const [profile, setProfile] = useState<UserProfile | null>(null)
+  const [profile, setProfile] = useState<UserProfileInterface | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [username, setUsername] = useState("")
   const [bio, setBio] = useState("")
   const [loading, setLoading] = useState(true);
-  const [trips, setTrips] = useState<Trip[]>([])
+  const [trips, setTrips] = useState<TripInterFace[]>([])
   const [isPublic, setIsPublic] = useState(true)
 
   const isOwner = currentUserId=== userId

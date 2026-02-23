@@ -1,12 +1,5 @@
-interface TripCardProps {
-  trip: {
-    _id: string,
-    destination: string;
-    tripName?: string;
-    days: any[];
-  };
-  onClick?: () => void;
-}
+import { TripCardProps } from "../../types/interfaces";
+
 
 export const TripCard = ({ trip }: TripCardProps) => {
   return (

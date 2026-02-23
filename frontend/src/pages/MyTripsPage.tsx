@@ -3,18 +3,12 @@ import { useAuthStore } from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 import { TripsGrid } from "../components/common/TripsGrid";
 import { MainBtn } from "../components/buttons/MainBtn";
+import { TripInterFace } from "../types/interfaces";
 
-
-interface Trip {
-  _id: string;
-  destination: string;
-  days: { dayNumber: number }[];
-  tripName?: string; // optional
-}
 
 export const MyTripsPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [trips, setTrips] = useState<TripInterFace[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
