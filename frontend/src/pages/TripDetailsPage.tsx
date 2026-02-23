@@ -1,38 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTripStore } from "../stores/TripStore";
-import { MainBtn } from "../components/buttons/MainBtn";
-import { useAuthStore } from "../stores/AuthStore";
 import { DayGrid } from "../components/common/DayGrid";
 
 
 export const TripDetailsPage = () => {
-
-  interface ActivityInterface {
-    _id: string,
-    name: string,
-    description: string,
-    category: string,
-    time: string,
-    googleMapLink: string
-  };
-
-  interface DayInterface {
-  _id: string,
-  dayNumber: number,
-  activities: [ActivityInterface]
-  };
-
-  interface TripInterFace { 
-    tripName: string,
-    _id: string,
-    destination: string,
-    days: DayInterface[],
-    creator: string,
-    isPublic: boolean,
-    starredBy: string[];
-  }
-
   const API_URL = import.meta.env.VITE_API_URL;
   const { id: tripId } = useParams(); // Retrieve trip ID from the url
   const [error, setError] = useState(false);

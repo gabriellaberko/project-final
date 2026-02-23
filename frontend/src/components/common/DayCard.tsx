@@ -1,28 +1,8 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTripStore } from "../../stores/TripStore";
 import { MainBtn } from "../buttons/MainBtn";
-import { useAuthStore } from "../../stores/AuthStore";
+import { DayCardProps } from "../../types/interfaces";
 
-  interface ActivityInterface {
-    _id: string,
-    name: string,
-    description: string,
-    category: string,
-    time: string,
-    googleMapLink: string
-  };
-
-  interface DayInterface {
-  _id: string,
-  dayNumber: number,
-  activities: [ActivityInterface]
-  };
-
-interface DayCardProps {
-  day: DayInterface;
-  onClick?: () => void;
-}
 
 export const DayCard = ({ day }: DayCardProps) => {
   const navigate = useNavigate();
@@ -41,7 +21,7 @@ export const DayCard = ({ day }: DayCardProps) => {
             </div>  
             <div className="flex flex-col md:items-stretch gap-2 my-4">
                 <h3>Activities</h3>
-                {day.activities.map((activity: ActivityInterface, index) => (
+                {day.activities.map((activity, index) => (
                   <div key={index} className="flex flex-col gap-2 shadow-sm p-4 items-start">
                     <button onClick={() => removeActivity(trip!._id, day._id, activity._id)} className="self-end cursor-pointer">x</button>
                     {activity.name && <h4><b>Name:</b> {activity.name}</h4>}

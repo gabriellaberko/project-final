@@ -1,11 +1,7 @@
 import Avatar from '@mui/material/Avatar';
+import { AvatarProps } from '../../types/interfaces';
 
-type Props = {
-  username: string;
-  onLogoutClick?: () => void;
-}
-
-export const NavAvatar = ({ username, onLogoutClick }: Props) => {
+export const NavAvatar = ({ username, onLogoutClick }: AvatarProps) => {
   return (
     <>
       <div className="flex items-center gap-4 p-4">

@@ -1,10 +1,7 @@
 import { TripCard } from "./TripsCard";
 import { Link } from "react-router-dom";
+import { TripsGridProps } from "../../types/interfaces";
 
-interface TripsGridProps {
-  trips: any[];
-  columns?: 3 | 4;
-}
 
 export const TripsGrid = ({ trips, columns = 4 }: TripsGridProps) => {
 

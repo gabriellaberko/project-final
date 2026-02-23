@@ -2,11 +2,8 @@ import { DayCard } from "./DayCard";
 import { Link } from "react-router-dom";
 import { useTripStore } from "../../stores/TripStore";
 import { MainBtn } from "../buttons/MainBtn";
+import { DayGridProps } from "../../types/interfaces";
 
-
-interface DayGridProps {
-  columns?: 3 | 4;
-}
 
 export const DayGrid = ({ columns = 4 }: DayGridProps) => {
   const trip = useTripStore(state => state.trip);

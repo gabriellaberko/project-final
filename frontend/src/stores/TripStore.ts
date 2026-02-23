@@ -1,30 +1,6 @@
 import { create } from "zustand";
 import { useAuthStore } from "./AuthStore";
-
-interface ActivityInterface {
-  _id: string,
-  name: string,
-  description: string,
-  category: string,
-  time: string,
-  googleMapLink: string
-};
-
-interface DayInterface {
-_id: string,
-dayNumber: number,
-activities: [ActivityInterface]
-};
-
-interface TripInterFace { 
-  tripName: string,
-  _id: string,
-  destination: string,
-  days: DayInterface[],
-  creator: string,
-  isPublic: boolean,
-  starredBy: string[];
-}
+import { TripInterFace } from "../types/interfaces";
 
 interface TripState {
   updateData: boolean;

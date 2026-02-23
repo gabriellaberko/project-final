@@ -1,9 +1,6 @@
 import { useState } from "react";
+import { SearchBarProps } from "../../types/interfaces";
 
-
-interface SearchBarProps {
-  onSearch: (value?: string) => void;
-}
 
 export const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [value, setValue] = useState("");
