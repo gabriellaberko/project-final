@@ -23,13 +23,43 @@ export const SidebarNav = () => {
   return (
     <>
       {/* mobile header */}
-      <header className="flex md:hidden fixed top-0 left-0 right-0 h-16 items-center justify-between px-5 z-50">
+      <header className="
+        flex md:hidden fixed
+        top-0 left-0 right-0
+        h-16 items-center justify-between
+        px-5 z-50 bg-white shadow-sm
+      "
+      >
         <div>Logo</div>
-        <NavAvatar username={userName ?? ""} />
+
+        {isAuthenticated ? (
+          <NavAvatar username={userName ?? ""} onLogoutClick={handleLogout} />
+        ) : (
+          <button
+            onClick={() => navigate("/auth?mode=signup")}
+            className="
+              text-sm font-medium
+              px-4 py-2
+              rounded-lg
+              bg-gray-100 text-gray-900
+              hover:bg-gray-200
+              active:scale-[0.98]
+              transition-all duration-200
+      "
+          >
+            Get started
+          </button>
+        )}
       </header>
 
       {/* mobile navbar */}
-      <nav className="flex md:hidden fixed bottom-0 left-0 right-0 h-16 items-center justify-around px-2 z-50">
+      <nav className="
+        flex md:hidden fixed bottom-0
+        left-0 right-0 h-16 items-center
+        justify-around px-2 z-50 bg-white
+        shadow-[0_-1px_4px_rgba(0,0,0,0.04)]
+      "
+      >
         {items.map((item) => (
           <NavLink
             key={item.path}

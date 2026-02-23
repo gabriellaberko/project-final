@@ -31,7 +31,7 @@ export const App = () => {
 
 
         <Route element={<AppLayout />}>
-          <Route path="/" element={<ExplorePage />} />
+          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/trips/:id" element={<TripDetailsPage />} />
 
 
