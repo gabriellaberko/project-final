@@ -11,12 +11,17 @@ router.post("/signup", async (req, res) => {
   try {
     const { userName, email, password } = req.body;
 
+    console.log("Incoming email:", email);
+    console.log("Incoming username:", userName);
+
     const existingUser = await User.findOne({
       $or: [
         { email: email.toLowerCase() },
         { userName: userName }
       ]
     });
+
+    console.log("Existing user found:", existingUser);
 
     if (existingUser) {
       return res.status(400).json({
@@ -25,25 +30,31 @@ router.post("/signup", async (req, res) => {
       });
     }
 
+    console.log("Before salt");
     const salt = bcrypt.genSaltSync();
 
+    console.log("Before creating user");
     const user = new User({
       userName,
-      email,
+      email: email.toLowerCase(),
       password: bcrypt.hashSync(password, salt)
     });
 
+    console.log("Before save");
     await user.save();
+    console.log("After save");
 
+    console.log("Sending 200 response now");
     res.status(200).json({
       success: true,
       message: "User created successfully",
-      id: user._id,
+      userId: user._id,
       accessToken: user.accessToken,
       userName: user.userName
     });
 
   } catch (err) {
+    console.log("SIGNUP ERROR:", err);
     res.status(400).json({
       success: false,
       message: "Failed to create user",
@@ -64,11 +75,9 @@ router.post("/login", async (req, res) => {
       res.status(200).json({
         success: true,
         message: "Login successful",
-        response: {
-          userName: user.userName,
-          id: user._id,
-          accessToken: user.accessToken,
-        }
+        userName: user.userName,
+        userId: user._id,
+        accessToken: user.accessToken,
       })
     } else {
       res.status(401).json({
@@ -90,7 +99,7 @@ router.post("/login", async (req, res) => {
 router.get("/profile", authenticateUser, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password")
-      res.status(200).json(user)
+    res.status(200).json(user)
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -104,7 +113,7 @@ router.get("/profile", authenticateUser, async (req, res) => {
 router.patch("/profile", authenticateUser, async (req, res) => {
   try {
     const { userName, bio, isPublic } = req.body
-    
+
     const updates: any = {}
     if (userName) updates.userName = userName
     if (bio !== undefined) updates.bio = bio
@@ -117,7 +126,7 @@ router.patch("/profile", authenticateUser, async (req, res) => {
     ).select("-password")
 
     res.status(200).json(updatedUser)
-    
+
   } catch (err) {
     res.status(500).json({
       success: false,
@@ -131,7 +140,7 @@ router.get("/:userId", async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password -email -accessToken")
 
-    if(!user) {
+    if (!user) {
       return res.status(404).json({
         success: false,
         message: "User not found"
