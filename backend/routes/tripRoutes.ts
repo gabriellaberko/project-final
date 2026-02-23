@@ -35,8 +35,6 @@ const getTripIfOwner = async (
   return trip;
 };
 
-// TODO: add route for overview of all your liked trips from others
-// TODO: add route to remove liked (starred) trip
 
 // Route to get all trips for view only when not authenticated.
 router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) => {
@@ -434,11 +432,10 @@ router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, as
   }
 });
 
-// Route to delete an acitivity
+// Route to delete an activity
 router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId, dayId, activityId } = req.params;
-    console.log("test")
     const trip = await getTripIfOwner(
       tripId as string,
       req.user!._id,
@@ -478,6 +475,34 @@ router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, a
     return res.status(500).json({
       success: false,
       message: "Could not delete activity",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to star a trip
+router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $addToSet: { starredBy: req.user ? req.user._id : null } }, // Add ID, only if not there
+      { new: true, runValidators: true }
+    );
+
+    if (!starredTrip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found or not authorized"
+      });
+    }
+    
+  } catch (err) { 
+    return res.status(500).json({
+      success: false,
+      message: "Could not star trip",
       error: err instanceof Error ? err.message : String(err)
     });
   }
