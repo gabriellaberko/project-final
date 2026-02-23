@@ -7,7 +7,6 @@ import Input from "@mui/joy/Input";
 import Stack from "@mui/joy/Stack"
 import FormLabel from "@mui/joy/FormLabel";
 import FormHelperText from "@mui/joy/FormHelperText";
-import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
 
 export const SignupForm = () => {
@@ -21,12 +20,12 @@ export const SignupForm = () => {
   const login = useAuthStore(state => state.login);
 
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => { 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     postNewUser();
   };
 
-  const postNewUser = async () => { 
+  const postNewUser = async () => {
     const url = `${API_URL}/users/signup`; // Replace with deployed API link 
 
     if (password.length < 8) {
@@ -36,19 +35,19 @@ export const SignupForm = () => {
     }
     try {
       const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", 
-          },
-          body: JSON.stringify({ 
-            email: email, 
-            userName: userName,
-            password: password
-          }) 
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          userName: userName,
+          password: password
+        })
       });
-      
+
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const newUser = await response.json();
@@ -57,101 +56,96 @@ export const SignupForm = () => {
       setError(false);
 
     } catch (err) {
-        console.error("Sending error:", error);
-        setErrorMessage("Could not create account");
-        setError(true);
+      console.error("Sending error:", error);
+      setErrorMessage("Could not create account");
+      setError(true);
     }
 
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      <Stack gap={3}>
+        <div>
+          <FormLabel sx={{ mb: 0.5 }}>Username:</FormLabel>
+          <Input
+            placeholder="Enter username"
+            onChange={(e) => setUserName(e.target.value)}
+            sx={{
+              '&::before': {
+                border: '1.5px solid var(--Input-focusedHighlight)',
+                transform: 'scaleX(0)',
+                left: '2.5px',
+                right: '2.5px',
+                bottom: 0,
+                top: 'unset',
+                transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                borderRadius: 0,
+                borderBottomLeftRadius: '64px 20px',
+                borderBottomRightRadius: '64px 20px',
+              },
+              '&:focus-within::before': {
+                transform: 'scaleX(1)',
+              },
+            }}
+          />
+        </div>
 
-      <Card sx={{ width: 500 }}>
+        <div>
+          <FormLabel sx={{ mb: 0.5 }}>Email:</FormLabel>
+          <Input
+            placeholder="Enter email"
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{
+              '&::before': {
+                border: '1.5px solid var(--Input-focusedHighlight)',
+                transform: 'scaleX(0)',
+                left: '2.5px',
+                right: '2.5px',
+                bottom: 0,
+                top: 'unset',
+                transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                borderRadius: 0,
+                borderBottomLeftRadius: '64px 20px',
+                borderBottomRightRadius: '64px 20px',
+              },
+              '&:focus-within::before': {
+                transform: 'scaleX(1)',
+              },
+            }}
+          />
+        </div>
 
-        <Stack gap={2}>
-          <div>
-            <FormLabel>Username:</FormLabel>
-            <Input
-              placeholder="Enter username"
-              onChange={(e) => setUserName(e.target.value)}
-              sx={{
-                '&::before': {
-                  border: '1.5px solid var(--Input-focusedHighlight)',
-                  transform: 'scaleX(0)',
-                  left: '2.5px',
-                  right: '2.5px',
-                  bottom: 0,
-                  top: 'unset',
-                  transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                  borderRadius: 0,
-                  borderBottomLeftRadius: '64px 20px',
-                  borderBottomRightRadius: '64px 20px',
-                },
-                '&:focus-within::before': {
-                  transform: 'scaleX(1)',
-                },
-              }}
-            />
-          </div>
+        <div>
+          <FormLabel sx={{ mb: 0.5 }}>Password:</FormLabel>
+          <Input
+            placeholder="Enter password"
+            onChange={(e) => setPassword(e.target.value)}
+            sx={{
+              '&::before': {
+                border: '1.5px solid var(--Input-focusedHighlight)',
+                transform: 'scaleX(0)',
+                left: '2.5px',
+                right: '2.5px',
+                bottom: 0,
+                top: 'unset',
+                transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
+                borderRadius: 0,
+                borderBottomLeftRadius: '64px 20px',
+                borderBottomRightRadius: '64px 20px',
+              },
+              '&:focus-within::before': {
+                transform: 'scaleX(1)',
+              },
+            }}
+          />
+          <FormHelperText sx={{ mt: 1 }}>ⓘ Password must be at least 8 characters</FormHelperText>
+        </div>
 
-          <div>
-            <FormLabel>Email:</FormLabel>
-            <Input
-              placeholder="Enter email"
-              onChange={(e) => setEmail(e.target.value)}
-              sx={{
-                '&::before': {
-                  border: '1.5px solid var(--Input-focusedHighlight)',
-                  transform: 'scaleX(0)',
-                  left: '2.5px',
-                  right: '2.5px',
-                  bottom: 0,
-                  top: 'unset',
-                  transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                  borderRadius: 0,
-                  borderBottomLeftRadius: '64px 20px',
-                  borderBottomRightRadius: '64px 20px',
-                },
-                '&:focus-within::before': {
-                  transform: 'scaleX(1)',
-                },
-              }}
-            />
-          </div>
-          
-          <div>
-            <FormLabel>Password:</FormLabel>
-            <Input
-              placeholder="Enter password"
-              onChange={(e) => setPassword(e.target.value)}
-              sx={{
-                '&::before': {
-                  border: '1.5px solid var(--Input-focusedHighlight)',
-                  transform: 'scaleX(0)',
-                  left: '2.5px',
-                  right: '2.5px',
-                  bottom: 0,
-                  top: 'unset',
-                  transition: 'transform .15s cubic-bezier(0.1,0.9,0.2,1)',
-                  borderRadius: 0,
-                  borderBottomLeftRadius: '64px 20px',
-                  borderBottomRightRadius: '64px 20px',
-                },
-                '&:focus-within::before': {
-                  transform: 'scaleX(1)',
-                  },
-                }}
-            />
-            <FormHelperText>ⓘ Password must be at least 8 characters</FormHelperText>
-            </div>
-        
-          {error && <FormErrorMessage errorMessage={errorMessage} />}
-          <Button size="lg" type="submit">Sign up</Button>
+        {error && <FormErrorMessage errorMessage={errorMessage} />}
+        <Button size="lg" type="submit" sx={{ mt: 2 }}>Sign up</Button>
 
-        </Stack>
-      
-      </Card>
+      </Stack>
     </form>
   )
 };
