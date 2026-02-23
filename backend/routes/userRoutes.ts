@@ -11,17 +11,12 @@ router.post("/signup", async (req, res) => {
   try {
     const { userName, email, password } = req.body;
 
-    console.log("Incoming email:", email);
-    console.log("Incoming username:", userName);
-
     const existingUser = await User.findOne({
       $or: [
         { email: email.toLowerCase() },
         { userName: userName }
       ]
     });
-
-    console.log("Existing user found:", existingUser);
 
     if (existingUser) {
       return res.status(400).json({
@@ -30,21 +25,16 @@ router.post("/signup", async (req, res) => {
       });
     }
 
-    console.log("Before salt");
     const salt = bcrypt.genSaltSync();
 
-    console.log("Before creating user");
     const user = new User({
       userName,
       email: email.toLowerCase(),
       password: bcrypt.hashSync(password, salt)
     });
 
-    console.log("Before save");
     await user.save();
-    console.log("After save");
 
-    console.log("Sending 200 response now");
     res.status(200).json({
       success: true,
       message: "User created successfully",
@@ -54,7 +44,6 @@ router.post("/signup", async (req, res) => {
     });
 
   } catch (err) {
-    console.log("SIGNUP ERROR:", err);
     res.status(400).json({
       success: false,
       message: "Failed to create user",
