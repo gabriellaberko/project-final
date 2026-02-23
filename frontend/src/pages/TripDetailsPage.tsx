@@ -50,11 +50,20 @@ export const TripDetailsPage = () => {
 
   return (
     <>
+      {/* TO DO: Loading & Error States */}
+
+      {/* {loading && (
+      )} */}
+
+      {/* Error State */}
+      {/* {!loading && error && (
+      )} */}
+        
       {trip &&
       <div className="text-center flex flex-col items-center">
         <h1>My {trip.destination} Trip</h1>
           {/* Grid State */}
-          {!loading && !error && trip && (
+          {!loading && !error && (
             <DayGrid
               columns={3}
             />
