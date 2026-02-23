@@ -7,6 +7,9 @@ import Input from "@mui/joy/Input";
 import Stack from "@mui/joy/Stack"
 import FormLabel from "@mui/joy/FormLabel";
 import Button from "@mui/joy/Button";
+import IconButton from "@mui/joy/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export const LoginForm = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -14,6 +17,7 @@ export const LoginForm = () => {
   const [errorMessage, setErrorMessage] = useState("Invalid user credentials");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const login = useAuthStore(state => state.login);
 
@@ -46,6 +50,7 @@ export const LoginForm = () => {
       // Retrieve accessToken from response and login the user
       login({ accessToken: loggedInUser.accessToken, userName: loggedInUser.userName, userId: loggedInUser.userId });
       setError(false);
+
 
     } catch (err) {
       console.error("Sending error:", error);
@@ -84,8 +89,19 @@ export const LoginForm = () => {
         <div>
           <FormLabel sx={{ mb: 0.5 }}>Password:</FormLabel>
           <Input
+            type={showPassword ? "text" : "password"}
             placeholder="Enter password"
             onChange={(e) => setPassword(e.target.value)}
+            endDecorator={
+              <IconButton
+                onClick={() => setShowPassword(!showPassword)}
+                size="sm"
+                variant="plain"
+                color="neutral"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            }
             sx={{
               '&::before': {
                 border: '1.5px solid var(--Input-focusedHighlight)',

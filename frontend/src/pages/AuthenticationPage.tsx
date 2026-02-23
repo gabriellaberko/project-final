@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/AuthStore";
 import { SignupForm } from "../components/forms/SignupForm";
 import { LoginForm } from "../components/forms/LoginForm";
 import { motion } from "framer-motion";
@@ -9,18 +11,36 @@ import Tab, { tabClasses } from '@mui/joy/Tab';
 import Card from "@mui/joy/Card";
 import Stack from "@mui/joy/Stack";
 
+
 const MotionCard = motion(Card);
 
 // TO DO: Fix this page
 export const AuthenticationPage = () => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const mode = searchParams.get("mode");
+  const activeTab = mode === "signup" ? 0 : 1;
 
   const handleTabChange = (event: React.SyntheticEvent | null,
     newValue: string | number | null) => {
     if (typeof newValue === "number") {
-      setActiveTab(newValue);
+      setSearchParams({ mode: newValue === 0 ? "signup" : "login" });
     }
   };
+
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (mode !== "signup" && mode !== "login") {
+      setSearchParams({ mode: "login" });
+    }
+  }, [mode, setSearchParams]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <MotionCard
