@@ -1,10 +1,7 @@
-type Props = {
-  children: string;
-  onClick: () => void;
-};
+import { BtnProps } from "../../types/interfaces";
 
 
-export const MainBtn = ({ children, onClick }: Props) => {
+export const MainBtn = ({ children, onClick }: BtnProps) => {
   return (
     <button
       className="

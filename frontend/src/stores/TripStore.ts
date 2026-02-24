@@ -5,12 +5,14 @@ import { TripInterFace } from "../types/interfaces";
 interface TripState {
   updateData: boolean;
   trip: TripInterFace | null;
+  setTrip: (trip: TripInterFace | null) => void;
   setUpdateData: () => void;
   resetUpdateData: () => void;
   removeDay: (tripId: string, dayId: string) => void;
   addDay: (tripId: string) => void;
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
-  setTrip: (trip: TripInterFace | null) => void;
+  starTrip: (tripId: string) => void;
+  isTripCreator: () => void;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -23,6 +25,13 @@ export const useTripStore = create<TripState>((set, get) => ({
 
   trip: null,
   setTrip: (trip) => set({ trip }),
+
+  isTripCreator: async () => {
+    const { userId } = useAuthStore.getState();
+    const { trip } = get();
+    
+    trip?.creator === userId ? true : false;
+  },
 
   removeDay: async (tripId, dayId) => {
     const url = `${API_URL}/trips/${tripId}/days/${dayId}`;   
@@ -84,6 +93,32 @@ export const useTripStore = create<TripState>((set, get) => ({
     try {
       const response = await fetch(url, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await response.json();
+      setUpdateData();
+
+    } catch (err) { 
+      console.log("Fetch error:", err);
+    }
+  },
+
+  starTrip: async (tripId) => { 
+    const url = `${API_URL}/trips/${tripId}/star`;
+    const { accessToken } = useAuthStore.getState();
+    const { setUpdateData } = get();
+
+    try {
+      const response = await fetch(url, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
             ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})

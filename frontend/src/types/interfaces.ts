@@ -1,5 +1,3 @@
-import { DayGrid } from "../components/common/DayGrid";
-
 export interface ActivityInterface {
   _id: string,
   name: string,
@@ -23,7 +21,7 @@ export interface TripInterFace {
   creator: string,
   isPublic: boolean,
   starredBy: string[];
-}
+};
 
 export interface UserProfileInterface {
   userName: string;
@@ -33,15 +31,15 @@ export interface UserProfileInterface {
   followers: number;
   following: number;
   trips: TripInterFace[];
-}
+};
 
 export interface DayGridProps {
   columns?: 3 | 4;
-}
+};
 
 export interface TripsGridProps extends DayGridProps {
   trips: TripInterFace[];
-}
+};
 
 export interface TripCardProps {
   trip: {
@@ -51,18 +49,24 @@ export interface TripCardProps {
     days: any[];
   };
   onClick?: () => void;
-}
+};
 
 export interface DayCardProps {
   day: DayInterface;
   onClick?: () => void;
-}
+};
 
 export interface SearchBarProps {
   onSearch: (value?: string) => void;
-}
+};
 
 export type AvatarProps = {
   username: string;
   onLogoutClick?: () => void;
-}
+};
+
+
+export type BtnProps = {
+  children?: string;
+  onClick: () => void;
+};
