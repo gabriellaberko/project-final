@@ -7,8 +7,50 @@
     "isPublic": true,
     "starredBy": ["user_02", "user_03"],
     "days": [
-      { "_id": "trip_01_day_01", "dayNumber": 1, "activities": [] },
-      { "_id": "trip_01_day_02", "dayNumber": 2, "activities": [] },
+      {
+        "_id": "trip_01_day_01",
+        "dayNumber": 1,
+        "activities": [
+          {
+            "_id": "act_01",
+            "name": "Sunrise at Montmartre",
+            "description": "Walk up to Sacre Coeur for skyline views and a quiet coffee.",
+            "category": "Sightseeing",
+            "time": "07:00",
+            "googleMapLink": "https://maps.google.com/?q=Sacre%20Coeur%20Paris"
+          },
+          {
+            "_id": "act_02",
+            "name": "Louvre Highlights",
+            "description": "Quick loop: Winged Victory, Mona Lisa, and Italian Renaissance rooms.",
+            "category": "Culture & Events",
+            "time": "10:30",
+            "googleMapLink": "https://maps.google.com/?q=Louvre%20Museum"
+          }
+        ]
+      },
+      {
+        "_id": "trip_01_day_02",
+        "dayNumber": 2,
+        "activities": [
+          {
+            "_id": "act_03",
+            "name": "Seine Picnic",
+            "description": "Pick up bread, cheese, and fruit for a riverside lunch.",
+            "category": "Food & Drinks",
+            "time": "13:00",
+            "googleMapLink": "https://maps.google.com/?q=Quai%20de%20Seine%20Paris"
+          },
+          {
+            "_id": "act_04",
+            "name": "Evening Food Tour",
+            "description": "Small group tasting across three neighborhoods.",
+            "category": "Entertainment",
+            "time": "18:30",
+            "googleMapLink": "https://maps.google.com/?q=Rue%20Montorgueil%20Paris"
+          }
+        ]
+      },
       { "_id": "trip_01_day_03", "dayNumber": 3, "activities": [] }
     ]
   },

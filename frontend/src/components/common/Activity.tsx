@@ -29,7 +29,7 @@ export const Activity = ({ tripId, dayId, activity }: ActivityProps) => {
                 />
               </div>
 
-              <div className="flex flex-col gap-2 p-4 items-start">
+              <div className="flex flex-col gap-2 p-4 items-start text-left">
                 {activity.name && <h4>{activity.name}</h4>}
                 {activity.description && <p>{activity.description}</p>}
                 {activity.time && <p><b>Time:</b> {activity.time}</p>}
