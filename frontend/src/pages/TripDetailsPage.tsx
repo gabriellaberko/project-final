@@ -17,8 +17,10 @@ export const TripDetailsPage = () => {
   const setUpdateData = useTripStore(state => state.setUpdateData);
   const resetUpdateData = useTripStore(state => state.resetUpdateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-  const starTrip = useTripStore(state => state.starTrip); 
   const isTripCreator = useTripStore(state => state.isTripCreator); 
+  const isStarredByUser = useTripStore(state => state.isStarredByUser);
+  const starTrip = useTripStore(state => state.starTrip); 
+  const unstarTrip = useTripStore(state => state.unstarTrip); 
 
 
   useEffect(() => {
@@ -68,10 +70,14 @@ export const TripDetailsPage = () => {
       <div className="text-center flex flex-col items-center">
         <h1>My {trip.destination} Trip</h1>
         {isAuthenticated && !isTripCreator &&
-          <StarBtn onClick={() => starTrip(trip._id)} />
+          (
+          isStarredByUser()
+            ? <StarBtn onClick = { () => starTrip(trip._id)} />
+            : <StarBtn onClick = { () => unstarTrip(trip._id)} />
+          )
         }         
-          {/* Grid State */}
-          {!loading && !error && (
+        {/* Grid State */}
+        {!loading && !error && (
             <DayGrid
               columns={3}
             />

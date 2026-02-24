@@ -12,8 +12,9 @@ interface TripState {
   addDay: (tripId: string) => void;
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
   starTrip: (tripId: string) => void;
+  unstarTrip: (tripId: string) => void;
   isTripCreator: () => void;
-  isLikedByUser: () => void;
+  isStarredByUser: () => boolean;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -34,7 +35,7 @@ export const useTripStore = create<TripState>((set, get) => ({
     trip?.creator === userId ? true : false;
   },
 
-  isLikedByUser: async () => {
+  isStarredByUser: () => {
     const { userId } = useAuthStore.getState();
     const { trip } = get();
     
@@ -146,5 +147,32 @@ export const useTripStore = create<TripState>((set, get) => ({
       console.log("Fetch error:", err);
     }
   },
+
+    unstarTrip: async (tripId) => { 
+    const url = `${API_URL}/trips/${tripId}/unstar`;
+    const { accessToken } = useAuthStore.getState();
+    const { setUpdateData } = get();
+
+    try {
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await response.json();
+      setUpdateData();
+
+    } catch (err) { 
+      console.log("Fetch error:", err);
+    }
+  },
+
 
 }));
