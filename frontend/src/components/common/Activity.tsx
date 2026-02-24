@@ -1,6 +1,7 @@
 import { useTripStore } from "../../stores/TripStore";
 import { useAuthStore } from "../../stores/AuthStore";
 import { ActivityInterface } from "../../types/interfaces";
+import { ActivityIcon } from "./ActivityIcons"
 
 import Card from "@mui/joy/Card"
 
@@ -21,7 +22,11 @@ export const Activity = ({ tripId, dayId, activity }: ActivityProps) => {
           <div className="flex flex-row justify-between gap-2">
             <div className="flex flex-row items-center">
               <div>
-                <span className="text-3xl">🍿</span> {/* TO DO: Change it to activity category icon*/}
+                <ActivityIcon
+                  category={activity.category}
+                  size={28}
+                  className="text-blue-600"
+                />
               </div>
 
               <div className="flex flex-col gap-2 p-4 items-start">
