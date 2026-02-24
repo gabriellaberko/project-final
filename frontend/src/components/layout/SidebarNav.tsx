@@ -3,7 +3,7 @@ import { useAuthStore } from "../../stores/AuthStore";
 import { NavAvatar } from "../common/Avatar";
 
 const items = [
-  { label: "Home", path: "/" },
+  { label: "Home", path: "/dashboard" },
   { label: "My Trips", path: "/my" },
   { label: "Favorites", path: "/favorites" },
   { label: "Explore", path: "/explore" },
@@ -11,13 +11,12 @@ const items = [
 
 export const SidebarNav = () => {
   const userName = useAuthStore((state) => state.userName);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   return (
@@ -30,26 +29,8 @@ export const SidebarNav = () => {
         px-5 z-50 bg-white shadow-sm
       "
       >
-        <div>Logo</div>
-
-        {isAuthenticated ? (
-          <NavAvatar username={userName ?? ""} onLogoutClick={handleLogout} />
-        ) : (
-          <button
-            onClick={() => navigate("/auth?mode=signup")}
-            className="
-              text-sm font-medium
-              px-4 py-2
-              rounded-lg
-              bg-gray-100 text-gray-900
-              hover:bg-gray-200
-              active:scale-[0.98]
-              transition-all duration-200
-      "
-          >
-            Get started
-          </button>
-        )}
+        <div onClick={() => navigate("/dashboard")} className="cursor-pointer">Logo</div>
+        <NavAvatar username={userName ?? ""} onLogoutClick={handleLogout} />
       </header>
 
       {/* mobile navbar */}
@@ -64,9 +45,12 @@ export const SidebarNav = () => {
           <NavLink
             key={item.path}
             to={item.path}
-            end={item.path === "/"}
+            end={item.path === "/dashboard"}
             className={({ isActive }) =>
-              [].join(" ")
+              [
+                "text-sm font-medium transition",
+                isActive ? "text-black" : "text-gray-500",
+              ].join(" ")
             }
           >
             <span>{item.label}</span>
@@ -77,14 +61,18 @@ export const SidebarNav = () => {
       {/* desktop sidebar */}
       <aside className="hidden md:flex w-64 h-screen shrink-0 flex-col justify-between p-5 shadow-lg overflow-auto">
         <div>
-          <div className="text-2xl font-semibold">Logo</div>
+          <div className="text-2xl font-semibold"
+            onClick={() => navigate("/dashboard")}
+          >
+            Logo
+          </div>
 
           <nav className="mt-6 flex flex-col gap-2">
             {items.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
-                end={item.path === "/"}
+                end={item.path === "/dashboard"}
                 className={({ isActive }) =>
                   [
                     "w-full rounded-xl px-4 py-3 text-left text-lg font-medium transition",
@@ -99,47 +87,11 @@ export const SidebarNav = () => {
           </nav>
         </div>
 
-        {isAuthenticated && (
-          <NavAvatar
-            username={userName ?? ""}
-            onLogoutClick={handleLogout}
-          />
-        )}
-        {!isAuthenticated && (
-          <div className="flex items-center gap-4 ml-2">
-            <button
-              onClick={() => navigate("/auth?mode=login")}
-              className="
-                text-sm font-medium
-                text-gray-500 cursor-pointer
-                hover:text-gray-900
-                transition-colors duration-200
-                focus:outline-none
-                focus-visible:ring-2
-                focus-visible:ring-gray-300
-                rounded-md
-             "
-            >
-              Log in
-            </button>
-            <button
-              onClick={() => navigate("/auth?mode=signup")}
-              className=" 
-                text-sm font-medium
-                px-4 py-2 cursor-pointer
-                rounded-lg
-                bg-gray-200 text-gray-900
-                hover:bg-gray-300
-                active:scale-[0.98]
-                transition-all duration-200
-              "
-            >
-              Sign up
-            </button>
-          </div>
-        )}
+        <NavAvatar
+          username={userName ?? ""}
+          onLogoutClick={handleLogout}
+        />
       </aside>
-
     </>
   )
 };
