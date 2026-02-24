@@ -34,7 +34,6 @@ export const DayCard = ({ day }: DayCardProps) => {
             </div>  
 
             <div className="flex flex-col md:items-stretch gap-2 my-4">
-                <h3>Activities</h3>
 
                   {day.activities.length > 0 ? (
                     day.activities.map((activity) => (

@@ -19,6 +19,7 @@ export const TripCard = ({ trip }: TripCardProps) => {
       <p className="text-sm text-gray-500 mt-1">
         {trip.days.length} {trip.days.length === 1 ? "day" : "days"}
       </p>
+
     </div>
   );
 };

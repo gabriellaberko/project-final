@@ -10,7 +10,7 @@ export interface ActivityInterface {
 export interface DayInterface {
 _id: string,
 dayNumber: number,
-activities: [ActivityInterface]
+activities: ActivityInterface[]
 };
 
 export interface TripInterFace { 
