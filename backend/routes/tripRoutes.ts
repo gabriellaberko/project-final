@@ -483,7 +483,6 @@ router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, a
 
 // Route to star a trip
 router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
-  console.log("hit star route")
   try {
     const { tripId } = req.params;
     console.log(tripId)
@@ -497,7 +496,39 @@ router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Respon
     if (!starredTrip) {
       return res.status(404).json({
         success: false,
-        message: "Trip not found or not authorized"
+        message: "Trip not found"
+      });
+    }
+
+    res.json(starredTrip);
+
+    
+  } catch (err) { 
+    return res.status(500).json({
+      success: false,
+      message: "Could not star trip",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to un-star a trip
+router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    console.log(tripId)
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $pull: { starredBy: req.user._id } }, // Remove user ID
+      { new: true, runValidators: true }
+    );
+
+    if (!starredTrip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
       });
     }
 
