@@ -10,6 +10,7 @@ export const DayCard = ({ day }: DayCardProps) => {
   const navigate = useNavigate();
   const trip = useTripStore(state => state.trip);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const isTripCreator = useTripStore(state => state.isTripCreator);
   const removeDay = useTripStore(state => state.removeDay);
 
   if (!trip) return null;
@@ -22,7 +23,7 @@ export const DayCard = ({ day }: DayCardProps) => {
 
           <Card key={day.dayNumber} className="flex flex-col w-max-349 h-max-786 p-8 mx-12 shadow-md md:mx-0">
             <div className="flex flex-col w-full justify-evenly">
-              {isAuthenticated &&
+              {isAuthenticated && isTripCreator &&
                 <button 
                   onClick={() => removeDay(trip!._id, day._id)} 
                   className="self-end cursor-pointer text-xl"
@@ -50,7 +51,7 @@ export const DayCard = ({ day }: DayCardProps) => {
             </div>
 
             <div className="flex justify-center">
-            {isAuthenticated &&
+            {isAuthenticated && isTripCreator &&
               <div>
                 <MainBtn onClick={() => navigate(`/trips/${trip!._id}/day/${day._id}/activities/new`)}>Add activity</MainBtn>
               </div>

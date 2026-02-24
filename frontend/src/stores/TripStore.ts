@@ -13,7 +13,8 @@ interface TripState {
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
   starTrip: (tripId: string) => void;
   unstarTrip: (tripId: string) => void;
-  isTripCreator: () => void;
+  isTripCreator: boolean;
+  setIsTripCreator: () => void;
   isStarredByUser: () => boolean;
 }
 
@@ -28,11 +29,12 @@ export const useTripStore = create<TripState>((set, get) => ({
   trip: null,
   setTrip: (trip) => set({ trip }),
 
-  isTripCreator: async () => {
+  isTripCreator: false,
+
+  setIsTripCreator: () => {
     const { userId } = useAuthStore.getState();
     const { trip } = get();
-    
-    trip?.creator === userId ? true : false;
+    set({ isTripCreator: trip?.creator === userId });
   },
 
   isStarredByUser: () => {
