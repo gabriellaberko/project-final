@@ -35,8 +35,6 @@ const getTripIfOwner = async (
   return trip;
 };
 
-// TODO: add route for overview of all your liked trips from others
-// TODO: add route to remove liked (starred) trip
 
 // Route to get all trips for view only when not authenticated.
 router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) => {
@@ -434,11 +432,10 @@ router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, as
   }
 });
 
-// Route to delete an acitivity
+// Route to delete an activity
 router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId, dayId, activityId } = req.params;
-    console.log("test")
     const trip = await getTripIfOwner(
       tripId as string,
       req.user!._id,
@@ -478,6 +475,87 @@ router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, a
     return res.status(500).json({
       success: false,
       message: "Could not delete activity",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to star a trip
+router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    console.log(tripId)
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $addToSet: { starredBy: req.user._id } }, // Add ID, only if not there
+      { new: true, runValidators: true }
+    );
+
+    if (!starredTrip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    res.json(starredTrip);
+
+    
+  } catch (err) { 
+    return res.status(500).json({
+      success: false,
+      message: "Could not star trip",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to un-star a trip
+router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    console.log(tripId)
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $pull: { starredBy: req.user._id } }, // Remove user ID
+      { new: true, runValidators: true }
+    );
+
+    if (!starredTrip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    res.json(starredTrip);
+
+    
+  } catch (err) { 
+    return res.status(500).json({
+      success: false,
+      message: "Could not star trip",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to a user's starred trips
+router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
+  try {
+    const starredTrips = await Trip.find({ "starredBy._id": req.user._id });
+
+    res.json(starredTrips);
+    
+  } catch (err) { 
+    return res.status(500).json({
+      success: false,
+      message: "Could not find any starred trips",
       error: err instanceof Error ? err.message : String(err)
     });
   }

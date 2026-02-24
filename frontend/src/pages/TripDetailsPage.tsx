@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTripStore } from "../stores/TripStore";
 import { DayGrid } from "../components/common/DayGrid";
+import { StarBtn } from "../components/buttons/StarBtn";
+import { useAuthStore } from "../stores/AuthStore";
 
 
 export const TripDetailsPage = () => {
@@ -14,6 +16,11 @@ export const TripDetailsPage = () => {
   const updateData = useTripStore(state => state.updateData);
   const setUpdateData = useTripStore(state => state.setUpdateData);
   const resetUpdateData = useTripStore(state => state.resetUpdateData);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const isTripCreator = useTripStore(state => state.isTripCreator); 
+  const isStarredByUser = useTripStore(state => state.isStarredByUser);
+  const starTrip = useTripStore(state => state.starTrip); 
+  const unstarTrip = useTripStore(state => state.unstarTrip); 
 
 
   useEffect(() => {
@@ -62,8 +69,15 @@ export const TripDetailsPage = () => {
       {trip &&
       <div className="text-center flex flex-col items-center">
         <h1>My {trip.destination} Trip</h1>
-          {/* Grid State */}
-          {!loading && !error && (
+        {isAuthenticated && !isTripCreator &&
+          (
+          isStarredByUser()
+            ? <StarBtn onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser()} />
+            : <StarBtn onClick = { () => unstarTrip(trip._id)} isStarredByUser={isStarredByUser()} />
+          )
+        }         
+        {/* Grid State */}
+        {!loading && !error && (
             <DayGrid
               columns={3}
             />
