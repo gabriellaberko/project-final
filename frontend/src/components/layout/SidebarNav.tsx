@@ -4,7 +4,7 @@ import { NavAvatar } from "../common/Avatar";
 
 const items = [
   { label: "Home", path: "/dashboard" },
-  { label: "My Trips", path: "/my" },
+  { label: "My Trips", path: "/mytrips" },
   { label: "Favorites", path: "/favorites" },
   { label: "Explore", path: "/explore" },
 ];

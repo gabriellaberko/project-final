@@ -1,0 +1,34 @@
+[
+  {
+    "_id": "act_01",
+    "name": "Sunrise at Montmartre",
+    "description": "Walk up to Sacre Coeur for skyline views and a quiet coffee.",
+    "category": "sightseeing",
+    "time": "07:00",
+    "googleMapLink": "https://maps.google.com/?q=Sacre%20Coeur%20Paris"
+  },
+  {
+    "_id": "act_02",
+    "name": "Louvre Highlights",
+    "description": "Quick loop: Winged Victory, Mona Lisa, and Italian Renaissance rooms.",
+    "category": "museum",
+    "time": "10:30",
+    "googleMapLink": "https://maps.google.com/?q=Louvre%20Museum"
+  },
+  {
+    "_id": "act_03",
+    "name": "Seine Picnic",
+    "description": "Pick up bread, cheese, and fruit for a riverside lunch.",
+    "category": "food",
+    "time": "13:00",
+    "googleMapLink": "https://maps.google.com/?q=Quai%20de%20Seine%20Paris"
+  },
+  {
+    "_id": "act_04",
+    "name": "Evening Food Tour",
+    "description": "Small group tasting across three neighborhoods.",
+    "category": "tour",
+    "time": "18:30",
+    "googleMapLink": "https://maps.google.com/?q=Rue%20Montorgueil%20Paris"
+  }
+]
