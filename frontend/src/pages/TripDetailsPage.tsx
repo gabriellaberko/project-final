@@ -72,8 +72,8 @@ export const TripDetailsPage = () => {
         {isAuthenticated && !isTripCreator &&
           (
           isStarredByUser()
-            ? <StarBtn onClick = { () => starTrip(trip._id)} />
-            : <StarBtn onClick = { () => unstarTrip(trip._id)} />
+            ? <StarBtn onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser()} />
+            : <StarBtn onClick = { () => unstarTrip(trip._id)} isStarredByUser={isStarredByUser()} />
           )
         }         
         {/* Grid State */}

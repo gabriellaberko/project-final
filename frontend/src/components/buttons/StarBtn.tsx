@@ -1,10 +1,10 @@
 import { BtnProps } from "../../types/interfaces";
 
-export const StarBtn = ({ onClick }: BtnProps) => { 
+export const StarBtn = ({ onClick, isStarredByUser }: BtnProps) => { 
 
   return (
     <button onClick={onClick}>
-      <img src="star.svg" alt="Star trip" />
+      <img src={isStarredByUser ? "star-filled.svg" : "star.svg"} alt="Star trip" />
     </button>
   )
 };
