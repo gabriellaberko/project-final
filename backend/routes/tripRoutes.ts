@@ -483,12 +483,14 @@ router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, a
 
 // Route to star a trip
 router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
+  console.log("hit star route")
   try {
     const { tripId } = req.params;
+    console.log(tripId)
 
     const starredTrip = await Trip.findOneAndUpdate(
       { _id: tripId },
-      { $addToSet: { starredBy: req.user ? req.user._id : null } }, // Add ID, only if not there
+      { $addToSet: { starredBy: req.user._id } }, // Add ID, only if not there
       { new: true, runValidators: true }
     );
 
@@ -498,11 +500,31 @@ router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Respon
         message: "Trip not found or not authorized"
       });
     }
+
+    res.json(starredTrip);
+
     
   } catch (err) { 
     return res.status(500).json({
       success: false,
       message: "Could not star trip",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to a user's starred trips
+router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
+  try {
+    const starredTrips = await Trip.find({ "starredBy._id": req.user._id });
+
+    res.json(starredTrips);
+    
+  } catch (err) { 
+    return res.status(500).json({
+      success: false,
+      message: "Could not find any starred trips",
       error: err instanceof Error ? err.message : String(err)
     });
   }
