@@ -548,8 +548,7 @@ router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Resp
 // Route to a user's starred trips
 router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
   try {
-    const starredTrips = await Trip.find({ "starredBy._id": req.user._id });
-
+    const starredTrips = await Trip.find({ starredBy: req.user._id });
     res.json(starredTrips);
     
   } catch (err) { 
