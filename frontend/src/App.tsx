@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useAuthStore } from "./stores/AuthStore";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { PublicHomePage } from "./pages/PublicHomePage";
+import { AuthHomePage } from "./pages/AuthHomePage";
 import { MyTripsPage } from "./pages/MyTripsPage";
 import { TripDetailsPage } from "./pages/TripDetailsPage";
 import { AuthenticationPage } from "./pages/AuthenticationPage";
@@ -9,6 +11,7 @@ import { ExplorePage } from "./pages/ExplorePage";
 import { CreateTripPage } from "./pages/CreateTripPage";
 import { AuthLayout } from "./components/layout/AuthLayout";
 import { AppLayout } from "./components/layout/AppLayout";
+import { PublicLayout } from "./components/layout/PublicLayout";
 import { ProtectedRoute } from "./components/routing/ProtectedRoute";
 import { CreateActivityPage } from "./pages/CreateActivityPage";
 
@@ -25,17 +28,24 @@ export const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* ==== PUBLIC ROUTES ==== */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<PublicHomePage />} />
+        </Route>
+
+        {/* ==== AUTH ROUTES ==== */}
         <Route element={<AuthLayout />}>
           <Route path="/auth" element={<AuthenticationPage />} />
         </Route>
 
-
+        {/* ==== MAIN APP ROUTES ==== */}
         <Route element={<AppLayout />}>
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/trips/:id" element={<TripDetailsPage />} />
 
-
+          {/* ==== PROTECTED ROUTES ==== */}
           <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<AuthHomePage />} />
             <Route path="/mytrips" element={<MyTripsPage />} />
             <Route path="/trips/new" element={<CreateTripPage />} />
             <Route path="/trips/:tripId/day/:dayId/activities/new" element={<CreateActivityPage />} />
