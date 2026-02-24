@@ -7,7 +7,6 @@ interface TripState {
   trip: TripInterFace | null;
   setTrip: (trip: TripInterFace | null) => void;
   setUpdateData: () => void;
-  resetUpdateData: () => void;
   removeDay: (tripId: string, dayId: string) => void;
   addDay: (tripId: string) => void;
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
@@ -15,7 +14,8 @@ interface TripState {
   unstarTrip: (tripId: string) => void;
   isTripCreator: boolean;
   setIsTripCreator: () => void;
-  isStarredByUser: () => boolean;
+  isStarredByUser: boolean;
+  setIsStarredByUser: () => void;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -23,8 +23,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const useTripStore = create<TripState>((set, get) => ({
   updateData: false,
-  setUpdateData: () => set({ updateData: true }),
-  resetUpdateData: () => set({ updateData: false }),
+  setUpdateData: () => set((state) => ({ updateData: !state.updateData })),
 
   trip: null,
   setTrip: (trip) => set({ trip }),
@@ -37,13 +36,15 @@ export const useTripStore = create<TripState>((set, get) => ({
     set({ isTripCreator: trip?.creator === userId });
   },
 
-  isStarredByUser: () => {
+  isStarredByUser: false,
+
+  setIsStarredByUser: () => {
     const { userId } = useAuthStore.getState();
     const { trip } = get();
     
     if (!trip || !userId) return false;
 
-    return trip.starredBy.some((id) => id === userId);
+    set({ isStarredByUser: trip.starredBy.some((id) => id === userId) });
   },
 
   removeDay: async (tripId, dayId) => {

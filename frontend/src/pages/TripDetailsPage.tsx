@@ -14,11 +14,10 @@ export const TripDetailsPage = () => {
 
   const { trip, setTrip } = useTripStore();
   const updateData = useTripStore(state => state.updateData);
-  const setUpdateData = useTripStore(state => state.setUpdateData);
-  const resetUpdateData = useTripStore(state => state.resetUpdateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const isTripCreator = useTripStore(state => state.isTripCreator); 
   const isStarredByUser = useTripStore(state => state.isStarredByUser);
+  const setIsStarredByUser = useTripStore(state => state.setIsStarredByUser);
   const starTrip = useTripStore(state => state.starTrip); 
   const unstarTrip = useTripStore(state => state.unstarTrip); 
 
@@ -37,6 +36,7 @@ export const TripDetailsPage = () => {
 
         const fetchedTrip = await response.json();
         setTrip(fetchedTrip.response);
+        setIsStarredByUser();
         setLoading(false);
 
       } catch (err) {
@@ -44,10 +44,6 @@ export const TripDetailsPage = () => {
         setLoading(false);
         setError(true);
         //TO DO: Display proper error message for the user
-      }
-      finally {
-      resetUpdateData(); // Reset the store value for updateData
-      
       }
     }
     fetchTrip();
@@ -71,9 +67,9 @@ export const TripDetailsPage = () => {
         <h1>My {trip.destination} Trip</h1>
         {isAuthenticated && !isTripCreator &&
           (
-          isStarredByUser()
-            ? <StarBtn onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser()} />
-            : <StarBtn onClick = { () => unstarTrip(trip._id)} isStarredByUser={isStarredByUser()} />
+          isStarredByUser
+            ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
+            : <StarBtn onClick = { () => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
           )
         }         
         {/* Grid State */}
