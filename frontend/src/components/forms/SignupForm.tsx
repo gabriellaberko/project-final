@@ -8,6 +8,9 @@ import Stack from "@mui/joy/Stack"
 import FormLabel from "@mui/joy/FormLabel";
 import FormHelperText from "@mui/joy/FormHelperText";
 import Button from "@mui/joy/Button";
+import IconButton from "@mui/joy/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 export const SignupForm = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -16,6 +19,7 @@ export const SignupForm = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const login = useAuthStore(state => state.login);
 
@@ -47,7 +51,9 @@ export const SignupForm = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorData = await response.json();
+        console.log("Backend error response:", errorData);
+        throw new Error(errorData.message || "Signup failed");
       }
 
       const newUser = await response.json();
@@ -119,8 +125,19 @@ export const SignupForm = () => {
         <div>
           <FormLabel sx={{ mb: 0.5 }}>Password:</FormLabel>
           <Input
+            type={showPassword ? "text" : "password"}
             placeholder="Enter password"
             onChange={(e) => setPassword(e.target.value)}
+            endDecorator={
+              <IconButton
+                onClick={() => setShowPassword(!showPassword)}
+                size="sm"
+                variant="plain"
+                color="neutral"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            }
             sx={{
               '&::before': {
                 border: '1.5px solid var(--Input-focusedHighlight)',

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/AuthStore";
 import { NavAvatar } from "../common/Avatar";
 
@@ -11,31 +11,69 @@ const items = [
 
 export const SidebarNav = () => {
   const userName = useAuthStore((state) => state.userName);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <>
       {/* mobile header */}
-      <header className="flex md:hidden fixed top-0 left-0 right-0 h-16 items-center justify-between px-5 z-50">
+      <header className="
+        flex md:hidden fixed
+        top-0 left-0 right-0
+        h-16 items-center justify-between
+        px-5 z-50 bg-white shadow-sm
+      "
+      >
         <div>Logo</div>
-        <NavAvatar username={userName ?? ""} />
+
+        {isAuthenticated ? (
+          <NavAvatar username={userName ?? ""} onLogoutClick={handleLogout} />
+        ) : (
+          <button
+            onClick={() => navigate("/auth?mode=signup")}
+            className="
+              text-sm font-medium
+              px-4 py-2
+              rounded-lg
+              bg-gray-100 text-gray-900
+              hover:bg-gray-200
+              active:scale-[0.98]
+              transition-all duration-200
+      "
+          >
+            Get started
+          </button>
+        )}
       </header>
 
       {/* mobile navbar */}
-      <nav className="flex md:hidden fixed bottom-0 left-0 right-0 h-16 items-center justify-around px-2 z-50">
+      <nav className="
+        flex md:hidden fixed bottom-0
+        left-0 right-0 h-16 items-center
+        justify-around px-2 z-50 bg-white
+        shadow-[0_-1px_4px_rgba(0,0,0,0.04)]
+      "
+      >
         {items.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             end={item.path === "/"}
             className={({ isActive }) =>
-            [].join(" ")
+              [].join(" ")
             }
           >
             <span>{item.label}</span>
           </NavLink>
         ))}
       </nav>
-      
+
       {/* desktop sidebar */}
       <aside className="hidden md:flex w-64 h-screen shrink-0 flex-col justify-between p-5 shadow-lg overflow-auto">
         <div>
@@ -61,10 +99,47 @@ export const SidebarNav = () => {
           </nav>
         </div>
 
-        <NavAvatar username={userName ?? ""} /> {/* TO DO: Implement logout functionality */}
-
+        {isAuthenticated && (
+          <NavAvatar
+            username={userName ?? ""}
+            onLogoutClick={handleLogout}
+          />
+        )}
+        {!isAuthenticated && (
+          <div className="flex items-center gap-4 ml-2">
+            <button
+              onClick={() => navigate("/auth?mode=login")}
+              className="
+                text-sm font-medium
+                text-gray-500 cursor-pointer
+                hover:text-gray-900
+                transition-colors duration-200
+                focus:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-gray-300
+                rounded-md
+             "
+            >
+              Log in
+            </button>
+            <button
+              onClick={() => navigate("/auth?mode=signup")}
+              className=" 
+                text-sm font-medium
+                px-4 py-2 cursor-pointer
+                rounded-lg
+                bg-gray-200 text-gray-900
+                hover:bg-gray-300
+                active:scale-[0.98]
+                transition-all duration-200
+              "
+            >
+              Sign up
+            </button>
+          </div>
+        )}
       </aside>
 
     </>
   )
-}
+};
