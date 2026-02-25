@@ -6,13 +6,13 @@ import { StarBtn } from "../components/buttons/StarBtn";
 import { useAuthStore } from "../stores/AuthStore";
 import { DragDropProvider } from "@dnd-kit/react"
 
+
+
 export const TripDetailsPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { id: tripId } = useParams(); // Retrieve trip ID from the url
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [isDropped, setIsDropped] = useState(false)
-
   const { trip, setTrip } = useTripStore();
   const updateData = useTripStore(state => state.updateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
@@ -69,38 +69,50 @@ export const TripDetailsPage = () => {
           const { source, target } = event.operation;
           if (!source || !target) return;
 
-          const activityId = String(source.id);
-          const targetDayId = String(target.id);
+          const sourceData = (source as any).data as { dayId?: string } | undefined;
+          const targetData = (target as any).data as { dayId?: string } | undefined;
+          const sourceDayId = sourceData?.dayId ?? String((source as any).sortable?.group ?? "");
+          const targetDayId = targetData?.dayId ?? String((target as any).sortable?.group ?? target.id ?? "");
 
-          const sourceDay = trip.days.find((day) =>
-            day.activities.some((activity) => activity._id === activityId)
-          );
+          if (!sourceDayId || !targetDayId) {
+            return;
+          }
 
-          if (!sourceDay || sourceDay._id === targetDayId) return;
+          const sourceDayIndex = trip.days.findIndex((day) => day._id === sourceDayId);
+          const targetDayIndex = trip.days.findIndex((day) => day._id === targetDayId);
+          if (sourceDayIndex < 0 || targetDayIndex < 0) return;
 
-          const movedActivity = sourceDay.activities.find(
-            (activity) => activity._id === activityId
-          );
-          if (!movedActivity) return;
+          const sourceIndex = (source as any).sortable?.index ?? -1;
+          const targetIndex = (target as any).sortable?.index ?? -1;
+          if (sourceIndex < 0) return;
+
+          const sourceDay = trip.days[sourceDayIndex];
+          const targetDay = trip.days[targetDayIndex];
+          if (!sourceDay || !targetDay) return;
+
+          const sourceActivities = [...sourceDay.activities];
+          const [moved] = sourceActivities.splice(sourceIndex, 1);
+          if (!moved) return;
+
+          const targetActivities =
+            sourceDayId === targetDayId ? sourceActivities : [...targetDay.activities];
+
+          if (targetIndex < 0 || targetIndex > targetActivities.length) {
+            targetActivities.push(moved);
+          } else {
+            targetActivities.splice(targetIndex, 0, moved);
+          }
 
           const updatedTrip = {
             ...trip,
-            days: trip.days.map((day) => {
-              if (day._id === sourceDay._id) {
-                return {
-                  ...day,
-                  activities: day.activities.filter(
-                    (activity) => activity._id !== activityId
-                  ),
-                };
+            days: trip.days.map((d, index) => {
+              if (index === sourceDayIndex) {
+                return { ...d, activities: sourceActivities };
               }
-              if (day._id === targetDayId) {
-                return {
-                  ...day,
-                  activities: [...day.activities, movedActivity],
-                };
+              if (index === targetDayIndex) {
+                return { ...d, activities: targetActivities };
               }
-              return day;
+              return d;
             }),
           };
 
