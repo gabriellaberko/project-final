@@ -70,21 +70,28 @@ export const TripDetailsPage = () => {
       )} */}
 
       {trip &&
-        <div className="text-center flex flex-col items-center">
+        <div className="relative text-center flex flex-col items-center">
           <h1>My {trip.destination} Trip</h1>
+
           {isTripCreator && (
-            <div className="mt-3 flex items-center gap-3">
-              <span className="text-sm font-medium">
+            <div className="absolute right-0 flex items-center gap-3">
+              <span className="text-sm text-gray-500">
                 {trip.isPublic ? "Public" : "Private"}
               </span>
+
               <button
                 onClick={() => updatePrivacy(trip._id, !trip.isPublic)}
-                className={`relative w-11 h-6 rounded-full ${trip.isPublic ? "bg-green-500" : "bg-gray-300"}`}
+                className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${trip.isPublic ? "bg-gray-700" : "bg-gray-300"
+                  }`}
               >
-                <span className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow ${trip.isPublic ? "translate-x-5" : ""}`}></span>
+                <span
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${trip.isPublic ? "translate-x-5" : ""
+                    }`}
+                />
               </button>
             </div>
           )}
+
           {isAuthenticated && !isTripCreator &&
             (
               isStarredByUser
