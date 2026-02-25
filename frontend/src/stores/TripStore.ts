@@ -18,9 +18,6 @@ interface TripState {
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
   starTrip: (tripId: string) => void;
   unstarTrip: (tripId: string) => void;
-  getIsTripCreator: () => boolean;
-  getIsStarredByUser: () => boolean;
-  moveActivity: (activityId: string, newDayId: string) => Promise<void>;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -93,34 +90,6 @@ export const useTripStore = create<TripState>((set, get) => ({
 
     } catch (err) { 
       console.log("Fetch error:", err);
-    }
-  },
-
-  moveActivity: async (activityId, newDayId) => {
-    const { trip, setUpdateData } = get()
-    const { accessToken } = useAuthStore.getState()
-
-    if (!trip) return
-
-    const url = `${API_URL}/trips/${trip._id}/days/${newDayId}/activities/${activityId}`
-
-    try {
-      const response = await fetch(url, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {})
-        },
-        body: JSON.stringify({ newDayId })
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to move activity: ${response.status}`)
-      }
-      setUpdateData()
-
-    } catch (err) {
-      console.error(err)
     }
   },
 
