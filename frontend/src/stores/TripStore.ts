@@ -17,10 +17,8 @@ interface TripState {
   removeActivity: (tripId: string, dayId: string, activityId: string) => Promise<void>;
   starTrip: (tripId: string) => Promise<void>;
   unstarTrip: (tripId: string) => Promise<void>;
-  getIsTripCreator: () => boolean;
-  getIsStarredByUser: () => boolean;
   updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
-  trips:TripInterFace[] | null;
+  trips: TripInterFace[] | null;
   setTrips: (trips: TripInterFace[] | null) => void;
 }
 
