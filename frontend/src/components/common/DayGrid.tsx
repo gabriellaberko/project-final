@@ -8,11 +8,13 @@ import { DayGridProps } from "../../types/interfaces";
 
 export const DayGrid = ({ columns = 4 }: DayGridProps) => {
   const trip = useTripStore(state => state.trip);
+  const addDay = useTripStore(state => state.addDay);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
 
   const gridClass =
     columns === 4
-      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
+      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
 
   return (
     <>
@@ -24,7 +26,11 @@ export const DayGrid = ({ columns = 4 }: DayGridProps) => {
             />
         ))}
       </div>
-      
+      {isAuthenticated &&
+        <div>
+          <MainBtn onClick={() => addDay(trip!._id)}>Add day</MainBtn>
+        </div>
+      }
     </>
   )
 };
