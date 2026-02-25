@@ -9,8 +9,10 @@ import { useAuthStore } from "../stores/AuthStore";
 export const TripDetailsPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const { id: tripId } = useParams(); // Retrieve trip ID from the url
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const loading = useTripStore(state => state.loading);
+  const setLoading = useTripStore(state => state.setLoading);
+  const error = useTripStore(state => state.error);
+  const setError = useTripStore(state => state.setError);
 
   const { trip, setTrip } = useTripStore();
   const updateData = useTripStore(state => state.updateData);
@@ -23,8 +25,8 @@ export const TripDetailsPage = () => {
 
   useEffect(() => {
     const fetchTrip = async () => {
-      const url = `${API_URL}/trips/${tripId}`; 
-      // Set loading state
+      const url = `${API_URL}/trips/${tripId}`;
+      setError(false);
       setLoading(true);
       try {
         const response = await fetch(url);
@@ -35,13 +37,11 @@ export const TripDetailsPage = () => {
 
         const fetchedTrip = await response.json();
         setTrip(fetchedTrip.response);
-        setLoading(false);
-
       } catch (err) {
         console.log("Fetch error:", err);
-        setLoading(false);
         setError(true);
-        //TO DO: Display proper error message for the user
+      } finally {
+        setLoading(false);
       }
     }
     fetchTrip();
