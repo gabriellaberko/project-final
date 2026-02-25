@@ -268,7 +268,6 @@ router.patch("/:tripId/privacy", authenticateUser, async (req: Request, res: Res
 router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId } = req.params;
-    console.log(tripId)
 
     const trip = await Trip.findById(tripId);
 
