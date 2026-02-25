@@ -89,7 +89,7 @@ router.get("/my", authenticateUser, async (req: Request, res: Response) => {
 
     const myTrips = await Trip.find({
       creator: req.user._id
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).populate("creator", "userName");
 
     return res.status(200).json({
       success: true,
@@ -548,7 +548,7 @@ router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Resp
 // Route to a user's starred trips
 router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
   try {
-    const starredTrips = await Trip.find({ starredBy: req.user._id });
+    const starredTrips = await Trip.find({ starredBy: req.user._id }).populate("creator", "userName");
     res.json(starredTrips);
     
   } catch (err) { 

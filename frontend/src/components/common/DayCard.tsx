@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useTripStore } from "../../stores/TripStore";
 import { MainBtn } from "../buttons/MainBtn";
 import { DayCardProps } from "../../types/interfaces";
+import { useTripPermissions } from "../hooks/useTripPermissions";
 import { useAuthStore } from "../../stores/AuthStore";
 import { Activity } from "../common/Activity"
 import Card from "@mui/joy/Card"
@@ -10,7 +11,7 @@ export const DayCard = ({ day }: DayCardProps) => {
   const navigate = useNavigate();
   const trip = useTripStore(state => state.trip);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-  const isTripCreator = useTripStore(state => state.getIsTripCreator()); 
+  const { isTripCreator } = useTripPermissions(trip);
   const removeDay = useTripStore(state => state.removeDay);
 
 
