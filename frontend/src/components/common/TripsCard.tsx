@@ -6,7 +6,7 @@ import { StarBtn } from "../buttons/StarBtn";
 import { useTripPermissions } from "../hooks/useTripPermissions";
 
 
-export const TripCard = ({ trip }: TripCardProps) => {
+export const TripCard = ({ trip, showPrivacy }: TripCardProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const { isTripCreator, isStarredByUser } = useTripPermissions(trip);
   const userId = useAuthStore(state => state.userId);
@@ -19,6 +19,11 @@ export const TripCard = ({ trip }: TripCardProps) => {
     <div
       className="relative bg-white rounded-xl shadow-md p-4 h-44 flex items-center justify-center text-center cursor-pointer hover:shadow-lg transition"
     >
+      {showPrivacy && (
+        <span className="absolute top-3 left-3 text-xl">
+          {trip.isPublic ? "🌍" : "🔒"}
+        </span>
+      )}
       {isAuthenticated && !isTripCreator && (
         <div className="absolute top-3 right-3">
           {isStarredByUser ? (

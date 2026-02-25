@@ -183,7 +183,7 @@ export const CreateTripForm = () => {
 
           <div className="flex flex-row items-center gap-2">
             <span className="text-sm font-medium">
-              Public
+              Private
             </span>
 
             <FormLabel className="relative inline-flex items-center cursor-pointer">
@@ -211,7 +211,7 @@ export const CreateTripForm = () => {
               </div>
             </FormLabel>
             <span className="text-sm font-medium">
-              Private
+              Public
             </span>
           </div>
           {errorMessage && (

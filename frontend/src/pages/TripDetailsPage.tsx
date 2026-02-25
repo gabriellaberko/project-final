@@ -18,9 +18,11 @@ export const TripDetailsPage = () => {
   const setTrip = useTripStore(state => state.setTrip);
   const updateData = useTripStore(state => state.updateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const accessToken = useAuthStore(state => state.accessToken);
+  const starTrip = useTripStore(state => state.starTrip);
+  const unstarTrip = useTripStore(state => state.unstarTrip);
+  const updatePrivacy = useTripStore(state => state.updatePrivacy);
   const { isTripCreator, isStarredByUser } = useTripPermissions(trip);
-  const starTrip = useTripStore(state => state.starTrip); 
-  const unstarTrip = useTripStore(state => state.unstarTrip); 
 
 
   useEffect(() => {
@@ -29,7 +31,13 @@ export const TripDetailsPage = () => {
       setError(false);
       setLoading(true);
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -45,7 +53,7 @@ export const TripDetailsPage = () => {
       }
     }
     fetchTrip();
-  }, [updateData]);
+  }, [updateData, accessToken, tripId]);
 
 
 
@@ -59,24 +67,44 @@ export const TripDetailsPage = () => {
       {/* Error State */}
       {/* {!loading && error && (
       )} */}
-        
+
       {trip &&
-      <div className="text-center flex flex-col items-center">
-        <h1>My {trip.destination} Trip</h1>
-        {isAuthenticated && !isTripCreator &&
-          (
-          isStarredByUser
-            ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
-            : <StarBtn onClick = { () => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
-          )
-        }         
-        {/* Grid State */}
-        {!loading && !error && (
+        <div className="relative text-center flex flex-col items-center">
+          <h1>My {trip.destination} Trip</h1>
+
+          {isTripCreator && (
+            <div className="absolute right-0 flex items-center gap-3">
+              <span className="text-sm text-gray-500">
+                {trip.isPublic ? "Public" : "Private"}
+              </span>
+
+              <button
+                onClick={() => updatePrivacy(trip._id, !trip.isPublic)}
+                className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${trip.isPublic ? "bg-gray-700" : "bg-gray-300"
+                  }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${trip.isPublic ? "translate-x-5" : ""
+                    }`}
+                />
+              </button>
+            </div>
+          )}
+
+          {isAuthenticated && !isTripCreator &&
+            (
+              isStarredByUser
+                ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                : <StarBtn onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
+            )
+          }
+          {/* Grid State */}
+          {!loading && !error && (
             <DayGrid
               columns={3}
             />
           )}
-      </div>
+        </div>
       }
     </>
   )
