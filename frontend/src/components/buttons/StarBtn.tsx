@@ -1,5 +1,5 @@
 import { BtnProps } from "../../types/interfaces";
-import starIcon from "../../assets/star.svg";
+import starIcon from "../../assets/star-grey.svg";
 import filledStarIcon from "../../assets/star-filled.svg";
 
 
