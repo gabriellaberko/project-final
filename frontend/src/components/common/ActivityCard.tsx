@@ -6,25 +6,34 @@ import { useDraggable } from "@dnd-kit/react"
 
 import Card from "@mui/joy/Card"
 
-interface ActivityProps {
+interface ActivityCardProps {
   tripId: string;
   dayId: string;
   activity: ActivityInterface;
 }
 
-export const ActivityCard = ({ tripId, dayId, activity }: ActivityProps) => {
+export const ActivityCard = ({ tripId, dayId, activity }: ActivityCardProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const removeActivity = useTripStore(state => state.removeActivity)
-  const {ref} = useDraggable({
+  const { ref, isDragging } = useDraggable({
     id: activity._id,
+    data: {
+      dayId,
+      activityId: activity._id,
+    },
   })
 
   return (
     <>
-      <Card 
+      <div
         ref={ref}
-        className="shadow-sm m-1 cursor-grab active:cursor-grabbing"
+        className={[
+          "shadow-sm m-1 cursor-grab active:cursor-grabbing",
+          isDragging ? "opacity-60" : "",
+        ].join(" ")}
+        style={{ touchAction: "none" }}
       >
+        <Card>
           <div className="flex flex-row justify-between gap-2">
             <div className="flex flex-row items-center">
               <div>
@@ -63,7 +72,8 @@ export const ActivityCard = ({ tripId, dayId, activity }: ActivityProps) => {
               </button>
             }
           </div>         
-      </Card>
+        </Card>
+      </div>
     </>
   )
 }

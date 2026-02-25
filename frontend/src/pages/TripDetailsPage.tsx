@@ -5,9 +5,6 @@ import { DayGrid } from "../components/common/DayGrid";
 import { StarBtn } from "../components/buttons/StarBtn";
 import { useAuthStore } from "../stores/AuthStore";
 import { DragDropProvider } from "@dnd-kit/react"
-import { DragEndEvent } from "@dnd-kit/react"
-
-
 
 export const TripDetailsPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -19,14 +16,10 @@ export const TripDetailsPage = () => {
   const { trip, setTrip } = useTripStore();
   const updateData = useTripStore(state => state.updateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-  const isTripCreator = useTripStore(state => state.getIsTripCreator()); 
+  const isTripCreator = useTripStore(state => state.getIsTripCreator());
   const isStarredByUser = useTripStore(state => state.getIsStarredByUser());
   const starTrip = useTripStore(state => state.starTrip); 
   const unstarTrip = useTripStore(state => state.unstarTrip); 
-
-  const moveActivity = (activityId: string | number, newDayId: string | number) => {
-    console.log(`${activityId} to ${newDayId}`);
-  }
 
 
   useEffect(() => {
@@ -71,17 +64,47 @@ export const TripDetailsPage = () => {
           
       <DragDropProvider
         onDragEnd={(event) => {
-          const { source, target } = event.operation
+          if (event.canceled || !trip) return;
 
-          if (event.canceled) return;
+          const { source, target } = event.operation;
+          if (!source || !target) return;
 
-          if (source && target) {
-            const activityId = source.id
-            const newDayId = target.id
+          const activityId = String(source.id);
+          const targetDayId = String(target.id);
 
-          // zustand????
-            moveActivity(activityId, newDayId)
-          }
+          const sourceDay = trip.days.find((day) =>
+            day.activities.some((activity) => activity._id === activityId)
+          );
+
+          if (!sourceDay || sourceDay._id === targetDayId) return;
+
+          const movedActivity = sourceDay.activities.find(
+            (activity) => activity._id === activityId
+          );
+          if (!movedActivity) return;
+
+          const updatedTrip = {
+            ...trip,
+            days: trip.days.map((day) => {
+              if (day._id === sourceDay._id) {
+                return {
+                  ...day,
+                  activities: day.activities.filter(
+                    (activity) => activity._id !== activityId
+                  ),
+                };
+              }
+              if (day._id === targetDayId) {
+                return {
+                  ...day,
+                  activities: [...day.activities, movedActivity],
+                };
+              }
+              return day;
+            }),
+          };
+
+          setTrip(updatedTrip);
         }}
       >
         {trip &&

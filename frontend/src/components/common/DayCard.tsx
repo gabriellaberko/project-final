@@ -11,11 +11,13 @@ export const DayCard = ({ day }: DayCardProps) => {
   const navigate = useNavigate();
   const trip = useTripStore(state => state.trip);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-  const isTripCreator = useTripStore(state => state.getIsTripCreator()); 
+  const isTripCreator = useTripStore(state => state.getIsTripCreator());
   const removeDay = useTripStore(state => state.removeDay);
-  const {ref} = useDroppable({
+  const { ref, isDropTarget } = useDroppable({
     id: day._id,
   })
+
+  if (!trip) return null;
 
   return (
     <>
@@ -26,12 +28,15 @@ export const DayCard = ({ day }: DayCardProps) => {
           <Card
             ref={ref}
             key={day.dayNumber} 
-            className="flex flex-col w-max-349 h-max-786 p-8 mx-12 shadow-md md:mx-0"
+            className={[
+              "flex flex-col w-max-349 h-max-786 p-8 mx-12 shadow-md md:mx-0",
+              isDropTarget ? "ring-2 ring-blue-300" : "",
+            ].join(" ")}
           >
             <div className="flex flex-col w-full justify-evenly">
               {isAuthenticated && isTripCreator &&
                 <button 
-                  onClick={() => removeDay(trip!._id, day._id)} 
+                  onClick={() => removeDay(trip._id, day._id)} 
                   className="self-end cursor-pointer text-xl"
                 >
                   x
@@ -45,7 +50,7 @@ export const DayCard = ({ day }: DayCardProps) => {
                     day.activities.map((activity) => (
                       <ActivityCard 
                         key={activity._id} 
-                        tripId={trip!._id} 
+                        tripId={trip._id} 
                         dayId={day._id} 
                         activity={activity}
                       />
@@ -58,7 +63,7 @@ export const DayCard = ({ day }: DayCardProps) => {
             <div className="flex justify-center">
             {isAuthenticated && isTripCreator &&
               <div>
-                <MainBtn onClick={() => navigate(`/trips/${trip!._id}/day/${day._id}/activities/new`)}>Add activity</MainBtn>
+                <MainBtn onClick={() => navigate(`/trips/${trip._id}/day/${day._id}/activities/new`)}>Add activity</MainBtn>
               </div>
             }
             </div>
