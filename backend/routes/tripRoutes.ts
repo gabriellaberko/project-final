@@ -107,6 +107,27 @@ router.get("/my", authenticateUser, async (req: Request, res: Response) => {
 });
 
 
+// Route to a user's starred trips
+router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const starredTrips = await Trip.find({ starredBy: req.user._id });
+
+    return res.status(200).json({
+      success: true,
+      response: starredTrips,
+      message: "Success"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Could not find any starred trips",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
 // Route to get a single trip
 router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Response) => {
   try {
@@ -197,6 +218,135 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
     return res.status(400).json({
       success: false,
       message: "Failed to save trip to database",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to update trip privacy
+router.patch("/:tripId/privacy", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    const { isPublic } = req.body;
+
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
+
+    if (!trip) return;
+
+    if (typeof isPublic !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "isPublic must be a boolean"
+      });
+    }
+
+    trip.isPublic = isPublic;
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Trip privacy updated successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update trip privacy",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to star a trip
+router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    console.log(tripId)
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    if (!trip.isPublic && !trip.creator.equals(req.user._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to star this trip"
+      });
+    }
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $addToSet: { starredBy: req.user._id } }, // Add ID, only if not there
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      response: starredTrip,
+      message: "Trip starred successfully"
+    });
+
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Could not star trip",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to un-star a trip
+router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    console.log(tripId)
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    if (!trip.isPublic && !trip.creator.equals(req.user._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to unstar this trip"
+      });
+    }
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $pull: { starredBy: req.user._id } }, // Remove user ID
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      response: starredTrip,
+      message: "Trip unstarred successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Could not unstar trip",
       error: err instanceof Error ? err.message : String(err)
     });
   }
@@ -475,86 +625,6 @@ router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, a
     return res.status(500).json({
       success: false,
       message: "Could not delete activity",
-      error: err instanceof Error ? err.message : String(err)
-    });
-  }
-});
-
-
-// Route to star a trip
-router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
-  try {
-    const { tripId } = req.params;
-    console.log(tripId)
-
-    const starredTrip = await Trip.findOneAndUpdate(
-      { _id: tripId },
-      { $addToSet: { starredBy: req.user._id } }, // Add ID, only if not there
-      { new: true, runValidators: true }
-    );
-
-    if (!starredTrip) {
-      return res.status(404).json({
-        success: false,
-        message: "Trip not found"
-      });
-    }
-
-    res.json(starredTrip);
-
-    
-  } catch (err) { 
-    return res.status(500).json({
-      success: false,
-      message: "Could not star trip",
-      error: err instanceof Error ? err.message : String(err)
-    });
-  }
-});
-
-
-// Route to un-star a trip
-router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Response) => {
-  try {
-    const { tripId } = req.params;
-    console.log(tripId)
-
-    const starredTrip = await Trip.findOneAndUpdate(
-      { _id: tripId },
-      { $pull: { starredBy: req.user._id } }, // Remove user ID
-      { new: true, runValidators: true }
-    );
-
-    if (!starredTrip) {
-      return res.status(404).json({
-        success: false,
-        message: "Trip not found"
-      });
-    }
-
-    res.json(starredTrip);
-
-    
-  } catch (err) { 
-    return res.status(500).json({
-      success: false,
-      message: "Could not star trip",
-      error: err instanceof Error ? err.message : String(err)
-    });
-  }
-});
-
-
-// Route to a user's starred trips
-router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
-  try {
-    const starredTrips = await Trip.find({ starredBy: req.user._id });
-    res.json(starredTrips);
-    
-  } catch (err) { 
-    return res.status(500).json({
-      success: false,
-      message: "Could not find any starred trips",
       error: err instanceof Error ? err.message : String(err)
     });
   }
