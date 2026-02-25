@@ -23,7 +23,7 @@ export const TripDetailsPage = () => {
 
   useEffect(() => {
     const fetchTrip = async () => {
-      const url = `${API_URL}/trips/${tripId}`; // Replace with deployed API link 
+      const url = `${API_URL}/trips/${tripId}`; 
       // Set loading state
       setLoading(true);
       try {
