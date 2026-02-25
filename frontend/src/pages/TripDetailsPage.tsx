@@ -6,6 +6,7 @@ import { StarBtn } from "../components/buttons/StarBtn";
 import { useAuthStore } from "../stores/AuthStore";
 import { DragDropProvider } from "@dnd-kit/react"
 import { MainBtn } from "../components/buttons/MainBtn";
+import { useTripPermissions } from "../components/hooks/useTripPermissions";
 
 
 export const TripDetailsPage = () => {
@@ -18,6 +19,15 @@ export const TripDetailsPage = () => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const isTripCreator = useTripStore(state => state.getIsTripCreator());
   const isStarredByUser = useTripStore(state => state.getIsStarredByUser());
+  const loading = useTripStore(state => state.loading);
+  const setLoading = useTripStore(state => state.setLoading);
+  const error = useTripStore(state => state.error);
+  const setError = useTripStore(state => state.setError);
+  const trip = useTripStore(state => state.trip);
+  const setTrip = useTripStore(state => state.setTrip);
+  const updateData = useTripStore(state => state.updateData);
+  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const { isTripCreator, isStarredByUser } = useTripPermissions(trip);
   const starTrip = useTripStore(state => state.starTrip); 
   const unstarTrip = useTripStore(state => state.unstarTrip); 
   const addDay = useTripStore(state => state.addDay);
@@ -27,8 +37,8 @@ export const TripDetailsPage = () => {
 
   useEffect(() => {
     const fetchTrip = async () => {
-      const url = `${API_URL}/trips/${tripId}`; // Replace with deployed API link 
-      // Set loading state
+      const url = `${API_URL}/trips/${tripId}`;
+      setError(false);
       setLoading(true);
       try {
         const response = await fetch(url);
@@ -39,13 +49,11 @@ export const TripDetailsPage = () => {
 
         const fetchedTrip = await response.json();
         setTrip(fetchedTrip.response);
-        setLoading(false);
-
       } catch (err) {
         console.log("Fetch error:", err);
-        setLoading(false);
         setError(true);
-        //TO DO: Display proper error message for the user
+      } finally {
+        setLoading(false);
       }
     }
     fetchTrip();

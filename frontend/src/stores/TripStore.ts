@@ -4,9 +4,15 @@ import { TripInterFace } from "../types/interfaces";
 
 interface TripState {
   updateData: boolean;
+  setUpdateData: () => void;
+  loading: boolean;
+  setLoading: (value: boolean) => void;
+  error: boolean;
+  setError: (value: boolean) => void;
   trip: TripInterFace | null;
   setTrip: (trip: TripInterFace | null) => void;
-  setUpdateData: () => void;
+  trips:TripInterFace[] | null;
+  setTrips: (trips: TripInterFace[] | null) => void;
   removeDay: (tripId: string, dayId: string) => void;
   addDay: (tripId: string) => void;
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
@@ -24,24 +30,19 @@ export const useTripStore = create<TripState>((set, get) => ({
   updateData: false,
   setUpdateData: () => set((state) => ({ updateData: !state.updateData })),
 
+  loading: false,
+  setLoading: (value: boolean) => set({ loading: value }),
+
+  error: false,
+  setError: (value: boolean) => set({ error: value }),
+
+  // For setting one trip
   trip: null,
   setTrip: (trip) => set({ trip }),
 
-  getIsTripCreator: () => {
-    const { userId } = useAuthStore.getState();
-    const { trip } = get();
-
-    if (!trip || !userId) return false;
-    return trip?.creator._id === userId;
-  },
-
-  getIsStarredByUser: () => {
-    const { userId } = useAuthStore.getState();
-    const { trip } = get();
-    
-    if (!trip || !userId) return false;
-    return trip.starredBy.some((id) => id === userId);
-  },
+  // For setting several trips
+  trips: null,
+  setTrips: (trips) => set({ trips }),
 
   removeDay: async (tripId, dayId) => {
     const url = `${API_URL}/trips/${tripId}/days/${dayId}`;   
