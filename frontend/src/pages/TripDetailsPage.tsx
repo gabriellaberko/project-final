@@ -5,7 +5,7 @@ import { DayGrid } from "../components/common/DayGrid";
 import { StarBtn } from "../components/buttons/StarBtn";
 import { useAuthStore } from "../stores/AuthStore";
 import { DragDropProvider } from "@dnd-kit/react"
-
+import { MainBtn } from "../components/buttons/MainBtn";
 
 
 export const TripDetailsPage = () => {
@@ -20,6 +20,9 @@ export const TripDetailsPage = () => {
   const isStarredByUser = useTripStore(state => state.getIsStarredByUser());
   const starTrip = useTripStore(state => state.starTrip); 
   const unstarTrip = useTripStore(state => state.unstarTrip); 
+  const addDay = useTripStore(state => state.addDay);
+  const moveActivity = useTripStore(state => state.moveActivity);
+
 
 
   useEffect(() => {
@@ -83,7 +86,7 @@ export const TripDetailsPage = () => {
           if (sourceDayIndex < 0 || targetDayIndex < 0) return;
 
           const sourceIndex = (source as any).sortable?.index ?? -1;
-          const targetIndex = (target as any).sortable?.index ?? -1;
+          let targetIndex = (target as any).sortable?.index ?? -1;
           if (sourceIndex < 0) return;
 
           const sourceDay = trip.days[sourceDayIndex];
@@ -117,6 +120,7 @@ export const TripDetailsPage = () => {
           };
 
           setTrip(updatedTrip);
+          moveActivity(String(source.id), targetDayId)
         }}
       >
         {trip &&
@@ -138,6 +142,17 @@ export const TripDetailsPage = () => {
         </div>
         }
       </DragDropProvider>
+
+      {isAuthenticated &&
+        <div className="flex justify-center">
+          <MainBtn 
+            onClick={() => addDay(trip!._id)}
+            className="m-5"
+          >
+            Add day
+          </MainBtn>
+        </div>
+      }
     </>
   )
 };

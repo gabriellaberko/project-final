@@ -8,8 +8,6 @@ import { DayGridProps } from "../../types/interfaces";
 
 export const DayGrid = ({ columns = 4 }: DayGridProps) => {
   const trip = useTripStore(state => state.trip);
-  const addDay = useTripStore(state => state.addDay);
-  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
 
   const gridClass =
     columns === 4
@@ -26,11 +24,7 @@ export const DayGrid = ({ columns = 4 }: DayGridProps) => {
             />
         ))}
       </div>
-      {isAuthenticated &&
-        <div>
-          <MainBtn onClick={() => addDay(trip!._id)}>Add day</MainBtn>
-        </div>
-      }
+      
     </>
   )
 };

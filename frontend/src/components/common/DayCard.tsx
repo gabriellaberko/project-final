@@ -33,7 +33,7 @@ export const DayCard = ({ day }: DayCardProps) => {
             ref={ref}
             key={day.dayNumber} 
             className={[
-              "flex flex-col w-full max-w-[349px] min-h-62.5 h-max-786 p-8 shadow-md",
+              "flex flex-col w-full max-w-87.25 min-h-62.5 h-max-786 p-8 shadow-md",
               isDropTarget ? "ring-2 ring-blue-300" : "",
             ].join(" ")}
           >
