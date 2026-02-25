@@ -7,7 +7,7 @@ export const StarBtn = ({ onClick, isStarredByUser }: BtnProps) => {
 
   return (
     <button onClick={onClick}>
-      <img src={isStarredByUser ? filledStarIcon : starIcon} alt="Star trip" className="w-10"/>
+      <img src={isStarredByUser ? filledStarIcon : starIcon} alt="Star trip" className="w-10 justify-self-end cursor-pointer"/>
     </button>
   )
 };
