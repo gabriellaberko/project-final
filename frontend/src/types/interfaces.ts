@@ -18,7 +18,10 @@ export interface TripInterFace {
   _id: string,
   destination: string,
   days: DayInterface[],
-  creator: string,
+  creator: {
+    _id: string;
+    userName: string;
+  },
   isPublic: boolean,
   starredBy: string[];
 };

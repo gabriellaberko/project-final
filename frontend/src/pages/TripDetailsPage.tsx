@@ -15,9 +15,8 @@ export const TripDetailsPage = () => {
   const { trip, setTrip } = useTripStore();
   const updateData = useTripStore(state => state.updateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-  const isTripCreator = useTripStore(state => state.isTripCreator); 
-  const isStarredByUser = useTripStore(state => state.isStarredByUser);
-  const setIsStarredByUser = useTripStore(state => state.setIsStarredByUser);
+  const isTripCreator = useTripStore(state => state.getIsTripCreator()); 
+  const isStarredByUser = useTripStore(state => state.getIsStarredByUser());
   const starTrip = useTripStore(state => state.starTrip); 
   const unstarTrip = useTripStore(state => state.unstarTrip); 
 
@@ -36,7 +35,6 @@ export const TripDetailsPage = () => {
 
         const fetchedTrip = await response.json();
         setTrip(fetchedTrip.response);
-        setIsStarredByUser();
         setLoading(false);
 
       } catch (err) {

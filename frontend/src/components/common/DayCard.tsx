@@ -10,10 +10,9 @@ export const DayCard = ({ day }: DayCardProps) => {
   const navigate = useNavigate();
   const trip = useTripStore(state => state.trip);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-  const isTripCreator = useTripStore(state => state.isTripCreator);
+  const isTripCreator = useTripStore(state => state.getIsTripCreator()); 
   const removeDay = useTripStore(state => state.removeDay);
 
-  if (!trip) return null;
 
   return (
     <>
