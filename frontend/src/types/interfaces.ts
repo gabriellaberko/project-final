@@ -45,12 +45,7 @@ export interface TripsGridProps extends DayGridProps {
 };
 
 export interface TripCardProps {
-  trip: {
-    _id: string,
-    destination: string;
-    tripName?: string;
-    days: any[];
-  };
+  trip: TripInterFace;
   onClick?: () => void;
 };
 

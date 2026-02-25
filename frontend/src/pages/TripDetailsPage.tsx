@@ -4,6 +4,7 @@ import { useTripStore } from "../stores/TripStore";
 import { DayGrid } from "../components/common/DayGrid";
 import { StarBtn } from "../components/buttons/StarBtn";
 import { useAuthStore } from "../stores/AuthStore";
+import { useTripPermissions } from "../components/hooks/useTripPermissions";
 
 
 export const TripDetailsPage = () => {
@@ -13,12 +14,11 @@ export const TripDetailsPage = () => {
   const setLoading = useTripStore(state => state.setLoading);
   const error = useTripStore(state => state.error);
   const setError = useTripStore(state => state.setError);
-
-  const { trip, setTrip } = useTripStore();
+  const trip = useTripStore(state => state.trip);
+  const setTrip = useTripStore(state => state.setTrip);
   const updateData = useTripStore(state => state.updateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-  const isTripCreator = useTripStore(state => state.getIsTripCreator()); 
-  const isStarredByUser = useTripStore(state => state.getIsStarredByUser());
+  const { isTripCreator, isStarredByUser } = useTripPermissions(trip);
   const starTrip = useTripStore(state => state.starTrip); 
   const unstarTrip = useTripStore(state => state.unstarTrip); 
 
