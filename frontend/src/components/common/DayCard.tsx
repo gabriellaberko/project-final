@@ -3,7 +3,8 @@ import { useTripStore } from "../../stores/TripStore";
 import { MainBtn } from "../buttons/MainBtn";
 import { DayCardProps } from "../../types/interfaces";
 import { useAuthStore } from "../../stores/AuthStore";
-import { Activity } from "../common/Activity"
+import { ActivityCard } from "./ActivityCard"
+import { useDroppable } from "@dnd-kit/react";
 import Card from "@mui/joy/Card"
 
 export const DayCard = ({ day }: DayCardProps) => {
@@ -12,7 +13,9 @@ export const DayCard = ({ day }: DayCardProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const isTripCreator = useTripStore(state => state.getIsTripCreator()); 
   const removeDay = useTripStore(state => state.removeDay);
-
+  const {ref} = useDroppable({
+    id: day._id,
+  })
 
   return (
     <>
@@ -20,7 +23,11 @@ export const DayCard = ({ day }: DayCardProps) => {
         <div>
           <h2 className="self-center m-2">Day {day.dayNumber}</h2>
 
-          <Card key={day.dayNumber} className="flex flex-col w-max-349 h-max-786 p-8 mx-12 shadow-md md:mx-0">
+          <Card
+            ref={ref}
+            key={day.dayNumber} 
+            className="flex flex-col w-max-349 h-max-786 p-8 mx-12 shadow-md md:mx-0"
+          >
             <div className="flex flex-col w-full justify-evenly">
               {isAuthenticated && isTripCreator &&
                 <button 
@@ -36,7 +43,7 @@ export const DayCard = ({ day }: DayCardProps) => {
 
                   {day.activities.length > 0 ? (
                     day.activities.map((activity) => (
-                      <Activity 
+                      <ActivityCard 
                         key={activity._id} 
                         tripId={trip!._id} 
                         dayId={day._id} 

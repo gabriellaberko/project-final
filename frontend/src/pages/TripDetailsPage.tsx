@@ -4,6 +4,9 @@ import { useTripStore } from "../stores/TripStore";
 import { DayGrid } from "../components/common/DayGrid";
 import { StarBtn } from "../components/buttons/StarBtn";
 import { useAuthStore } from "../stores/AuthStore";
+import { DragDropProvider } from "@dnd-kit/react"
+import { DragEndEvent } from "@dnd-kit/react"
+
 
 
 export const TripDetailsPage = () => {
@@ -11,6 +14,7 @@ export const TripDetailsPage = () => {
   const { id: tripId } = useParams(); // Retrieve trip ID from the url
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isDropped, setIsDropped] = useState(false)
 
   const { trip, setTrip } = useTripStore();
   const updateData = useTripStore(state => state.updateData);
@@ -19,6 +23,10 @@ export const TripDetailsPage = () => {
   const isStarredByUser = useTripStore(state => state.getIsStarredByUser());
   const starTrip = useTripStore(state => state.starTrip); 
   const unstarTrip = useTripStore(state => state.unstarTrip); 
+
+  const moveActivity = (activityId: string | number, newDayId: string | number) => {
+    console.log(`${activityId} to ${newDayId}`);
+  }
 
 
   useEffect(() => {
@@ -51,33 +59,50 @@ export const TripDetailsPage = () => {
 
   return (
     <>
-      {/* TO DO: Loading & Error States */}
+          {/* TO DO: Loading & Error States */}
+  
+          {/* {loading && (
+          )} */}
+  
+          {/* Error State */}
+          {/* {!loading && error && (
+          )} */}
 
-      {/* {loading && (
-      )} */}
+          
+      <DragDropProvider
+        onDragEnd={(event) => {
+          const { source, target } = event.operation
 
-      {/* Error State */}
-      {/* {!loading && error && (
-      )} */}
-        
-      {trip &&
-      <div className="text-center flex flex-col items-center">
-        <h1>My {trip.destination} Trip</h1>
-        {isAuthenticated && !isTripCreator &&
-          (
-          isStarredByUser
-            ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
-            : <StarBtn onClick = { () => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
-          )
-        }         
-        {/* Grid State */}
-        {!loading && !error && (
-            <DayGrid
-              columns={3}
-            />
-          )}
-      </div>
-      }
+          if (event.canceled) return;
+
+          if (source && target) {
+            const activityId = source.id
+            const newDayId = target.id
+
+          // zustand????
+            moveActivity(activityId, newDayId)
+          }
+        }}
+      >
+        {trip &&
+        <div className="text-center flex flex-col items-center m-5">
+          <h1>My {trip.destination} Trip</h1>
+          {isAuthenticated && !isTripCreator &&
+            (
+            isStarredByUser
+              ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
+              : <StarBtn onClick = { () => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
+            )
+          }         
+          {/* Grid State */}
+          {!loading && !error && (
+              <DayGrid
+                columns={3}
+              />
+            )}
+        </div>
+        }
+      </DragDropProvider>
     </>
   )
 };

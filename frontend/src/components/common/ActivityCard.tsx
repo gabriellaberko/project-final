@@ -2,6 +2,7 @@ import { useTripStore } from "../../stores/TripStore";
 import { useAuthStore } from "../../stores/AuthStore";
 import { ActivityInterface } from "../../types/interfaces";
 import { ActivityIcon } from "./ActivityIcons"
+import { useDraggable } from "@dnd-kit/react"
 
 import Card from "@mui/joy/Card"
 
@@ -11,14 +12,19 @@ interface ActivityProps {
   activity: ActivityInterface;
 }
 
-export const Activity = ({ tripId, dayId, activity }: ActivityProps) => {
+export const ActivityCard = ({ tripId, dayId, activity }: ActivityProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const removeActivity = useTripStore(state => state.removeActivity)
-
+  const {ref} = useDraggable({
+    id: activity._id,
+  })
 
   return (
     <>
-      <Card className="shadow-sm m-1">
+      <Card 
+        ref={ref}
+        className="shadow-sm m-1 cursor-grab active:cursor-grabbing"
+      >
           <div className="flex flex-row justify-between gap-2">
             <div className="flex flex-row items-center">
               <div>
@@ -47,7 +53,10 @@ export const Activity = ({ tripId, dayId, activity }: ActivityProps) => {
 
             {isAuthenticated &&
               <button 
-                onClick={() => removeActivity(tripId, dayId, activity._id)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  removeActivity(tripId, dayId, activity._id)
+                }}
                 className="self-start cursor-pointer"
               >
                 🗑️
