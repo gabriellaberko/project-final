@@ -512,7 +512,6 @@ router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Respon
   }
 });
 
-
 // Route to un-star a trip
 router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Response) => {
   try {
