@@ -180,45 +180,6 @@ export const TripDetailsPage = () => {
           </MainBtn>
         </div>
       }
-
-      {/* {trip &&
-        <div className="relative text-center flex flex-col items-center">
-          <h1>My {trip.destination} Trip</h1>
-
-          {isTripCreator && (
-            <div className="absolute right-0 flex items-center gap-3">
-              <span className="text-sm text-gray-500">
-                {trip.isPublic ? "Public" : "Private"}
-              </span>
-
-              <button
-                onClick={() => updatePrivacy(trip._id, !trip.isPublic)}
-                className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${trip.isPublic ? "bg-gray-700" : "bg-gray-300"
-                  }`}
-              >
-                <span
-                  className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${trip.isPublic ? "translate-x-5" : ""
-                    }`}
-                />
-              </button>
-            </div>
-          )}
-
-          {isAuthenticated && !isTripCreator &&
-            (
-              isStarredByUser
-                ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
-                : <StarBtn onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
-            )
-          } */}
-      {/* Grid State */}
-      {/* {!loading && !error && (
-            <DayGrid
-              columns={3}
-            />
-          )}
-        </div>
-      } */}
     </>
   )
 };
