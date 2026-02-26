@@ -3,10 +3,13 @@ import { Trip } from "../models/Trip";
 import { Request, Response, NextFunction } from "express";
 import { authenticateUser } from "../middlewares/authMiddleware";
 import { optionalAuthenticateUser } from "../middlewares/optionalAuthenticateUser";
+import { CityImage } from "../models/CityImage";
 import mongoose from "mongoose";
+import { v2 as cloudinary } from "cloudinary";
 
 
 const router = express.Router();
+
 
 // Repetetive ownership logic
 const getTripIfOwner = async (
@@ -186,7 +189,7 @@ router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Respo
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
   try {
-    const { tripName, destination, isPublic, numberOfDays } = req.body;
+    const { tripName, destination, isPublic, numberOfDays, imageUrl, isCustomImage } = req.body;
 
     // Possible to not add any days, change this if we want to have min number of days = 1. 
     const totalDays = Number(numberOfDays) || 0;
@@ -199,12 +202,65 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
       });
     }
 
+    let finalImageUrl = imageUrl || "";
+    let finalIsCustomImage = isCustomImage || false;
+
+    if (!finalImageUrl && destination?.trim()) {
+      finalIsCustomImage = false;
+      // If no image provided, try to fetch from Unsplash
+
+      const normalizedCity = destination.toLowerCase().trim();
+
+      const existingCityImage = await CityImage.findOne({
+        city: normalizedCity
+      });
+
+      if (existingCityImage) {
+        finalImageUrl = existingCityImage.imageUrl;
+      } else {
+
+        try {
+          const response = await fetch(
+            `https://api.unsplash.com/search/photos?query=${normalizedCity}+city&per_page=1&client_id=${process.env.UNSPLASH_KEY}`
+          );
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch image from Unsplash: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.results && data.results.length > 0) {
+
+            const unsplashImage = data.results[0].urls.regular;
+
+            const uploaded = await cloudinary.uploader.upload(unsplashImage, {
+              folder: "trip-covers"
+            });
+
+            finalImageUrl = uploaded.secure_url;
+
+            await CityImage.findOneAndUpdate(
+              { city: normalizedCity },
+              { imageUrl: finalImageUrl },
+              { upsert: true, new: true }
+            );
+          }
+
+        } catch (err) {
+          console.error("Error fetching/caching city image:", err);
+        }
+      }
+    }
+
     const newTrip = new Trip({
       tripName,
       destination,
       days,
       creator: req.user!._id,
-      isPublic
+      isPublic,
+      imageUrl: finalImageUrl,
+      isCustomImage: finalIsCustomImage
     });
 
     const savedNewTrip = await newTrip.save();
@@ -258,6 +314,39 @@ router.patch("/:tripId/privacy", authenticateUser, async (req: Request, res: Res
     return res.status(500).json({
       success: false,
       message: "Failed to update trip privacy",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+// Route to update trip image
+router.patch("/:tripId/image", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    const { imageUrl, isCustomImage } = req.body;
+
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
+
+    if (!trip) return;
+
+    trip.imageUrl = imageUrl;
+    trip.isCustomImage = isCustomImage ?? false;
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Trip image updated successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update trip image",
       error: err instanceof Error ? err.message : String(err)
     });
   }

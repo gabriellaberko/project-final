@@ -4,7 +4,7 @@
   "description": "Server part of final project",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "ts-node server.ts",
+    "dev": "nodemon --watch . --exec ts-node server.ts",
     "build": "tsc"
   },
   "author": "",
@@ -14,6 +14,7 @@
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.9.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.4",
     "express": "^4.17.3",
