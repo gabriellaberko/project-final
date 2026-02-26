@@ -11,7 +11,7 @@ interface ActivityProps {
   activity: ActivityInterface;
 }
 
-export const Activity = ({ tripId, dayId, activity }: ActivityProps) => {
+export const ActivityCard = ({ tripId, dayId, activity }: ActivityProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const removeActivity = useTripStore(state => state.removeActivity)
 
