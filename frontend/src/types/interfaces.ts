@@ -70,4 +70,5 @@ export type BtnProps = {
   children?: string;
   onClick: () => void;
   isStarredByUser?: boolean;
+  className?: string;
 };
