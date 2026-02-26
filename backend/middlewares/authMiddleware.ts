@@ -26,10 +26,9 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
 
     next();
   } catch (err) {
-      res.status(500).json({
-        message: "Internal server error",
-        error: err instanceof Error ? err.message : String(err)
-      });
+    res.status(500).json({
+      message: "Internal server error",
+      error: err instanceof Error ? err.message : String(err)
+    });
   }
 };
-    
