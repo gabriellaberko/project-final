@@ -25,6 +25,8 @@ export const TripDetailsPage = () => {
   const unstarTrip = useTripStore(state => state.unstarTrip);
   const updatePrivacy = useTripStore(state => state.updatePrivacy);
   const { isTripCreator, isStarredByUser } = useTripPermissions(trip);
+  const addDay = useTripStore(state => state.addDay);
+  const moveActivity = useTripStore(state => state.moveActivity);
 
 
   useEffect(() => {
