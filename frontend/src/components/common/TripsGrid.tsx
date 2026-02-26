@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { TripsGridProps } from "../../types/interfaces";
 
 
-export const TripsGrid = ({ trips, columns = 4 }: TripsGridProps) => {
+export const TripsGrid = ({ trips, columns = 4, showPrivacy = false }: TripsGridProps) => {
 
   const gridClass =
     columns === 4
@@ -21,6 +21,7 @@ export const TripsGrid = ({ trips, columns = 4 }: TripsGridProps) => {
           <TripCard
             key={trip._id}
             trip={trip}
+            showPrivacy={showPrivacy}
           />
         </Link>
       ))}
