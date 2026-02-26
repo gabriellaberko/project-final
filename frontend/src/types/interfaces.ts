@@ -8,12 +8,12 @@ export interface ActivityInterface {
 };
 
 export interface DayInterface {
-  _id: string,
-  dayNumber: number,
-  activities: ActivityInterface[]
+_id: string,
+dayNumber: number,
+activities: ActivityInterface[]
 };
 
-export interface TripInterFace {
+export interface TripInterFace { 
   tripName: string,
   _id: string,
   destination: string,
@@ -42,13 +42,16 @@ export interface DayGridProps {
 
 export interface TripsGridProps extends DayGridProps {
   trips: TripInterFace[];
-  showPrivacy?: boolean;
 };
 
 export interface TripCardProps {
-  trip: TripInterFace;
+  trip: {
+    _id: string,
+    destination: string;
+    tripName?: string;
+    days: any[];
+  };
   onClick?: () => void;
-  showPrivacy?: boolean;
 };
 
 export interface DayCardProps {
@@ -70,4 +73,5 @@ export type BtnProps = {
   children?: string;
   onClick: () => void;
   isStarredByUser?: boolean;
+  className?: string;
 };
