@@ -52,7 +52,6 @@ export const TripDetailsPage = () => {
   }, [updateData]);
 
 
-
   return (
     <>
           {/* TO DO: Loading & Error States */}
