@@ -2,23 +2,46 @@ import { useTripStore } from "../../stores/TripStore";
 import { useAuthStore } from "../../stores/AuthStore";
 import { ActivityInterface } from "../../types/interfaces";
 import { ActivityIcon } from "./ActivityIcons"
+import { useSortable } from "@dnd-kit/react/sortable";
 
 import Card from "@mui/joy/Card"
 
-interface ActivityProps {
+interface ActivityCardProps {
   tripId: string;
   dayId: string;
+  index: number;
   activity: ActivityInterface;
 }
 
-export const ActivityCard = ({ tripId, dayId, activity }: ActivityProps) => {
+export const ActivityCard = ({ tripId, dayId, index, activity }: ActivityCardProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const removeActivity = useTripStore(state => state.removeActivity)
+  const { ref, targetRef, isDragging } = useSortable({
+    id: activity._id,
+    index,
+    group: dayId,
+    data: {
+      dayId,
+      activityId: activity._id,
+    },
+  })
 
+  const setNodeRef = (node: Element | null) => {
+    ref(node);
+    targetRef(node);
+  };
 
   return (
     <>
-      <Card className="shadow-sm m-1">
+      <div
+        ref={setNodeRef}
+        className={[
+          "shadow-sm m-1 cursor-grab active:cursor-grabbing",
+          isDragging ? "opacity-60" : "",
+        ].join(" ")}
+        style={{ touchAction: "none" }}
+      >
+        <Card>
           <div className="flex flex-row justify-between gap-2">
             <div className="flex flex-row items-center">
               <div>
@@ -47,14 +70,18 @@ export const ActivityCard = ({ tripId, dayId, activity }: ActivityProps) => {
 
             {isAuthenticated &&
               <button 
-                onClick={() => removeActivity(tripId, dayId, activity._id)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  removeActivity(tripId, dayId, activity._id)
+                }}
                 className="self-start cursor-pointer"
               >
                 🗑️
               </button>
             }
           </div>         
-      </Card>
+        </Card>
+      </div>
     </>
   )
 }
