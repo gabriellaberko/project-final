@@ -2,7 +2,7 @@ import { useTripStore } from "../../stores/TripStore";
 import { useAuthStore } from "../../stores/AuthStore";
 import { ActivityInterface } from "../../types/interfaces";
 import { ActivityIcon } from "./ActivityIcons"
-import { useSortable } from "@dnd-kit/sortable"
+import { useSortable } from "@dnd-kit/react/sortable"
 
 import Card from "@mui/joy/Card"
 
@@ -13,7 +13,7 @@ interface ActivityProps {
   activity: ActivityInterface;
 }
 
-export const Activity = ({ tripId, dayId, activity }: ActivityProps) => {
+export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const removeActivity = useTripStore(state => state.removeActivity)
   const { ref, targetRef, isDragging } = useSortable({
