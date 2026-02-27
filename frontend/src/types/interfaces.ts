@@ -18,6 +18,8 @@ export interface TripInterFace {
   _id: string,
   destination: string,
   days: DayInterface[],
+  imageUrl: string,
+  isCustomImgage: boolean,
   creator: {
     _id: string;
     userName: string;

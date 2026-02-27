@@ -17,9 +17,11 @@ interface TripState {
   starTrip: (tripId: string) => Promise<void>;
   unstarTrip: (tripId: string) => Promise<void>;
   updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
-  trips: TripInterFace[] | null;
-  setTrips: (trips: TripInterFace[] | null) => void;
+  trips: TripInterFace[];
+  setTrips: (trips: TripInterFace[]) => void;
   moveActivity: (activityId: string, newDayId: string, newIndex: number) => Promise<void>;
+  fetchCityImages: (city: string) => Promise<string[] | null>;
+  createTrip: (data: { tripName: string, destination: string, numberOfDays: number, isPublic: boolean, imageUrl: string, isCustomImage: boolean }) => Promise<string | null>;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -40,7 +42,7 @@ export const useTripStore = create<TripState>((set, get) => ({
   setTrip: (trip) => set({ trip }),
 
   // For setting several trips
-  trips: null,
+  trips: [],
   setTrips: (trips) => set({ trips }),
 
   removeDay: async (tripId, dayId) => {
@@ -108,7 +110,7 @@ export const useTripStore = create<TripState>((set, get) => ({
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {})
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
         body: JSON.stringify({ newIndex })
       })
@@ -152,7 +154,6 @@ export const useTripStore = create<TripState>((set, get) => ({
   starTrip: async (tripId) => {
     const url = `${API_URL}/trips/${tripId}/star`;
     const { accessToken } = useAuthStore.getState();
-    const { setUpdateData } = get();
 
     try {
       const response = await fetch(url, {
@@ -163,12 +164,18 @@ export const useTripStore = create<TripState>((set, get) => ({
         },
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      await response.json();
-      setUpdateData();
+      // 🔥 DETTA ÄR DET VIKTIGA
+      set((state) => ({
+        trips: state.trips.map((trip) =>
+          trip._id === tripId ? data.response : trip
+        )
+      }));
 
     } catch (err) {
       console.log("Fetch error:", err);
@@ -178,7 +185,6 @@ export const useTripStore = create<TripState>((set, get) => ({
   unstarTrip: async (tripId) => {
     const url = `${API_URL}/trips/${tripId}/unstar`;
     const { accessToken } = useAuthStore.getState();
-    const { setUpdateData } = get();
 
     try {
       const response = await fetch(url, {
@@ -189,12 +195,17 @@ export const useTripStore = create<TripState>((set, get) => ({
         },
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      await response.json();
-      setUpdateData();
+      set((state) => ({
+        trips: state.trips.map((trip) =>
+          trip._id === tripId ? data.response : trip
+        )
+      }));
 
     } catch (err) {
       console.log("Fetch error:", err);
@@ -204,7 +215,6 @@ export const useTripStore = create<TripState>((set, get) => ({
   updatePrivacy: async (tripId, isPublic) => {
     const url = `${API_URL}/trips/${tripId}/privacy`;
     const { accessToken } = useAuthStore.getState();
-    const { setUpdateData } = get();
 
     try {
       const response = await fetch(url, {
@@ -228,5 +238,75 @@ export const useTripStore = create<TripState>((set, get) => ({
     }
   },
 
+  fetchCityImages: async (city) => {
+    const { accessToken } = useAuthStore.getState();
 
+    if (!accessToken) return null;
+
+    try {
+      const response = await fetch(
+        `${API_URL}/city-images?city=${city}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to fetch images");
+      }
+
+      return data.images as string[];
+
+    } catch (err) {
+      console.error("Error fetching city images:", err);
+      return null;
+    }
+  },
+
+  createTrip: async ({
+    tripName,
+    destination,
+    numberOfDays,
+    isPublic,
+    imageUrl,
+    isCustomImage
+  }) => {
+    const { accessToken } = useAuthStore.getState();
+
+    if (!accessToken) return null;
+
+    try {
+      const response = await fetch(`${API_URL}/trips`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          tripName,
+          destination,
+          numberOfDays,
+          isPublic,
+          imageUrl,
+          isCustomImage
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to create trip");
+      }
+
+      return data.response._id as string;
+
+    } catch (err) {
+      console.error("Error creating trip:", err);
+      return null;
+    }
+  }
 }));
