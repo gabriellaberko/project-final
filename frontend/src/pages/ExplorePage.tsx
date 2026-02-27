@@ -2,13 +2,15 @@ import { useState, useEffect } from "react"
 import { useAuthStore } from "../stores/AuthStore";
 import { TripsGrid } from "../components/common/TripsGrid";
 import { SearchBar } from "../components/common/SearchBar";
+import { useTripStore } from "../stores/TripStore";
 
 
 export const ExplorePage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const trips = useTripStore(state => state.trips);
+  const setTrips = useTripStore(state => state.setTrips);
 
 
   const accessToken = useAuthStore(state => state.accessToken);
@@ -84,10 +86,12 @@ export const ExplorePage = () => {
       )}
 
       {!loading && !error && trips.length > 0 && (
-        <TripsGrid
-          trips={trips}
-          columns={4}
-        />
+        <div className="px-4 sm:px-6 lg:px-8">
+          <TripsGrid
+            trips={trips}
+            columns={4}
+          />
+        </div>
       )}
     </div>
   );

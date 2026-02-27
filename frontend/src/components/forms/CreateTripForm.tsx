@@ -2,6 +2,7 @@ import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
+import { useTripStore } from "../../stores/TripStore";
 
 // MUI imports
 import Input from "@mui/joy/Input";
@@ -12,17 +13,21 @@ import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
 
 export const CreateTripForm = () => {
-  const API_URL = import.meta.env.VITE_API_URL;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [tripName, setTripName] = useState("");
   const [destination, setDestination] = useState("");
   const [numberOfDays, setNumberOfDays] = useState("1");
   const [isPublic, setIsPublic] = useState(true);
+  const [images, setImages] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isCustomImage, setIsCustomImage] = useState(false);
+  const [isFetchingImages, setIsFetchingImages] = useState(false);
 
   const navigate = useNavigate();
+  const fetchCityImages = useTripStore(state => state.fetchCityImages);
+  const createTrip = useTripStore(state => state.createTrip);
 
-  const accessToken = useAuthStore(state => state.accessToken);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,54 +35,52 @@ export const CreateTripForm = () => {
   };
 
   const postNewTrip = async () => {
-    // Safety check in case token is missing or expired
-    if (!accessToken) {
-      setErrorMessage("You must be logged in.");
-      return;
-    }
-
     setErrorMessage(null);
 
     if (!destination.trim()) {
-      setErrorMessage("Destination is required");
+      setErrorMessage("Destination cannot be empty.");
+      return;
+    }
+
+    if (!selectedImage) {
+      setErrorMessage("Please select or upload an image");
       return;
     }
 
     setIsLoading(true);
 
-    const url = `${API_URL}/trips`;
+    const tripId = await createTrip({
+      tripName,
+      destination,
+      numberOfDays: Number(numberOfDays),
+      isPublic,
+      imageUrl: selectedImage,
+      isCustomImage,
+    });
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-          tripName,
-          destination,
-          numberOfDays: Number(numberOfDays),
-          isPublic
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data?.message || `Request failed with status ${response.status}`);
-      }
-
-      // Navigate to the newly created trip's details page
-      navigate(`/trips/${data.response._id}`);
-
-    } catch (err) {
-      setErrorMessage(
-        err instanceof Error ? err.message : "Something went wrong"
-      );
-    } finally {
-      setIsLoading(false);
+    if (tripId) {
+      navigate(`/trips/${tripId}`);
+    } else {
+      setErrorMessage("Failed to create trip. Please try again.");
     }
+    setIsLoading(false);
+  };
+
+  const handleFetchImages = async () => {
+    if (!destination.trim()) {
+      setErrorMessage("Please enter a destination to fetch images.");
+      return;
+    }
+    setIsFetchingImages(true);
+    const fetchedImages = await fetchCityImages(destination);
+    if (fetchedImages) {
+      setImages(fetchedImages);
+      setSelectedImage(null); // Reset selected image when fetching new ones
+      setIsCustomImage(false);
+    } else {
+      setErrorMessage("Failed to fetch images. Please try again.");
+    }
+    setIsFetchingImages(false);
   };
 
   return (
@@ -127,6 +130,8 @@ export const CreateTripForm = () => {
               onChange={(e) => {
                 setDestination(e.target.value);
                 setErrorMessage(null);
+                setImages([]);
+                setSelectedImage(null);
               }}
               sx={{
                 '&::before': {
@@ -147,6 +152,33 @@ export const CreateTripForm = () => {
               }}
             />
           </div>
+          <Button
+            type="button"
+            onClick={handleFetchImages}
+            loading={isFetchingImages}
+            sx={{ mt: 1 }}
+          >
+            Fetch city images
+          </Button>
+          {images.length > 0 && (
+            <div className="flex gap-3 mt-3">
+              {images.map((img) => (
+                <img
+                  key={img}
+                  src={img}
+                  alt="city option"
+                  onClick={() => {
+                    setSelectedImage(img);
+                    setIsCustomImage(false);
+                  }}
+                  className={`w-28 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img
+                    ? "border-blue-500"
+                    : "border-transparent"
+                    }`}
+                />
+              ))}
+            </div>
+          )}
           <div>
             <FormLabel htmlFor="days">Amount of days</FormLabel>
             <div className="flex col gap-2">
