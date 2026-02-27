@@ -429,7 +429,7 @@ router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Resp
       { _id: tripId },
       { $pull: { starredBy: req.user._id } }, // Remove user ID
       { new: true, runValidators: true }
-    );
+    ).populate("creator", "userName");
 
     return res.status(200).json({
       success: true,
