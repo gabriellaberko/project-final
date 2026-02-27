@@ -58,3 +58,55 @@
 //     </div>
 //   )
 // };
+
+// starTrip: async (tripId) => {
+//   const url = `${API_URL}/trips/${tripId}/star`;
+//   const { accessToken } = useAuthStore.getState();
+//   const { setUpdateData } = get();
+
+//   try {
+//     const response = await fetch(url, {
+//       method: "PATCH",
+//       headers: {
+//         "Content-Type": "application/json",
+//         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+
+//     await response.json();
+//     setUpdateData();
+
+//   } catch (err) {
+//     console.log("Fetch error:", err);
+//   }
+// },
+
+// unstarTrip: async (tripId) => {
+//   const url = `${API_URL}/trips/${tripId}/unstar`;
+//   const { accessToken } = useAuthStore.getState();
+//   const { setUpdateData } = get();
+
+//   try {
+//     const response = await fetch(url, {
+//       method: "PATCH",
+//       headers: {
+//         "Content-Type": "application/json",
+//         ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+//       },
+//     });
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
+
+//     await response.json();
+//     setUpdateData();
+
+//   } catch (err) {
+//     console.log("Fetch error:", err);
+//   }
+// },
