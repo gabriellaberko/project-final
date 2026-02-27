@@ -31,8 +31,8 @@ export interface UserProfileInterface {
   bio: string;
   avatarUrl?: string;
   isPublic: boolean;
-  followers: number;
-  following: number;
+  followers: string[];
+  following: string[];
   trips: TripInterFace[];
 };
 

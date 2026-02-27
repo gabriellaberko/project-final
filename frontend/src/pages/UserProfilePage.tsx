@@ -26,7 +26,7 @@ export const UserProfilePage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
   const { userId } = useParams<{ userId: string }>();
-  const { userId: currentUserId, accessToken } = useAuthStore();
+  const { userId: authUserId, accessToken } = useAuthStore();
 
   const [profile, setProfile] = useState<UserProfileInterface | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -36,9 +36,9 @@ export const UserProfilePage = () => {
   // const [isPublic, setIsPublic] = useState(true);
   const error = useTripStore(state => state.error);
   const fetchMyTrips = useTripStore(state => state.fetchMyTrips);
+  const fetchPublicTripsFromUser = useTripStore(state => state.fetchPublicTripsFromUser);
   const trips = useTripStore(state => state.trips);
-  const isOwner = currentUserId === userId;
-  const navigate = useNavigate();
+  const isOwner = authUserId === userId;
 
 
   useEffect(() => {
@@ -80,7 +80,10 @@ export const UserProfilePage = () => {
   useEffect(() => {
     if (isOwner) {
       fetchMyTrips();
-    } else return; // TO DO: Fetch public trips from other user by userId
+    } 
+    if (!isOwner && userId) {
+      fetchPublicTripsFromUser(userId);
+    };
   }, [])
 
 
@@ -138,8 +141,8 @@ export const UserProfilePage = () => {
             <div className="flex gap-5">
               <div className="flex flex-row gap-5">
                 <Stat label="Trips" count={trips ? trips.length : 0} />
-                <Stat label="Followers" count={0} />
-                <Stat label="following" count={0} />
+                <Stat label="Followers" count={profile? profile.followers.length: 0} />
+                <Stat label="following" count={profile? profile.following.length: 0} />
               </div>
             </div>
           </div>
