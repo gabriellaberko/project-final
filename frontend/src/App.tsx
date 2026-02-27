@@ -52,6 +52,7 @@ export const App = () => {
             <Route path="/trips/new" element={<CreateTripPage />} />
             <Route path="/trips/:tripId/day/:dayId/activities/new" element={<CreateActivityPage />} />
             <Route path="/myfavorites" element={<MyFavoritesPage />} />
+            <Route path="/profile/:userId" element={<UserProfilePage />} />
           </Route>
         </Route>
 
