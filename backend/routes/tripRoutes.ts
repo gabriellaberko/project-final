@@ -107,6 +107,48 @@ router.get("/my", authenticateUser, async (req: Request, res: Response) => {
 });
 
 
+// Route to a user's starred trips
+router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
+  try {
+    const starredTrips = await Trip.find({ starredBy: req.user._id }).populate("creator", "userName");
+    res.json(starredTrips);
+    
+  } catch (err) { 
+    return res.status(500).json({
+      success: false,
+      message: "Could not find any starred trips",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to get a user's public trips
+router.get("/user/:userId", optionalAuthenticateUser, async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const userTrips = await Trip.find({
+      creator: userId,
+      isPublic: true,
+    }).sort({ createdAt: -1 }).populate("creator", "userName");
+
+    return res.status(200).json({
+      success: true,
+      response: userTrips,
+      message: "Success"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch user's trips",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
 // Route to get a single trip
 router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Response) => {
   try {
@@ -539,22 +581,6 @@ router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Resp
     return res.status(500).json({
       success: false,
       message: "Could not star trip",
-      error: err instanceof Error ? err.message : String(err)
-    });
-  }
-});
-
-
-// Route to a user's starred trips
-router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
-  try {
-    const starredTrips = await Trip.find({ starredBy: req.user._id }).populate("creator", "userName");
-    res.json(starredTrips);
-    
-  } catch (err) { 
-    return res.status(500).json({
-      success: false,
-      message: "Could not find any starred trips",
       error: err instanceof Error ? err.message : String(err)
     });
   }
