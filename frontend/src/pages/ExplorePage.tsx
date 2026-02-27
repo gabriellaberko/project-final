@@ -86,10 +86,12 @@ export const ExplorePage = () => {
       )}
 
       {!loading && !error && trips.length > 0 && (
-        <TripsGrid
-          trips={trips}
-          columns={3}
-        />
+        <div className="px-4 sm:px-6 lg:px-8">
+          <TripsGrid
+            trips={trips}
+            columns={4}
+          />
+        </div>
       )}
     </div>
   );

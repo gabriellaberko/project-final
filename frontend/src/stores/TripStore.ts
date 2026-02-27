@@ -170,11 +170,13 @@ export const useTripStore = create<TripState>((set, get) => ({
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // 🔥 DETTA ÄR DET VIKTIGA
       set((state) => ({
         trips: state.trips.map((trip) =>
           trip._id === tripId ? data.response : trip
-        )
+        ),
+        trip: state.trip?._id === tripId
+          ? data.response
+          : state.trip
       }));
 
     } catch (err) {
@@ -204,7 +206,10 @@ export const useTripStore = create<TripState>((set, get) => ({
       set((state) => ({
         trips: state.trips.map((trip) =>
           trip._id === tripId ? data.response : trip
-        )
+        ),
+        trip: state.trip?._id === tripId
+          ? data.response
+          : state.trip
       }));
 
     } catch (err) {

@@ -18,69 +18,86 @@ export const ExploreTripCard = ({ trip }: TripCardProps) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md flex h-64 overflow-hidden hover:shadow-lg transition cursor-pointer"
-      onClick={handleCardClick}>
+    <div
+      onClick={handleCardClick}
+      className="
+    group
+    bg-white
+    rounded-2xl
+    shadow-md
+    hover:shadow-xl
+    transition-all
+    duration-300
+    cursor-pointer
+    overflow-hidden
+    flex
+    flex-col
+  "
+    >
 
-      <div className="relative p-6 w-3/5 flex flex-col justify-between">
-        {isAuthenticated && !isTripCreator && (
-          <div className="absolute top-3 right-3">
-            {isStarredByUser ? (
-              <StarBtn
-                onClick={() => unstarTrip(trip._id)}
-                isStarredByUser={isStarredByUser}
-              />
-            ) : (
-              <StarBtn
-                onClick={() => starTrip(trip._id)}
-                isStarredByUser={isStarredByUser}
-              />
-            )}
-          </div>
-        )}
-
-
-        {/* LEFT SIDE */}
-        <div className="p-6 w-3/5 flex flex-col justify-between">
-
-          <div>
-            <h3 className="text-2xl font-semibold">
-              {trip.destination}
-            </h3>
-
-            {trip.tripName && (
-              <p className="text-sm text-gray-400 mt-1">
-                {trip.tripName}
-              </p>
-            )}
-
-            <p className="text-sm text-gray-600 mt-4 line-clamp-3">
-              Description text text text text text
-            </p>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="px-4 py-1 border rounded-lg text-sm text-gray-600">
-              {trip.days.length}{" "}
-              {trip.days.length === 1 ? "day" : "days"}
-            </span>
-
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-gray-300 rounded-full" />
-              <span className="text-sm text-gray-500">
-                {trip.creator?.userName}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* RIGHT SIDE */}
-      <div className="w-2/5 relative">
+      {/* IMAGE */}
+      <div className="w-full">
         <img
           src={trip.imageUrl}
           alt={trip.destination}
-          className="w-full h-full object-cover"
+          className="
+        w-full
+        h-48
+        object-cover
+      "
         />
+      </div>
+
+      {/* CONTENT */}
+      <div className="p-6 flex flex-col grow">
+
+        {/* HEADER */}
+        <div className="flex items-start justify-between gap-3">
+          <h3
+            className="
+          text-lg
+          font-semibold
+          text-gray-900
+          wrap-break-word
+        "
+          >
+            {trip.destination}
+          </h3>
+
+          {isAuthenticated && !isTripCreator && (
+            <div className="shrink-0">
+              <StarBtn
+                onClick={
+                  isStarredByUser
+                    ? () => unstarTrip(trip._id)
+                    : () => starTrip(trip._id)
+                }
+                isStarredByUser={isStarredByUser}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* DESCRIPTION */}
+        <p className="text-sm text-gray-600 leading-relaxed mt-4 line-clamp-3">
+          Description text text text text text
+        </p>
+
+        {/* PUSH FOOTER DOWN */}
+        <div className="mt-auto pt-6 flex items-center justify-between gap-3">
+          <span className="px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-600 shrink-0">
+            {trip.days.length}{" "}
+            {trip.days.length === 1 ? "day" : "days"}
+          </span>
+
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 bg-gray-200 rounded-full shrink-0" />
+            <span className="text-sm text-gray-500 truncate">
+              {trip.creator?.userName}
+            </span>
+          </div>
+        </div>
+
       </div>
     </div>
   );

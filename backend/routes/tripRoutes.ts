@@ -384,7 +384,7 @@ router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Respon
       { _id: tripId },
       { $addToSet: { starredBy: req.user._id } }, // Add ID, only if not there
       { new: true, runValidators: true }
-    );
+    ).populate("creator", "userName");
 
     return res.status(200).json({
       success: true,
