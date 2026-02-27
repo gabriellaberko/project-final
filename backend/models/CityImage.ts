@@ -8,10 +8,12 @@ const cityImageSchema = new Schema({
     trim: true,
     lowercase: true
   },
-  imageUrl: {
-    type: String,
-    required: true
-  }
+  images: [
+    {
+      type: String,
+      required: true
+    }
+  ]
 });
 
 export const CityImage = mongoose.model("CityImage", cityImageSchema);

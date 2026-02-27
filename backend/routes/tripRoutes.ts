@@ -1,11 +1,9 @@
 import express from "express";
 import { Trip } from "../models/Trip";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { authenticateUser } from "../middlewares/authMiddleware";
 import { optionalAuthenticateUser } from "../middlewares/optionalAuthenticateUser";
-import { CityImage } from "../models/CityImage";
 import mongoose from "mongoose";
-import { v2 as cloudinary } from "cloudinary";
 
 
 const router = express.Router();
@@ -48,7 +46,7 @@ router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUse
 
     if (!trip) return;
 
-    let moveActivity: any =null
+    let moveActivity: any = null
 
     for (const day of trip.days) {
       const act = day.activities.id(activityId as any)
@@ -57,7 +55,7 @@ router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUse
         day.activities.pull(activityId)
         break
       }
-    }  
+    }
 
     if (!moveActivity) {
       return res.status(404).json({
@@ -66,7 +64,7 @@ router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUse
       })
     }
     const targetDay = trip.days.id(dayId as any)
-    if(!targetDay) {
+    if (!targetDay) {
       return res.status(404).json({
         success: false,
         message: "Day not found"
@@ -261,65 +259,14 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
       });
     }
 
-    let finalImageUrl = imageUrl || "";
-    let finalIsCustomImage = isCustomImage || false;
-
-    if (!finalImageUrl && destination?.trim()) {
-      finalIsCustomImage = false;
-      // If no image provided, try to fetch from Unsplash
-
-      const normalizedCity = destination.toLowerCase().trim();
-
-      const existingCityImage = await CityImage.findOne({
-        city: normalizedCity
-      });
-
-      if (existingCityImage) {
-        finalImageUrl = existingCityImage.imageUrl;
-      } else {
-
-        try {
-          const response = await fetch(
-            `https://api.unsplash.com/search/photos?query=${normalizedCity}+city&per_page=1&client_id=${process.env.UNSPLASH_KEY}`
-          );
-
-          if (!response.ok) {
-            throw new Error(`Failed to fetch image from Unsplash: ${response.status}`);
-          }
-
-          const data = await response.json();
-
-          if (data.results && data.results.length > 0) {
-
-            const unsplashImage = data.results[0].urls.regular;
-
-            const uploaded = await cloudinary.uploader.upload(unsplashImage, {
-              folder: "trip-covers"
-            });
-
-            finalImageUrl = uploaded.secure_url;
-
-            await CityImage.findOneAndUpdate(
-              { city: normalizedCity },
-              { imageUrl: finalImageUrl },
-              { upsert: true, new: true }
-            );
-          }
-
-        } catch (err) {
-          console.error("Error fetching/caching city image:", err);
-        }
-      }
-    }
-
     const newTrip = new Trip({
       tripName,
       destination,
       days,
       creator: req.user!._id,
       isPublic,
-      imageUrl: finalImageUrl,
-      isCustomImage: finalIsCustomImage
+      imageUrl,
+      isCustomImage: isCustomImage ?? false
     });
 
     const savedNewTrip = await newTrip.save();
