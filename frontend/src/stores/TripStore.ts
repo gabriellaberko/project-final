@@ -18,6 +18,7 @@ interface TripState {
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
   starTrip: (tripId: string) => void;
   unstarTrip: (tripId: string) => void;
+  fetchMyTrips: () => void;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -40,6 +41,40 @@ export const useTripStore = create<TripState>((set, get) => ({
   // For setting several trips
   trips: null,
   setTrips: (trips) => set({ trips }),
+
+  fetchMyTrips: async () => {
+    const url = `${API_URL}/trips/my`;
+    const { accessToken } = useAuthStore.getState();
+    const { setLoading } = get();
+    const { setError } = get();
+    const { setTrips } = get();
+    
+    setError(false);
+    setLoading(true);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || `Request failed with status ${response.status}`);
+      }
+      
+      setTrips(data.response);
+  
+    } catch (err) {
+      console.log("Fetch error:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  },
 
   removeDay: async (tripId, dayId) => {
     const url = `${API_URL}/trips/${tripId}/days/${dayId}`;   

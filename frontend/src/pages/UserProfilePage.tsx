@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useAuthStore } from "../stores/AuthStore";
-import { TripInterFace } from "../types/interfaces";
 import { UserProfileInterface } from "../types/interfaces";
+import { useTripStore } from "../stores/TripStore";
+import { TripsGrid } from "../components/common/TripsGrid";
 
 // MUI & Icons
 import Avatar from "@mui/joy/Avatar";
 import Switch from "@mui/joy/Switch";
 import Button from "@mui/joy/Button";
 import Input from "@mui/joy/Input";
-import Card from "@mui/joy/Card";
 import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
 
@@ -21,13 +21,6 @@ const Stat = ({ label, count }: {label: string, count: number}) => (
   </div>
 )
 
-const TripCard = ({ trip }: { trip: TripInterFace }) => (
-  <Card variant="outlined">
-    <Typography level="h3">{trip.destination}</Typography>
-    <Typography level="body-xs">{trip.days.length} days</Typography>
-  </Card>
-)
-
 
 export const UserProfilePage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -35,15 +28,18 @@ export const UserProfilePage = () => {
   const { userId } = useParams<{ userId: string }>();
   const { userId: currentUserId, accessToken } = useAuthStore();
 
-  const [profile, setProfile] = useState<UserProfileInterface | null>(null)
-  const [isEditing, setIsEditing] = useState(false)
-  const [username, setUsername] = useState("")
-  const [bio, setBio] = useState("")
-  const [loading, setLoading] = useState(true);
-  const [trips, setTrips] = useState<TripInterFace[]>([])
-  const [isPublic, setIsPublic] = useState(true)
+  const [profile, setProfile] = useState<UserProfileInterface | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [loading, setLoading] = useState(true); // TO DO: replace with global state
+  // const [isPublic, setIsPublic] = useState(true);
+  const error = useTripStore(state => state.error);
+  const fetchMyTrips = useTripStore(state => state.fetchMyTrips);
+  const trips = useTripStore(state => state.trips);
+  const isOwner = currentUserId === userId;
+  const navigate = useNavigate();
 
-  const isOwner = currentUserId=== userId
 
   useEffect(() => {
     if (!userId || userId === "undefined") return
@@ -68,12 +64,10 @@ export const UserProfilePage = () => {
         }
 
         const data = await response.json();
-
         setProfile(data);
         setUsername(data.username)
         setBio(data.bio || "");
-        setTrips(data.trips || []);
-        setIsPublic(data.isPublic ?? true)
+        // setIsPublic(data.isPublic ?? true)
       } catch (err) {
         console.error(err)
       } finally {
@@ -81,7 +75,13 @@ export const UserProfilePage = () => {
       }
     }
     fetchUserData()
-  }, [userId, isOwner, accessToken])
+  }, [userId, isOwner, accessToken]);
+
+  useEffect(() => {
+    if (isOwner) {
+      fetchMyTrips();
+    } else return; // TO DO: Fetch public trips from other user by userId
+  }, [])
 
 
   const handleSave = async () => {
@@ -93,7 +93,7 @@ export const UserProfilePage = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
         },
-        body: JSON.stringify({ bio, userName: username, isPublic})
+        body: JSON.stringify({ bio, userName: username})
       })
       if (response.ok) {
         const updatedData = await response.json()
@@ -101,7 +101,7 @@ export const UserProfilePage = () => {
         setProfile(updatedData)
         setUsername(updatedData.userName)
         setBio(updatedData.bio || "");
-        setIsPublic(updatedData.isPublic ?? true)
+        // setIsPublic(updatedData.isPublic ?? true)
       }
     } catch (err) {
       console.error(err)
@@ -113,10 +113,16 @@ export const UserProfilePage = () => {
   return (
     <>
       <div className='m-10'>
-        <h1>UserProfilePage</h1>
+
+        {/* Header */}
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-3xl font-bold tracking-tight">
+            {isOwner ? "My Profile" : "User Profile"}
+          </h1>
+        </div>
 
         <div className='flex row items-center m-5'>
-          <Avatar size='lg'/>
+          <Avatar size='lg' />
 
           <div className='m-5'>
             {isEditing ? (
@@ -131,7 +137,7 @@ export const UserProfilePage = () => {
             )}
             <div className="flex gap-5">
               <div className="flex flex-row gap-5">
-                <Stat label="Trips" count={trips.length} />
+                <Stat label="Trips" count={trips ? trips.length : 0} />
                 <Stat label="Followers" count={0} />
                 <Stat label="following" count={0} />
               </div>
@@ -155,10 +161,10 @@ export const UserProfilePage = () => {
           )}
         </div>
 
-        <div>
+        <div className="mb-10">
           {isOwner ? (
             <div>
-              {isEditing && (
+              {/* {isEditing && (
                 <div className="flex items-center gap-3 my-4">
                   <Typography level="body-sm">Public</Typography>
                   <Switch
@@ -167,7 +173,7 @@ export const UserProfilePage = () => {
                   />
                   <Typography level="body-sm">Private</Typography>
                 </div>
-              )}
+              )} */}
 
               <div className="flex gap-2">
                 {isEditing ? (
@@ -180,7 +186,7 @@ export const UserProfilePage = () => {
                     </Button>
                   </div>
                 ) : (
-                  <Button 
+                  <Button
                     type="button"
                     className="m-5"
                     onClick={() => setIsEditing(true)}
@@ -190,32 +196,27 @@ export const UserProfilePage = () => {
                 )}
               </div>
             </div>
-            ) : (
-              <div className="flex flex-col mt-3 mb-3">
-                <Button 
-                  type="button"
-                  className="m-5"
-                >
-                  Follow
-                </Button>
-              </div>
+          ) : (
+            <div className="flex flex-col mt-3 mb-3">
+              <Button
+                type="button"
+                className="m-5"
+              >
+                Follow
+              </Button>
+            </div>
           )}
         </div>
-        
-        {/* Delete cards later */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
-            <Card>Paris</Card>
-            <Card>Barcelona</Card>
-            <Card>Hawaii</Card>
-            <Card>Tokyo</Card>
-          </div>
+
+        {/* Grid State */}
+        {!loading && !error && trips && trips.length > 0 && (
+          <TripsGrid
+            trips={trips}
+            columns={3}
+          />
+        )}
           
-          <div>
-            {trips.map(trip => (
-              <TripCard key={trip._id} trip={trip} />
-            ))}  
-          </div>
-        </div>
+      </div>
     </>
   )
-}
+};
