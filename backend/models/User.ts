@@ -38,10 +38,6 @@ const userSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   }],
-  starredTrips: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Trip",
-  }],
   accessToken: {
     type: String,
     default: () => crypto.randomBytes(128).toString("hex"),
