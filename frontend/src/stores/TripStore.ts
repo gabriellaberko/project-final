@@ -19,7 +19,7 @@ interface TripState {
   updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
   trips: TripInterFace[] | null;
   setTrips: (trips: TripInterFace[] | null) => void;
-  moveActivity: (activityId: string, newDayId: string) => Promise<void>;
+  moveActivity: (activityId: string, newDayId: string, newIndex: number) => Promise<void>;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -95,13 +95,13 @@ export const useTripStore = create<TripState>((set, get) => ({
     }
   },
 
-  moveActivity: async (activityId, newDayId) => {
+  moveActivity: async (activityId, newDayId, newIndex) => {
     const { trip, setUpdateData } = get()
     const { accessToken } = useAuthStore.getState()
 
     if (!trip) return
 
-    const url = `${API_URL}/trips/${trip._id}/days/${newDayId}/activities/${activityId}`
+    const url = `${API_URL}/trips/${trip._id}/days/${newDayId}/activities/${activityId}/move`
 
     try {
       const response = await fetch(url, {
@@ -110,7 +110,7 @@ export const useTripStore = create<TripState>((set, get) => ({
           "Content-Type": "application/json",
           ...(accessToken ? {Authorization: `Bearer ${accessToken}`} : {})
         },
-        body: JSON.stringify({ newDayId })
+        body: JSON.stringify({ newIndex })
       })
 
       if (!response.ok) {

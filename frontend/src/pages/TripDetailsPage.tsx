@@ -116,6 +116,8 @@ export const TripDetailsPage = () => {
           const updatedTrip = {
             ...trip,
             days: trip.days.map((d, index) => {
+              if (sourceDayId === targetDayId && index === sourceDayIndex)
+                return { ...d, activities: targetActivities}
               if (index === sourceDayIndex) {
                 return { ...d, activities: sourceActivities };
               }
@@ -127,7 +129,7 @@ export const TripDetailsPage = () => {
           };
 
           setTrip(updatedTrip);
-          moveActivity(String(source.id), targetDayId)
+          moveActivity(String(source.id), targetDayId, targetIndex)
         }}
       >
         {trip &&

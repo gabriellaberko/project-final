@@ -38,6 +38,65 @@ const getTripIfOwner = async (
   return trip;
 };
 
+// Route to move an activity
+router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId, dayId, activityId } = req.params;
+    const { newIndex } = req.body;
+
+    const trip = await getTripIfOwner(tripId as string, req.user!._id, res);
+
+    if (!trip) return;
+
+    let moveActivity: any =null
+
+    for (const day of trip.days) {
+      const act = day.activities.id(activityId as any)
+      if (act) {
+        moveActivity = act.toObject()
+        day.activities.pull(activityId)
+        break
+      }
+    }  
+
+    if (!moveActivity) {
+      return res.status(404).json({
+        success: false,
+        message: "Activity not found"
+      })
+    }
+    const targetDay = trip.days.id(dayId as any)
+    if(!targetDay) {
+      return res.status(404).json({
+        success: false,
+        message: "Day not found"
+      })
+    }
+
+    const insertIndex = typeof newIndex === "number"
+      ? Math.max(0, Math.min(newIndex, targetDay.activities.length))
+      : targetDay.activities.length
+
+    targetDay.activities.splice(insertIndex, 0, moveActivity)
+
+    trip.markModified("days")
+    const updatedTrip = await trip.save()
+
+    return res.status(200).json({
+      success: true,
+      message: "Activity moved successfully",
+      response: updatedTrip,
+    })
+
+  } catch (err) {
+    console.error("Error moving activity:", err)
+    return res.status(500).json({
+      success: false,
+      message: "Failed to move activity",
+      error: err instanceof Error ? err.message : String(err)
+    })
+  }
+})
 
 // Route to get all trips for view only when not authenticated.
 router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) => {
@@ -558,7 +617,7 @@ router.delete("/:tripId/days/:dayId", authenticateUser, async (req: Request, res
   }
 });
 
-// Route to add actitivty
+// Route to add activity
 router.post("/:tripId/days/:dayId/activities", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId, dayId } = req.params;
@@ -669,6 +728,8 @@ router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, as
     });
   }
 });
+
+
 
 // Route to delete an activity
 router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
