@@ -151,7 +151,66 @@ router.get("/:userId", async (req, res) => {
       message: "Failed to fetch user"
     })
   }
-})
+});
+
+// Route to get all the followers of a user
+router.get("/:userId/followers", async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const followers = await User.findById(userId)
+      .select("followers")
+      .populate("followers", "userName avatarUrl");
+
+    if (!followers) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    };
+
+    return res.status(200).json({
+      success: true,
+      response: followers,
+      message: "Successfully fetched user's follower list"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch the user's follower list"
+    });
+  }
+});
+
+
+// Route to get all users the user is following
+router.get("/:userId/following", async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const following = await User.findById(userId)
+      .select("following")
+      .populate("following", "userName avatarUrl");
+
+    if (!following) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    };
+
+    return res.status(200).json({
+      success: true,
+      response: following,
+      message: "Successfully fetched user's following list"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch the user's following list"
+    });
+  }
+});
 
 
 // Route to follow a user (and add to that user's followers list)
