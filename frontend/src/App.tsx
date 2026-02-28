@@ -15,6 +15,7 @@ import { PublicLayout } from "./components/layout/PublicLayout";
 import { ProtectedRoute } from "./components/routing/ProtectedRoute";
 import { CreateActivityPage } from "./pages/CreateActivityPage";
 import { MyFavoritesPage } from "./pages/MyFavoritesPage";
+import { FollowListPage } from "./pages/FollowListPage";
 
 
 // TO DO: Create more pages and implement routing
@@ -44,6 +45,9 @@ export const App = () => {
         <Route element={<AppLayout />}>
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/trips/:id" element={<TripDetailsPage />} />
+          <Route path="/profile/:userId" element={<UserProfilePage />} />
+          <Route path="/profile/:userId/followers" element={<FollowListPage />} />
+          <Route path="/profile/:userId/following" element={<FollowListPage />} />
 
           {/* ==== PROTECTED ROUTES ==== */}
           <Route element={<ProtectedRoute />}>
@@ -52,7 +56,6 @@ export const App = () => {
             <Route path="/trips/new" element={<CreateTripPage />} />
             <Route path="/trips/:tripId/day/:dayId/activities/new" element={<CreateActivityPage />} />
             <Route path="/myfavorites" element={<MyFavoritesPage />} />
-            <Route path="/profile/:userId" element={<UserProfilePage />} />
           </Route>
         </Route>
 

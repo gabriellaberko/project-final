@@ -14,12 +14,12 @@ import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
 
 
-const Stat = ({ label, count }: {label: string, count: number}) => (
-  <div className="text-content">
+const Stat = ({ label, count, onClick }: {label: string, count: number, onClick?: () => void}) => (
+  <button className="text-content cursor-pointer" onClick={onClick}>
     <Typography level="body-xs">{count}</Typography>
     <Typography level="body-xs">{label}</Typography>
-  </div>
-)
+  </button>
+);
 
 
 export const UserProfilePage = () => {
@@ -39,6 +39,9 @@ export const UserProfilePage = () => {
   const fetchPublicTripsFromUser = useTripStore(state => state.fetchPublicTripsFromUser);
   const trips = useTripStore(state => state.trips);
   const isOwner = authUserId === userId;
+
+  const navigate = useNavigate();
+
 
 
   useEffect(() => {
@@ -141,8 +144,14 @@ export const UserProfilePage = () => {
             <div className="flex gap-5">
               <div className="flex flex-row gap-5">
                 <Stat label="Trips" count={trips ? trips.length : 0} />
-                <Stat label="Followers" count={profile? profile.followers.length: 0} />
-                <Stat label="following" count={profile? profile.following.length: 0} />
+                <Stat 
+                  label="Followers" 
+                  count={profile? profile.followers.length: 0}
+                  onClick={() => navigate(`/profile/${userId}/followers`)}/>
+                <Stat 
+                  label="Following" 
+                  count={profile? profile.following.length: 0}
+                  onClick={() => navigate(`/profile/${userId}/following`)} />
               </div>
             </div>
           </div>
