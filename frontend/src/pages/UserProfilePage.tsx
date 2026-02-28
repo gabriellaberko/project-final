@@ -24,7 +24,7 @@ const Stat = ({ label, count, onClick }: {label: string, count: number, onClick?
 
 export const UserProfilePage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
-
+  const navigate = useNavigate();
   const { userId } = useParams<{ userId: string }>();
   const { userId: authUserId, accessToken } = useAuthStore();
 
@@ -32,27 +32,30 @@ export const UserProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [loading, setLoading] = useState(true); // TO DO: replace with global state
   // const [isPublic, setIsPublic] = useState(true);
   const error = useTripStore(state => state.error);
+  const setError = useTripStore(state => state.setError);
+  const loading = useTripStore(state => state.error);
+  const setLoading = useTripStore(state => state.setError);
+  const updateData = useTripStore(state => state.updateData);
+  const setUpdateData = useTripStore(state => state.setUpdateData);
   const fetchMyTrips = useTripStore(state => state.fetchMyTrips);
   const fetchPublicTripsFromUser = useTripStore(state => state.fetchPublicTripsFromUser);
   const trips = useTripStore(state => state.trips);
   const isOwner = authUserId === userId;
-
-  const navigate = useNavigate();
-
+  const isAlreadyFollowingUser = profile?.followers.some(f => f === authUserId); 
 
 
   useEffect(() => {
     if (!userId || userId === "undefined") return
 
     const fetchUserData = async () => {
+      setLoading(true);
+      setError(false);
       try {
-        setLoading(true)
         const url = isOwner
           ? `${API_URL}/users/profile`
-          : `${API_URL}/users/${userId}`
+          : `${API_URL}/users/${userId}`;
 
         const response = await fetch(url, {
           method: "GET",
@@ -72,13 +75,14 @@ export const UserProfilePage = () => {
         setBio(data.bio || "");
         // setIsPublic(data.isPublic ?? true)
       } catch (err) {
-        console.error(err)
+        console.error(err);
+        setError(true);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
     fetchUserData()
-  }, [userId, isOwner, accessToken]);
+  }, [userId, isOwner, accessToken, updateData]);
 
   useEffect(() => {
     if (isOwner) {
@@ -92,7 +96,7 @@ export const UserProfilePage = () => {
 
   const handleSave = async () => {
     try {
-      const url = `${API_URL}/users/profile`
+      const url = `${API_URL}/users/profile`;
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -114,6 +118,34 @@ export const UserProfilePage = () => {
     }
   }
 
+
+  const HandleFollowing = async () => {
+    try {
+      const url = isAlreadyFollowingUser
+        ? `${API_URL}/users/${userId}/unfollow`
+        : `${API_URL}/users/${userId}/follow`;
+
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await response.json();
+      setUpdateData();
+
+    } catch (err) { 
+      console.log("Fetch error:", err);
+    }
+  };
+
+
   if (loading) return <div>Loading...</div>
 
   return (
@@ -126,6 +158,31 @@ export const UserProfilePage = () => {
             {isOwner ? "My Profile" : "User Profile"}
           </h1>
         </div>
+
+
+        {/* Loading State */}
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-40 bg-gray-200 rounded-xl animate-pulse"
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Error State */}
+        {!loading && error && (
+          <div className="flex flex-col items-center justify-center h-full text-center">
+            <div className="bg-red-50 border border-red-200 text-red-600 px-6 py-4 rounded-xl">
+              <h2 className="font-semibold mb-1">
+                Something went wrong
+              </h2>
+              <p className="text-sm">{error}</p>
+            </div>
+          </div>
+        )}
 
         <div className='flex row items-center m-5'>
           <Avatar size='lg' />
@@ -213,9 +270,12 @@ export const UserProfilePage = () => {
               <Button
                 type="button"
                 className="m-5"
+                onClick = {HandleFollowing}
               >
-                Follow
-              </Button>
+                {isAlreadyFollowingUser
+                  ? "Unfollow" 
+                  : "Follow"}
+              </Button> 
             </div>
           )}
         </div>
