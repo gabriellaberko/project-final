@@ -6,9 +6,10 @@ export const PublicNavbar = () => {
 
   return (
     <nav className="
+    bg-white
       fixed top-0 left-0 right-0
       h-16 flex items-center justify-between
-      px-6 bg-white shadow-sm z-50
+      px-6 shadow-sm z-50
     "
     >
       <div className="flex items-center gap-8 cursor-pointer"

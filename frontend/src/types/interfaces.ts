@@ -13,6 +13,14 @@ export interface DayInterface {
   activities: ActivityInterface[]
 };
 
+export interface ProfileProps {
+  _id?: string,
+  name: string,
+  imgSrc: string,
+  githubLink: string,
+  linkedinLink: string
+};
+
 export interface TripInterFace {
   tripName: string,
   _id: string,
