@@ -7,13 +7,14 @@
     --text-primary: #505050;
     --text-secondary: white;
     --bg-color: white;
-    --card-bg: pink;
+    --card-bg: white;
     --navbar-bg: #0066D2;
-    --activity-bg: blue;
-    --day-bg: lightblue;
-    --form-bg: lightgreen;
+    --navbar-selected: #1b8aff;
+    --activity-bg: white;
+    --day-bg: white;
+    --form-bg: white;
     --btn-primary: #F2B705;
-    --btn-secondary: lightcoral;
+    --btn-secondary: #F3E167;
     --qa-primary: #0066D2;
 
     --radius-card: 8px;
@@ -95,7 +96,6 @@
 
     &:hover {
       background-color: var(--btn-secondary);
-      color: var(--text-secondary);
     }
   }
 

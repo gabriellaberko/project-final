@@ -83,7 +83,7 @@ export const PublicHomePage = () => {
           <h2 className="text-white text-lg md:text-xl font-bold drop-shadow-2xl">Plan, share, and explore the world with ease</h2>
           <button
             type="button"
-            className="btn mt-6 md:mt-10"
+            className="btn mt-6 md:mt-10 text-lg font-extrabold"
           >
             Register for more!
           </button>
