@@ -4,17 +4,20 @@
 @layer base {
 
   :root {
-    --text-primary: black;
+    --text-primary: #505050;
     --text-secondary: white;
-    --card-bg: pink;
-    --navbar-bg: lightpink;
-    --activity-bg: blue;
-    --day-bg: lightblue;
-    --form-bg: lightgreen;
-    --btn-primary: beige;
-    --btn-secondary: lightcoral;
+    --bg-color: white;
+    --card-bg: white;
+    --navbar-bg: #0066D2;
+    --navbar-selected: #1b8aff;
+    --activity-bg: white;
+    --day-bg: white;
+    --form-bg: white;
+    --btn-primary: #F2B705;
+    --btn-secondary: #F3E167;
+    --qa-primary: #0066D2;
 
-    --radius-card: 10px;
+    --radius-card: 8px;
     --shadow-card: 0 0 10px rgba(0, 0, 0, 0.1);
 
   }
@@ -27,26 +30,63 @@
 
   body {
     font-family: sans-serif;
+    color: var(--text-primary);
+    background-color: var(--bg-color);
+  
   }
 
   h1 {
-    font-size: large;
+    font-size: x-large;
+    margin: 10px;
+    
   }
 
   h2 {
     font-size: medium;
+    margin: 10px;
   }
 
   h3 {
     font-size: small;
+    margin: 10px;
   }
 
   p {
     font-size: x-small;
+    margin: 10px;
+  }
+
+  footer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5px;
   }
 }
 
 @layer components {
+  .hero-img {
+    width: 100%;
+    height: 70vh;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .app-img {
+    width: 30vw;
+    height: 30vh;
+    object-fit: cover;
+  }
+
+  .app-text {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+  }
+
   .btn {
     background-color: var(--btn-primary);
     color: var(--text-primary);
@@ -57,7 +97,6 @@
 
     &:hover {
       background-color: var(--btn-secondary);
-      color: var(--text-secondary);
     }
   }
 
@@ -81,4 +120,55 @@
     padding: 20px;
   }
 
+  .embla__viewport {
+    overflow: hidden;
+  }
+  
+  .embla__container {
+    display: flex;
+    touch-action: pan-y pinch-zoom;
+  }
+  
+  .embla__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+
+  .about-app {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+  }
+
+  .profile-card {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+  
+  }
+
+  .social-icons {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 30px;
+  }
+
+  .q {
+    background-color: var(--qa-primary);
+    color: var(--text-secondary);
+    padding: 20px;
+    margin-bottom: 6px;
+    font-size: large;
+  }
+
+  .a {
+    padding: 20px;
+    border: var(--qa-primary) 1px solid;
+    font-size: large;
+  }
 }

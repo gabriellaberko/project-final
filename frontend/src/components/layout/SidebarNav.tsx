@@ -23,6 +23,7 @@ export const SidebarNav = () => {
     <>
       {/* mobile header */}
       <header className="
+        navbar
         flex md:hidden fixed
         top-0 left-0 right-0
         h-16 items-center justify-between
@@ -35,9 +36,10 @@ export const SidebarNav = () => {
 
       {/* mobile navbar */}
       <nav className="
+        navbar
         flex md:hidden fixed bottom-0
         left-0 right-0 h-16 items-center
-        justify-around px-2 z-50 bg-white
+        justify-around px-2 z-50
         shadow-[0_-1px_4px_rgba(0,0,0,0.04)]
       "
       >
@@ -59,7 +61,7 @@ export const SidebarNav = () => {
       </nav>
 
       {/* desktop sidebar */}
-      <aside className="hidden md:flex w-64 h-screen shrink-0 flex-col justify-between p-5 shadow-lg overflow-auto">
+      <aside className="navbar hidden md:flex w-64 h-screen shrink-0 flex-col justify-between p-5 shadow-lg overflow-auto">
         <div>
           <div className="text-2xl font-semibold"
             onClick={() => navigate("/dashboard")}
