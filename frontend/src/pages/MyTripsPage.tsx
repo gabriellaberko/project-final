@@ -11,6 +11,7 @@ export const MyTripsPage = () => {
   const trips = useTripStore(state => state.trips);
   const loading = useTripStore(state => state.loading);
   const error = useTripStore(state => state.error);
+  const updateData = useTripStore(state => state.updateData);
   const accessToken = useAuthStore(state => state.accessToken);
   const navigate = useNavigate();
 
@@ -18,7 +19,7 @@ export const MyTripsPage = () => {
   useEffect(() => {
     if (!accessToken) return;
     fetchMyTrips();
-  }, [accessToken])
+  }, [accessToken, updateData])
 
 
   return (

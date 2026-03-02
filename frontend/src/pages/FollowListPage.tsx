@@ -27,7 +27,6 @@ export const FollowListPage = () => {
 
         const fetchedUsers = await response.json();
         setUsers(fetchedUsers.response[listType]);
-        
       } catch (err) {
         console.log("Fetch error:", err);
         setError(true);
@@ -71,7 +70,7 @@ export const FollowListPage = () => {
               <h2 className="font-semibold mb-1">
                 Something went wrong
               </h2>
-              <p className="text-sm">{error}</p>
+              <p className="text-sm">Something went wrong.</p>
             </div>
           </div>
         )}
