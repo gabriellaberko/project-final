@@ -1,8 +1,21 @@
 import { TripCardProps } from "../../types/interfaces";
+import { useNavigate } from "react-router-dom";
 
 export const MyTripCard = ({ trip }: TripCardProps) => {
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate(`/trips/${trip._id}`);
+  };
+
   return (
-    <div className="relative bg-white rounded-xl shadow-md hover:shadow-lg transition h-48 flex items-center justify-center cursor-pointer">
+    <div className="
+      relative bg-white rounded-xl
+      shadow-md hover:shadow-lg transition
+      h-48 flex items-center justify-center
+      cursor-pointer
+    "
+      onClick={handleCardClick}>
 
       {/* Privacy tag top right */}
       <span className="absolute top-4 right-4 text-xs px-3 py-1 bg-white rounded-full shadow-sm">
