@@ -5,6 +5,8 @@ import { SearchBar } from "../components/common/SearchBar";
 import { useTripStore } from "../stores/TripStore";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
+import Player from "lottie-react";
+import exploreAnimation from "../assets/explore-animation.json";
 
 
 export const ExplorePage = () => {
@@ -63,8 +65,13 @@ export const ExplorePage = () => {
 
   return (
     <div className="px-6 py-8">
-      <div className="w-full h-72 bg-gray-200 rounded-2xl mb-10 flex items-center justify-center">
-        <p className="text-gray-500">Lottie animation</p>
+      <div className="w-full h-72 rounded-2xl mb-10 flex items-center justify-center overflow-hidden">
+        <Player
+          animationData={exploreAnimation}
+          loop
+          autoplay
+          style={{ width: '100%', height: '100%' }}
+        />
       </div>
 
       {/* SearchBar */}
