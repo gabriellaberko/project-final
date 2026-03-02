@@ -4,6 +4,7 @@ import { UserProfileInterface } from "../types/interfaces";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
 import { EmptyState } from "../components/status/EmptyState";
+import Avatar from "../assets/avatar.png";
 
 
 export const FollowListPage = () => {
@@ -70,20 +71,26 @@ export const FollowListPage = () => {
             ? "No followers yet" 
             : "Not following anyone yet"} />
         }
-
-        {/* TO DO: Replace with proper user cards with avatar */}
-        {!loading && !error && users && users.length > 0 && (
-          users.map((user) =>(
-            <Link
-            key={user._id}
-            to={`/profile/${user._id}`}
-            >
-              <img src={user.avatarUrl} alt="" />
-              <h2>{user.userName}</h2>
-              {/* <MainBtn onClick={}></MainBtn> */}
-            </Link>
-          ))
+        <div className="flex flex-col gap-6">
+          {!loading && !error && users && users.length > 0 && (
+            users.map((user) =>(
+              <Link
+              key={user._id}
+              to={`/profile/${user._id}`}
+              >
+                <div className="flex gap-1">
+                  <img 
+                    src={user.avatarUrl || Avatar}
+                    alt="Profile picture"
+                    className="w-12 h-12 rounded-full object-cover shrink-0" 
+                  />
+                  <img src={user.avatarUrl} alt="" />
+                  <h2>{user.userName}</h2>
+                </div>
+              </Link>
+            ))
           )}
+        </div>
       </div>
     </div>
   );
