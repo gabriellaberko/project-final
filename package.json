@@ -9,6 +9,7 @@
     "@types/react-dom": "^19.2.3"
   },
   "dependencies": {
-    "@mui/icons-material": "^7.3.8"
+    "@mui/icons-material": "^7.3.8",
+    "lottie-react": "^2.4.1"
   }
 }

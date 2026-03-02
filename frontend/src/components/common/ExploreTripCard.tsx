@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "../../assets/avatar.png";
 
 
-export const ExploreTripCard = ({ trip }: TripCardProps) => {
+export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const { isStarredByUser, isTripCreator } = useTripPermissions(trip);
   const starTrip = useTripStore(state => state.starTrip);
@@ -21,36 +21,49 @@ export const ExploreTripCard = ({ trip }: TripCardProps) => {
   return (
     <div
       onClick={handleCardClick}
-      className="
-    group
-    bg-white
-    rounded-2xl
-    shadow-md
-    hover:shadow-xl
-    transition-all
-    duration-300
-    cursor-pointer
-    overflow-hidden
-    flex
-    flex-col
-  "
+      className={`
+        group
+        bg-white
+        rounded-2xl
+        shadow-md
+        hover:shadow-xl
+        transition-all
+        duration-300
+        cursor-pointer
+        overflow-hidden
+         ${variant === "horizontal"
+          ? "flex flex-col md:flex-row md:h-80"
+          : "flex flex-col"
+        }
+      `}
     >
 
       {/* IMAGE */}
-      <div className="w-full">
+      <div className={`
+         ${variant === "horizontal"
+          ? "w-full md:w-5/12 md:order-2"
+          : "w-full"
+        }
+      `}>
         <img
           src={trip.imageUrl}
           alt={trip.destination}
-          className="
-        w-full
-        h-48
-        object-cover
-      "
+          className={`
+            w-full
+            object-cover
+            ${variant === "horizontal" ? "h-56 md:h-full" : "h-48"}
+          `}
         />
       </div>
 
       {/* CONTENT */}
-      <div className="p-6 flex flex-col grow">
+      <div className={`
+        p-6
+        flex
+        flex-col
+        ${variant === "horizontal" ? "md:w-7/12 md:order-1" : "grow"}
+       `}
+      >
 
         {/* HEADER */}
         <div className="flex items-start justify-between gap-3">
@@ -66,7 +79,7 @@ export const ExploreTripCard = ({ trip }: TripCardProps) => {
           </h3>
 
           {isAuthenticated && !isTripCreator && (
-            <div className="shrink-0">
+            <div className="shrink-0 flex items-center gap-2">
               <StarBtn
                 onClick={
                   isStarredByUser
@@ -75,6 +88,9 @@ export const ExploreTripCard = ({ trip }: TripCardProps) => {
                 }
                 isStarredByUser={isStarredByUser}
               />
+              <span className="text-sm text-gray-500 font-medium">
+                {trip.starredBy?.length || 0}
+              </span>
             </div>
           )}
         </div>
@@ -107,3 +123,6 @@ export const ExploreTripCard = ({ trip }: TripCardProps) => {
     </div>
   );
 };
+
+// TODO: Fix the design.
+// TODO: Fix what to show here, more than x likes? 

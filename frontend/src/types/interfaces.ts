@@ -60,6 +60,7 @@ export interface TripCardProps {
   trip: TripInterFace;
   onClick?: () => void;
   showPrivacy?: boolean;
+  variant?: "vertical" | "horizontal";
 };
 
 export interface DayCardProps {
