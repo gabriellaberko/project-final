@@ -88,47 +88,45 @@ router.post("/login", async (req, res) => {
 // Get profile
 router.get("/profile", authenticateUser, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password")
-    res.status(200).json(user)
+    const user = await User.findById(req.user._id).select("-password");
+    res.status(200).json(user);
   } catch (err) {
     res.status(500).json({
       success: false,
       message: "Failed to fetch user",
       error: err instanceof Error ? err.message : String(err)
-    })
+    });
   }
-})
+});
 
 // Edit profile
 router.patch("/profile", authenticateUser, async (req, res) => {
   try {
-    const { userName, bio, isPublic } = req.body
+    const { userName, bio, isPublic } = req.body;
 
-    const updates: any = {}
-    if (userName) updates.userName = userName
-    if (bio !== undefined) updates.bio = bio
-    if (isPublic !== undefined) updates.isPublic = isPublic
+    const updates: any = {};
+    if (bio !== undefined) updates.bio = bio;
 
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,
       { $set: updates },
       { new: true, runValidators: true }
-    ).select("-password")
+    ).select("-password");
 
-    res.status(200).json(updatedUser)
+    res.status(200).json(updatedUser);
 
   } catch (err) {
     res.status(500).json({
       success: false,
       message: "Failed to update profile"
-    })
+    });
   }
-})
+});
 
 // Get public profile of another user
 router.get("/:userId", async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId).select("-password -email -accessToken")
+    const user = await User.findById(req.params.userId).select("-password -email -accessToken");
 
     if (!user) {
       return res.status(404).json({
@@ -149,7 +147,7 @@ router.get("/:userId", async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch user"
-    })
+    });
   }
 });
 
