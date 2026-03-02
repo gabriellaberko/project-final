@@ -13,6 +13,7 @@ import Card from "@mui/joy/Card";
 import Button from "@mui/joy/Button";
 
 export const CreateTripForm = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [tripName, setTripName] = useState("");
@@ -25,6 +26,7 @@ export const CreateTripForm = () => {
   const [isFetchingImages, setIsFetchingImages] = useState(false);
 
   const navigate = useNavigate();
+  const accessToken = useAuthStore(state => state.accessToken);
   const fetchCityImages = useTripStore(state => state.fetchCityImages);
   const createTrip = useTripStore(state => state.createTrip);
 
@@ -32,6 +34,35 @@ export const CreateTripForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await postNewTrip(); // Awaiting in case we later add logic here (e.g., navigation after successful trip creation)
+  };
+
+  const handleCustomImageUpload = async (file: File) => {
+    if (!accessToken) {
+      setErrorMessage("Not authenticated");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(`${API_URL}/uploadImage`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+      const data = await response.json();
+
+      setSelectedImage(data.imageUrl);
+      setIsCustomImage(true);
+    } catch (err) {
+      setErrorMessage("Failed to upload image");
+    }
   };
 
   const postNewTrip = async () => {
@@ -161,7 +192,7 @@ export const CreateTripForm = () => {
             Fetch city images
           </Button>
           {images.length > 0 && (
-            <div className="flex gap-3 mt-3">
+            <div className="flex gap-3 mt-3 items-center">
               {images.map((img) => (
                 <img
                   key={img}
@@ -171,12 +202,38 @@ export const CreateTripForm = () => {
                     setSelectedImage(img);
                     setIsCustomImage(false);
                   }}
-                  className={`w-28 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img
+                  className={`w-28 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img && !isCustomImage
                     ? "border-blue-500"
                     : "border-transparent"
                     }`}
                 />
               ))}
+              <label
+                htmlFor="customImageUpload"
+                className={`w-28 h-20 flex items-center justify-center rounded-md cursor-pointer border-2 border-dashed ${isCustomImage ? "border-blue-500" : "border-gray-300"}`}>
+                {isCustomImage && selectedImage ? (
+                  <img
+                    src={selectedImage}
+                    alt="Custom preview"
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                ) : (
+                  "+ Upload"
+                )}
+              </label>
+
+              <input
+                id="customImageUpload"
+                type="file"
+                accept="image/*"
+                hidden
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    handleCustomImageUpload(e.target.files[0]);
+                  }
+                }}
+              />
             </div>
           )}
           <div>
