@@ -9,9 +9,7 @@ import { ErrorState } from "../components/status/ErrorState";
 
 // MUI & Icons
 import Avatar from "@mui/joy/Avatar";
-import Switch from "@mui/joy/Switch";
 import Button from "@mui/joy/Button";
-import Input from "@mui/joy/Input";
 import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
 
@@ -29,12 +27,9 @@ export const UserProfilePage = () => {
   const navigate = useNavigate();
   const { userId } = useParams<{ userId: string }>();
   const { userId: authUserId, accessToken } = useAuthStore();
-
   const [profile, setProfile] = useState<UserProfileInterface | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  // const [isPublic, setIsPublic] = useState(true);
   const error = useTripStore(state => state.error);
   const setError = useTripStore(state => state.setError);
   const loading = useTripStore(state => state.error);
@@ -73,9 +68,7 @@ export const UserProfilePage = () => {
 
         const data = await response.json();
         setProfile(data);
-        setUsername(data.username)
         setBio(data.bio || "");
-        // setIsPublic(data.isPublic ?? true)
       } catch (err) {
         console.error(err);
         setError(true);
@@ -105,15 +98,13 @@ export const UserProfilePage = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
         },
-        body: JSON.stringify({ bio, userName: username})
+        body: JSON.stringify({ bio })
       })
       if (response.ok) {
         const updatedData = await response.json()
         setIsEditing(false)
         setProfile(updatedData)
-        setUsername(updatedData.userName)
         setBio(updatedData.bio || "");
-        // setIsPublic(updatedData.isPublic ?? true)
       }
     } catch (err) {
       console.error(err)
@@ -173,16 +164,7 @@ export const UserProfilePage = () => {
           <Avatar size='lg' />
 
           <div className='m-5'>
-            {isEditing ? (
-              <Input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-              />
-            ) : (
-              <Typography level="h2">{profile?.userName || "Username"}</Typography>
-            )}
+            <Typography level="h2">{profile?.userName || "Username"}</Typography>
             <div className="flex gap-5">
               <div className="flex flex-row gap-5">
                 <Stat label="Trips" count={trips ? trips.length : 0} />
@@ -218,17 +200,6 @@ export const UserProfilePage = () => {
         <div className="mb-10">
           {isOwner ? (
             <div>
-              {/* {isEditing && (
-                <div className="flex items-center gap-3 my-4">
-                  <Typography level="body-sm">Public</Typography>
-                  <Switch
-                    checked={!isPublic}
-                    onChange={(e) => setIsPublic(!e.target.checked)}
-                  />
-                  <Typography level="body-sm">Private</Typography>
-                </div>
-              )} */}
-
               <div className="flex gap-2">
                 {isEditing ? (
                   <div className="flex gap-5">
