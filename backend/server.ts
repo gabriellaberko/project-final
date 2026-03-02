@@ -2,10 +2,18 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import "dotenv/config";
+import { v2 as cloudinary } from "cloudinary";
 import listEndpoints from "express-list-endpoints";
 import userRoutes from "./routes/userRoutes";
 import tripRoutes from "./routes/tripRoutes";
+import cityImagesRoutes from "./routes/cityImages";
 
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const port = process.env.PORT || 8080;
 const app = express();
@@ -26,6 +34,7 @@ app.get("/", (req, res) => {
 
 app.use("/users", userRoutes);
 app.use("/trips", tripRoutes);
+app.use("/city-images", cityImagesRoutes);
 
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/final-project";

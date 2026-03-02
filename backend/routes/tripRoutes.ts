@@ -1,12 +1,13 @@
 import express from "express";
 import { Trip } from "../models/Trip";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { authenticateUser } from "../middlewares/authMiddleware";
 import { optionalAuthenticateUser } from "../middlewares/optionalAuthenticateUser";
 import mongoose from "mongoose";
 
 
 const router = express.Router();
+
 
 // Repetetive ownership logic
 const getTripIfOwner = async (
@@ -35,6 +36,65 @@ const getTripIfOwner = async (
   return trip;
 };
 
+// Route to move an activity
+router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId, dayId, activityId } = req.params;
+    const { newIndex } = req.body;
+
+    const trip = await getTripIfOwner(tripId as string, req.user!._id, res);
+
+    if (!trip) return;
+
+    let moveActivity: any = null
+
+    for (const day of trip.days) {
+      const act = day.activities.id(activityId as any)
+      if (act) {
+        moveActivity = act.toObject()
+        day.activities.pull(activityId)
+        break
+      }
+    }
+
+    if (!moveActivity) {
+      return res.status(404).json({
+        success: false,
+        message: "Activity not found"
+      })
+    }
+    const targetDay = trip.days.id(dayId as any)
+    if (!targetDay) {
+      return res.status(404).json({
+        success: false,
+        message: "Day not found"
+      })
+    }
+
+    const insertIndex = typeof newIndex === "number"
+      ? Math.max(0, Math.min(newIndex, targetDay.activities.length))
+      : targetDay.activities.length
+
+    targetDay.activities.splice(insertIndex, 0, moveActivity)
+
+    trip.markModified("days")
+    const updatedTrip = await trip.save()
+
+    return res.status(200).json({
+      success: true,
+      message: "Activity moved successfully",
+      response: updatedTrip,
+    })
+
+  } catch (err) {
+    console.error("Error moving activity:", err)
+    return res.status(500).json({
+      success: false,
+      message: "Failed to move activity",
+      error: err instanceof Error ? err.message : String(err)
+    })
+  }
+})
 
 // Route to get all trips for view only when not authenticated.
 router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) => {
@@ -136,6 +196,13 @@ router.get("/user/:userId", optionalAuthenticateUser, async (req: Request, res: 
     return res.status(200).json({
       success: true,
       response: userTrips,
+router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const starredTrips = await Trip.find({ starredBy: req.user._id }).populate("creator", "userName");
+
+    return res.status(200).json({
+      success: true,
+      response: starredTrips,
       message: "Success"
     });
 
@@ -207,7 +274,7 @@ router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Respo
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
   try {
-    const { tripName, destination, isPublic, numberOfDays } = req.body;
+    const { tripName, destination, isPublic, numberOfDays, imageUrl, isCustomImage } = req.body;
 
     // Possible to not add any days, change this if we want to have min number of days = 1. 
     const totalDays = Number(numberOfDays) || 0;
@@ -225,7 +292,9 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
       destination,
       days,
       creator: req.user!._id,
-      isPublic
+      isPublic,
+      imageUrl,
+      isCustomImage: isCustomImage ?? false
     });
 
     const savedNewTrip = await newTrip.save();
@@ -239,6 +308,167 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
     return res.status(400).json({
       success: false,
       message: "Failed to save trip to database",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to update trip privacy
+router.patch("/:tripId/privacy", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    const { isPublic } = req.body;
+
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
+
+    if (!trip) return;
+
+    if (typeof isPublic !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "isPublic must be a boolean"
+      });
+    }
+
+    trip.isPublic = isPublic;
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Trip privacy updated successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update trip privacy",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+// Route to update trip image
+router.patch("/:tripId/image", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    const { imageUrl, isCustomImage } = req.body;
+
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
+
+    if (!trip) return;
+
+    trip.imageUrl = imageUrl;
+    trip.isCustomImage = isCustomImage ?? false;
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Trip image updated successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update trip image",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to star a trip
+router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    if (!trip.isPublic && !trip.creator.equals(req.user._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to star this trip"
+      });
+    }
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $addToSet: { starredBy: req.user._id } }, // Add ID, only if not there
+      { new: true, runValidators: true }
+    ).populate("creator", "userName");
+
+    return res.status(200).json({
+      success: true,
+      response: starredTrip,
+      message: "Trip starred successfully"
+    });
+
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Could not star trip",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to un-star a trip
+router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    console.log(tripId)
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found"
+      });
+    }
+
+    if (!trip.isPublic && !trip.creator.equals(req.user._id)) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized to unstar this trip"
+      });
+    }
+
+    const starredTrip = await Trip.findOneAndUpdate(
+      { _id: tripId },
+      { $pull: { starredBy: req.user._id } }, // Remove user ID
+      { new: true, runValidators: true }
+    ).populate("creator", "userName");
+
+    return res.status(200).json({
+      success: true,
+      response: starredTrip,
+      message: "Trip unstarred successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Could not unstar trip",
       error: err instanceof Error ? err.message : String(err)
     });
   }
@@ -362,7 +592,7 @@ router.delete("/:tripId/days/:dayId", authenticateUser, async (req: Request, res
   }
 });
 
-// Route to add actitivty
+// Route to add activity
 router.post("/:tripId/days/:dayId/activities", authenticateUser, async (req: Request, res: Response) => {
   try {
     const { tripId, dayId } = req.params;
@@ -473,6 +703,8 @@ router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, as
     });
   }
 });
+
+
 
 // Route to delete an activity
 router.delete("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {

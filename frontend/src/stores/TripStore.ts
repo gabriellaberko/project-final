@@ -40,7 +40,7 @@ export const useTripStore = create<TripState>((set, get) => ({
   setTrip: (trip) => set({ trip }),
 
   // For setting several trips
-  trips: null,
+  trips: [],
   setTrips: (trips) => set({ trips }),
 
   fetchMyTrips: async () => {
@@ -112,7 +112,7 @@ export const useTripStore = create<TripState>((set, get) => ({
   },
 
   removeDay: async (tripId, dayId) => {
-    const url = `${API_URL}/trips/${tripId}/days/${dayId}`;   
+    const url = `${API_URL}/trips/${tripId}/days/${dayId}`;
     const { accessToken } = useAuthStore.getState();
     const { setUpdateData } = get();
 
@@ -137,7 +137,7 @@ export const useTripStore = create<TripState>((set, get) => ({
     }
   },
 
-  addDay: async (tripId) => { 
+  addDay: async (tripId) => {
     const url = `${API_URL}/trips/${tripId}/days`;
     const { accessToken } = useAuthStore.getState();
     const { setUpdateData } = get();
@@ -147,10 +147,10 @@ export const useTripStore = create<TripState>((set, get) => ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -158,13 +158,41 @@ export const useTripStore = create<TripState>((set, get) => ({
       await response.json();
       setUpdateData();
 
-    } catch (err) { 
+    } catch (err) {
       console.log("Fetch error:", err);
     }
   },
 
-  removeActivity: async (tripId, dayId, activityId) => { 
-    const url = `${API_URL}/trips/${tripId}/days/${dayId}/activities/${activityId}`; 
+  moveActivity: async (activityId, newDayId, newIndex) => {
+    const { trip, setUpdateData } = get()
+    const { accessToken } = useAuthStore.getState()
+
+    if (!trip) return
+
+    const url = `${API_URL}/trips/${trip._id}/days/${newDayId}/activities/${activityId}/move`
+
+    try {
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+        body: JSON.stringify({ newIndex })
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to move activity: ${response.status}`)
+      }
+      setUpdateData()
+
+    } catch (err) {
+      console.error(err)
+    }
+  },
+
+  removeActivity: async (tripId, dayId, activityId) => {
+    const url = `${API_URL}/trips/${tripId}/days/${dayId}/activities/${activityId}`;
     const { accessToken } = useAuthStore.getState();
     const { setUpdateData } = get();
 
@@ -173,10 +201,10 @@ export const useTripStore = create<TripState>((set, get) => ({
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
       });
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -184,62 +212,172 @@ export const useTripStore = create<TripState>((set, get) => ({
       await response.json();
       setUpdateData();
 
-    } catch (err) { 
+    } catch (err) {
       console.log("Fetch error:", err);
     }
   },
 
-  starTrip: async (tripId) => { 
+  starTrip: async (tripId) => {
     const url = `${API_URL}/trips/${tripId}/star`;
     const { accessToken } = useAuthStore.getState();
-    const { setUpdateData } = get();
 
     try {
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
       });
-      
+
+      const data = await response.json();
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      await response.json();
-      setUpdateData();
+      set((state) => ({
+        trips: state.trips.map((trip) =>
+          trip._id === tripId ? data.response : trip
+        ),
+        trip: state.trip?._id === tripId
+          ? data.response
+          : state.trip
+      }));
 
-    } catch (err) { 
+    } catch (err) {
       console.log("Fetch error:", err);
     }
   },
 
-    unstarTrip: async (tripId) => { 
+  unstarTrip: async (tripId) => {
     const url = `${API_URL}/trips/${tripId}/unstar`;
     const { accessToken } = useAuthStore.getState();
-    const { setUpdateData } = get();
 
     try {
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
       });
-      
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      set((state) => ({
+        trips: state.trips.map((trip) =>
+          trip._id === tripId ? data.response : trip
+        ),
+        trip: state.trip?._id === tripId
+          ? data.response
+          : state.trip
+      }));
+
+    } catch (err) {
+      console.log("Fetch error:", err);
+    }
+  },
+
+  updatePrivacy: async (tripId, isPublic) => {
+    const url = `${API_URL}/trips/${tripId}/privacy`;
+    const { accessToken } = useAuthStore.getState();
+
+    try {
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+        body: JSON.stringify({ isPublic })
+      });
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       await response.json();
-      setUpdateData();
+      set((state) => ({ trip: state.trip ? { ...state.trip, isPublic } : null }));
 
-    } catch (err) { 
+    } catch (err) {
       console.log("Fetch error:", err);
     }
   },
 
+  fetchCityImages: async (city) => {
+    const { accessToken } = useAuthStore.getState();
 
+    if (!accessToken) return null;
+
+    try {
+      const response = await fetch(
+        `${API_URL}/city-images?city=${city}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to fetch images");
+      }
+
+      return data.images as string[];
+
+    } catch (err) {
+      console.error("Error fetching city images:", err);
+      return null;
+    }
+  },
+
+  createTrip: async ({
+    tripName,
+    destination,
+    numberOfDays,
+    isPublic,
+    imageUrl,
+    isCustomImage
+  }) => {
+    const { accessToken } = useAuthStore.getState();
+
+    if (!accessToken) return null;
+
+    try {
+      const response = await fetch(`${API_URL}/trips`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          tripName,
+          destination,
+          numberOfDays,
+          isPublic,
+          imageUrl,
+          isCustomImage
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || "Failed to create trip");
+      }
+
+      return data.response._id as string;
+
+    } catch (err) {
+      console.error("Error creating trip:", err);
+      return null;
+    }
+  }
 }));

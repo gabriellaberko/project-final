@@ -20,17 +20,12 @@ export const DayGrid = ({ columns = 4 }: DayGridProps) => {
     <>
       <div className={gridClass}>
         {trip!.days.map((day) => (
-            <DayCard
-              key={day._id}
-              day={day}
-            />
+          <DayCard
+            key={day._id}
+            day={day}
+          />
         ))}
       </div>
-      {isAuthenticated &&
-        <div>
-          <MainBtn onClick={() => addDay(trip!._id)}>Add day</MainBtn>
-        </div>
-      }
     </>
   )
 };

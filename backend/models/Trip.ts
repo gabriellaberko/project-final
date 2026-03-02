@@ -30,6 +30,14 @@ const tripSchema = new Schema({
     type: String,
     required: true
   },
+  imageUrl: {
+    type: String,
+    default: ""
+  },
+  isCustomImage: {
+    type: Boolean,
+    default: false
+  },
   days: [daySchema],
   creator: {
     type: mongoose.Schema.Types.ObjectId,

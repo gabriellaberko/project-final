@@ -115,6 +115,7 @@ export const MyTripsPage = () => {
           <TripsGrid
             trips={trips}
             columns={3}
+            showPrivacy={true}
           />
         )}
 
