@@ -61,7 +61,7 @@ export const SidebarNav = () => {
       </nav>
 
       {/* desktop sidebar */}
-      <aside className="navbar hidden md:flex w-64 h-screen shrink-0 flex-col justify-between p-5 shadow-lg overflow-auto">
+      <aside className="navbar hidden md:flex w-64 h-screen shrink-0 flex-col justify-between p-5 shadow-lg overflow-auto sticky top-0">
         <div>
           <div className="text-2xl font-semibold"
             onClick={() => navigate("/dashboard")}
