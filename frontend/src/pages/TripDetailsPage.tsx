@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTripStore } from "../stores/TripStore";
 import { DayGrid } from "../components/common/DayGrid";
 import { StarBtn } from "../components/buttons/StarBtn";
@@ -61,15 +61,24 @@ export const TripDetailsPage = () => {
       )} */}
         
       {trip &&
-      <div className="text-center flex flex-col items-center">
-        <h1>My {trip.destination} Trip</h1>
-        {isAuthenticated && !isTripCreator &&
-          (
-          isStarredByUser
-            ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
-            : <StarBtn onClick = { () => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
-          )
-        }         
+      <div className="text-center flex flex-col items-center gap-4">
+        <div className="mb-4">
+          <div className="flex items-center gap-4 mb-4">
+            <h1>My {trip.destination} Trip</h1>
+            {isAuthenticated && !isTripCreator &&
+              (
+              isStarredByUser
+                ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                : <StarBtn onClick = { () => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
+              )
+            } 
+          </div>
+          {!isTripCreator && 
+          <Link to={`/profile/${trip.creator._id}`}>
+          <h2>Created by: {trip.creator.userName}</h2>
+          </Link>
+          }   
+        </div>     
         {/* Grid State */}
         {!loading && !error && (
             <DayGrid
