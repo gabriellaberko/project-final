@@ -13,7 +13,7 @@ import Stack from "@mui/joy/Stack";
 import FormLabel from "@mui/joy/FormLabel";
 import FormHelperText from "@mui/joy/FormHelperText";
 import Card from "@mui/joy/Card";
-import Button from "@mui/joy/Button";
+
 
 export const CreateTripForm = () => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -210,7 +210,7 @@ export const CreateTripForm = () => {
               <legend className="text-sm font-semibold text-gray-800 mb-2">
                 Choose a cover image
               </legend>
-              <p className="text-xs text-gray-500 mb-4">
+              <p className="text-xs text-gray-500 mb-4 ml-0">
                 Select one of the suggestions or upload your own image.
               </p>
 
