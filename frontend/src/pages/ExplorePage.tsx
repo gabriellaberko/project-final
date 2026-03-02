@@ -5,6 +5,7 @@ import { SearchBar } from "../components/common/SearchBar";
 import { useTripStore } from "../stores/TripStore";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
+import { EmptyState } from "../components/status/EmptyState";
 import Player from "lottie-react";
 import exploreAnimation from "../assets/explore-animation.json";
 
@@ -96,6 +97,11 @@ export const ExplorePage = () => {
       {/* Error State */}
       {!loading && error && 
         <ErrorState text="We couldn't load trips right now. Please try again in a moment." />
+      }
+
+      {/* Empty State */}
+      {!loading && !error && trips && trips.length === 0 &&
+        <EmptyState headline="No matching trips" text="There are no trips matching your current filter. Try something else!" />
       }
 
       {!loading && !error && trips && trips.length > 0 && (
