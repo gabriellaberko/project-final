@@ -7,21 +7,21 @@ import { useTripStore } from "../stores/TripStore";
 
 export const ExplorePage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const loading = useTripStore(state => state.loading);
+  const setLoading = useTripStore(state => state.setLoading);
+  const error = useTripStore(state => state.error);
+  const setError = useTripStore(state => state.setError);
   const trips = useTripStore(state => state.trips);
   const setTrips = useTripStore(state => state.setTrips);
-
-
   const accessToken = useAuthStore(state => state.accessToken);
 
-  const url = `${API_URL}/trips`;
 
   const fetchPublicTrips = async (destination?: string) => {
+    const url = `${API_URL}/trips`;
+    setLoading(true);
+    setError(false);
+    
     try {
-      setLoading(true);
-      setError(null);
-
       const headers: HeadersInit = {};
 
       // Send token only if it exists
@@ -47,7 +47,8 @@ export const ExplorePage = () => {
       setTrips(data.response);
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      console.log("Fetch error:", err);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -82,10 +83,10 @@ export const ExplorePage = () => {
 
       {/* Error */}
       {!loading && error && (
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500">Something went wrong</p>
       )}
 
-      {!loading && !error && trips.length > 0 && (
+      {!loading && !error && trips && trips.length > 0 && (
         <div className="px-4 sm:px-6 lg:px-8">
           <TripsGrid
             trips={trips}
