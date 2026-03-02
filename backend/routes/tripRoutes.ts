@@ -96,10 +96,10 @@ router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUse
   }
 });
 
-// Route to get all trips for view only when not authenticated.
+// Route to get all trips, for view only when not authenticated.
 router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) => {
   try {
-    const { destination } = req.query; // If it should be possible to filter on destination, can add more
+    const { destination, sort } = req.query; // If it should be possible to filter on destination, can add more
 
     const query: any = { isPublic: true };
 
@@ -117,9 +117,22 @@ router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) =>
       }
     }
 
-    const publicTrips = await Trip
+    let publicTrips = await Trip
       .find(query)
       .populate("creator", "userName") // If we want to show who created the trip, otherwise remove
+
+    if (!sort || sort === "newest") {
+      publicTrips = publicTrips.sort((a, b) =>
+        new Date(b.createdAt).getTime() -
+        new Date(a.createdAt).getTime()
+      );
+    }
+
+    if (sort === "likes") {
+      publicTrips = publicTrips.sort(
+        (a, b) => b.starredBy.length - a.starredBy.length
+      );
+    }
 
     return res.status(200).json({
       success: true,
@@ -168,12 +181,12 @@ router.get("/my", authenticateUser, async (req: Request, res: Response) => {
 
 
 // Route to a user's starred trips
-router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
+router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => {
   try {
     const starredTrips = await Trip.find({ starredBy: req.user._id }).populate("creator", "userName");
     res.json(starredTrips);
-    
-  } catch (err) { 
+
+  } catch (err) {
     return res.status(500).json({
       success: false,
       message: "Could not find any starred trips",
