@@ -70,7 +70,7 @@ export type AvatarProps = {
 
 export type BtnProps = {
   children?: string;
-  onClick: () => void;
+  onClick?: () => void;
   isStarredByUser?: boolean;
   className?: string;
 };

@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useTripStore } from "../../stores/TripStore";
+import { MainBtn } from "../buttons/MainBtn";
+import { PrimaryBtn } from "../buttons/PrimaryBtn";
+import { SecondaryBtn } from "../buttons/SecondaryBtn";
 
 // MUI imports
 import Input from "@mui/joy/Input";
@@ -24,6 +27,8 @@ export const CreateTripForm = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isCustomImage, setIsCustomImage] = useState(false);
   const [isFetchingImages, setIsFetchingImages] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [localPreview, setLocalPreview] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const accessToken = useAuthStore(state => state.accessToken);
@@ -41,6 +46,8 @@ export const CreateTripForm = () => {
       setErrorMessage("Not authenticated");
       return;
     }
+
+    setIsUploadingImage(true);
 
     const formData = new FormData();
     formData.append("image", file);
@@ -62,6 +69,8 @@ export const CreateTripForm = () => {
       setIsCustomImage(true);
     } catch (err) {
       setErrorMessage("Failed to upload image");
+    } finally {
+      setIsUploadingImage(false);
     }
   };
 
@@ -117,10 +126,15 @@ export const CreateTripForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex justify-center items-center"
-      style={{ height: "100vh" }}
+      className="min-h-screen flex items-center justify-center bg-gray-50 px-4"
     >
-      <Card sx={{ width: 600 }}>
+      <Card
+        sx={{
+          width: 600,
+          p: 4,
+          borderRadius: "10px",
+          boxShadow: "0 15px 40px rgba(0,0,0,0.08)",
+        }}>
         <Stack gap={4}>
           <h2>Create trip</h2>
           <div>
@@ -183,58 +197,99 @@ export const CreateTripForm = () => {
               }}
             />
           </div>
-          <Button
+          <PrimaryBtn
             type="button"
             onClick={handleFetchImages}
-            loading={isFetchingImages}
-            sx={{ mt: 1 }}
+            disabled={isFetchingImages}
           >
-            Fetch city images
-          </Button>
-          {images.length > 0 && (
-            <div className="flex gap-3 mt-3 items-center">
-              {images.map((img) => (
-                <img
-                  key={img}
-                  src={img}
-                  alt="city option"
-                  onClick={() => {
-                    setSelectedImage(img);
-                    setIsCustomImage(false);
-                  }}
-                  className={`w-28 h-20 object-cover rounded-md cursor-pointer border-2 ${selectedImage === img && !isCustomImage
-                    ? "border-blue-500"
-                    : "border-transparent"
-                    }`}
-                />
-              ))}
-              <label
-                htmlFor="customImageUpload"
-                className={`w-28 h-20 flex items-center justify-center rounded-md cursor-pointer border-2 border-dashed ${isCustomImage ? "border-blue-500" : "border-gray-300"}`}>
-                {isCustomImage && selectedImage ? (
-                  <img
-                    src={selectedImage}
-                    alt="Custom preview"
-                    className="w-full h-full object-cover rounded-md"
-                  />
-                ) : (
-                  "+ Upload"
-                )}
-              </label>
+            {isFetchingImages ? "Loading..." : "Fetch city images"}
+          </PrimaryBtn>
 
-              <input
-                id="customImageUpload"
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
-                    const file = e.target.files[0];
-                    handleCustomImageUpload(e.target.files[0]);
-                  }
-                }}
-              />
-            </div>
+          {images.length > 0 && (
+            <fieldset className="mt-6">
+              <legend className="text-sm font-semibold text-gray-800 mb-2">
+                Choose a cover image
+              </legend>
+              <p className="text-xs text-gray-500 mb-4">
+                Select one of the suggestions or upload your own image.
+              </p>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {images.map((img, index) => (
+                  <button
+                    key={img}
+                    type="button"
+                    onClick={() => {
+                      setSelectedImage(img);
+                      setIsCustomImage(false);
+                      setLocalPreview(null);
+                    }}
+                    className={`relative aspect-video w-full rounded-xl overflow-hidden transition-all duration-200 focus:outline-none
+                    ${selectedImage === img && !isCustomImage
+                        ? "ring-2 ring-blue-600"
+                        : "hover:shadow-md hover:scale-[1.02]"
+                      }`}
+                    aria-pressed={selectedImage === img && !isCustomImage}
+                    aria-label={`Select suggested image ${index + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+
+                {/* Upload button */}
+                <label
+                  htmlFor="customImageUpload"
+                  className={`relative aspect-video w-full flex items-center justify-center rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200
+                  ${isCustomImage
+                      ? "ring-2 ring-blue-600"
+                      : "border-gray-300 hover:border-gray-400 hover:shadow-md hover:scale-[1.02]"
+                    }`}
+                  aria-label="Upload your own image"
+                >
+                  {localPreview ? (
+                    <>
+                      <img
+                        src={localPreview}
+                        alt="Selected custom preview"
+                        className="w-full h-full object-cover rounded-xl"
+                      />
+                      {isUploadingImage && (
+                        <div
+                          className="absolute inset-0 bg-black/40 flex items-center justify-center"
+                          aria-live="polite"
+                        >
+                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-sm font-medium text-gray-600">
+                      + Upload
+                    </span>
+                  )}
+                </label>
+
+                <input
+                  id="customImageUpload"
+                  type="file"
+                  accept="image/*"
+                  className="sr-only"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const file = e.target.files[0];
+                      const previewUrl = URL.createObjectURL(file);
+                      setLocalPreview(previewUrl);
+                      setIsCustomImage(true);
+                      handleCustomImageUpload(file);
+                    }
+                  }}
+                />
+              </div>
+            </fieldset>
           )}
           <div>
             <FormLabel htmlFor="days">Amount of days</FormLabel>
@@ -306,15 +361,20 @@ export const CreateTripForm = () => {
           {errorMessage && (
             <FormErrorMessage errorMessage={errorMessage} />
           )}
-          <div className="flex justify-end">
-            <Button
+          <div className="flex justify-end gap-3 pt-6">
+            <SecondaryBtn
+              type="button"
+              onClick={() => navigate(-1)}
+            >
+              Cancel
+            </SecondaryBtn>
+            <MainBtn
               type="submit"
               disabled={isLoading}
-              size="lg"
-              sx={{ width: "40%" }}
+              className="md:w-40"
             >
               {isLoading ? "Saving.." : "Save"}
-            </Button>
+            </MainBtn>
           </div>
         </Stack>
       </Card>
