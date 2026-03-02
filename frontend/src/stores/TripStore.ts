@@ -20,6 +20,7 @@ interface TripState {
   moveActivity: (activityId: string, newDayId: string, newIndex: number) => Promise<void>;
   starTrip: (tripId: string) => Promise<void>;
   unstarTrip: (tripId: string) => Promise<void>;
+  removeTrip: (tripId: string) => void;
   fetchMyTrips: () => void;
   fetchPublicTripsFromUser: (userId: string) => void;
   updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
@@ -317,6 +318,13 @@ export const useTripStore = create<TripState>((set, get) => ({
     } catch (err) {
       console.log("Fetch error:", err);
     }
+  },
+
+  removeTrip: (tripId) => {
+    set((state) => ({
+      trips: state.trips ? state.trips.filter(trip => trip._id !== tripId) : null,
+      trip: state.trip?._id === tripId ? null : state.trip
+    }));
   },
 
   updatePrivacy: async (tripId, isPublic) => {
