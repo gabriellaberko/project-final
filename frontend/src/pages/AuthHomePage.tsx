@@ -9,7 +9,7 @@ export const AuthHomePage = () => {
   const error = useTripStore(state => state.error);
 
   useEffect(() => {
-    fetchPublicTrips("?sort=likes");
+    fetchPublicTrips("?sort=likes&limit=5");
   }, [fetchPublicTrips]);
 
   if (loading) {

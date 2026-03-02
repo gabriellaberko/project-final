@@ -99,7 +99,7 @@ router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUse
 // Route to get all trips, for view only when not authenticated.
 router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) => {
   try {
-    const { destination, sort } = req.query; // If it should be possible to filter on destination, can add more
+    const { destination, sort, limit } = req.query; // If it should be possible to filter on destination, can add more
 
     const query: any = { isPublic: true };
 
@@ -132,6 +132,10 @@ router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) =>
       publicTrips = publicTrips.sort(
         (a, b) => b.starredBy.length - a.starredBy.length
       );
+    }
+
+    if (limit) {
+      publicTrips = publicTrips.slice(0, Number(limit));
     }
 
     return res.status(200).json({

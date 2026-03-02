@@ -40,7 +40,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
       {/* IMAGE */}
       <div className={`
          ${variant === "horizontal"
-          ? "w-full md:w-2/5 md:order-2"
+          ? "w-full md:w-5/12 md:order-2"
           : "w-full"
         }
       `}>
@@ -60,7 +60,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
         p-6
         flex
         flex-col
-        ${variant === "horizontal" ? "md:w-3/5 md:order-1" : "grow"}
+        ${variant === "horizontal" ? "md:w-7/12 md:order-1" : "grow"}
        `}
       >
 
@@ -78,7 +78,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
           </h3>
 
           {isAuthenticated && !isTripCreator && (
-            <div className="shrink-0">
+            <div className="shrink-0 flex items-center gap-2">
               <StarBtn
                 onClick={
                   isStarredByUser
@@ -87,6 +87,9 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
                 }
                 isStarredByUser={isStarredByUser}
               />
+              <span className="text-sm text-gray-500 font-medium">
+                {trip.starredBy?.length || 0}
+              </span>
             </div>
           )}
         </div>
@@ -115,3 +118,6 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
     </div>
   );
 };
+
+// TODO: Fix the design.
+// TODO: Fix what to show here, more than x likes? 
