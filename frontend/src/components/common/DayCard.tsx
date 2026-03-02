@@ -6,7 +6,7 @@ import { useTripPermissions } from "../hooks/useTripPermissions";
 import { useAuthStore } from "../../stores/AuthStore";
 import { Activity } from "../common/Activity"
 import { useDroppable } from "@dnd-kit/react"
-
+import { Trash } from "lucide-react"
 import Card from "@mui/joy/Card"
 
 export const DayCard = ({ day }: DayCardProps) => {
@@ -40,12 +40,10 @@ export const DayCard = ({ day }: DayCardProps) => {
           >
             <div className="flex flex-col w-full justify-evenly">
               {isAuthenticated && isTripCreator &&
-                <button 
+                <Trash
                   onClick={() => removeDay(trip._id, day._id)} 
-                  className="self-end cursor-pointer text-xl"
-                >
-                  x
-                </button>
+                  className="self-end cursor-pointer text-lg text-[#505050] hover:text-red-500"
+                />
               }
             </div>  
 
@@ -76,48 +74,6 @@ export const DayCard = ({ day }: DayCardProps) => {
           </Card>
         </div>
       </div>
-      {/* <div className="text-center flex flex-col items-center">
-        <div>
-          <h2 className="self-center m-2">Day {day.dayNumber}</h2>
-
-          <Card key={day.dayNumber} className="flex flex-col w-max-349 h-max-786 p-8 mx-12 shadow-md md:mx-0">
-            <div className="flex flex-col w-full justify-evenly">
-              {isAuthenticated && isTripCreator &&
-                <button 
-                  onClick={() => removeDay(trip!._id, day._id)} 
-                  className="self-end cursor-pointer text-xl"
-                >
-                  x
-                </button>
-              }
-            </div>  
-
-            <div className="flex flex-col md:items-stretch gap-2 my-4">
-
-                  {day.activities.length > 0 ? (
-                    day.activities.map((activity) => (
-                      <Activity 
-                        key={activity._id} 
-                        tripId={trip!._id} 
-                        dayId={day._id} 
-                        activity={activity}
-                      />
-                    ))
-                  ) : (
-                    <p>No activities yet</p>
-                  )}
-            </div>
-
-            <div className="flex justify-center">
-            {isAuthenticated && isTripCreator &&
-              <div>
-                <MainBtn onClick={() => navigate(`/trips/${trip!._id}/day/${day._id}/activities/new`)}>Add activity</MainBtn>
-              </div>
-            }
-            </div>
-          </Card>
-        </div>
-      </div> */}
     </>
   )
 };
