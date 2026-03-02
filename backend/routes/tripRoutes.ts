@@ -94,6 +94,57 @@ router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUse
       error: err instanceof Error ? err.message : String(err)
     })
   }
+}); 
+
+// Route to update an activity
+router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId, dayId, activityId } = req.params;
+    const { name, description, category, time, googleMapLink } = req.body;
+
+    const trip = await getTripIfOwner(tripId as string, req.user!._id, res);
+
+    if (!trip) return;
+
+    const day = trip.days.id(dayId as any);
+
+    if (!day) {
+      return res.status(404).json({
+        success: false,
+        message: "Day not found"
+      });
+    }
+
+    const activity = day.activities.id(activityId as any);
+
+    if (!activity) {
+      return res.status(404).json({
+        success: false,
+        message: "Activity not found"
+      });
+    }
+
+    if (name !== undefined) activity.name = name;
+    if (description !== undefined) activity.description = description;
+    if (category !== undefined) activity.category = category;
+    if (time !== undefined) activity.time = time;
+    if (googleMapLink !== undefined) activity.googleMapLink = googleMapLink;
+
+    const updatedTrip = await trip.save();
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Activity updated successfully"
+    });
+
+  } catch (err) {
+    console.error("Error updating activity:", err)
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update activity",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
 });
 
 // Route to get all trips for view only when not authenticated.

@@ -15,13 +15,14 @@ interface TripState {
   setTrips: (trips: TripInterFace[] | null) => void;
   removeDay: (tripId: string, dayId: string) => void;
   addDay: (tripId: string) => void;
+  editActivity: (tripId: string, dayId: string, activityId: string, data: { name?: string; description?: string; time?: string; category?: string }) => void;
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
+  moveActivity: (activityId: string, newDayId: string, newIndex: number) => Promise<void>;
   starTrip: (tripId: string) => Promise<void>;
   unstarTrip: (tripId: string) => Promise<void>;
   fetchMyTrips: () => void;
   fetchPublicTripsFromUser: (userId: string) => void;
   updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
-  moveActivity: (activityId: string, newDayId: string, newIndex: number) => Promise<void>;
   fetchCityImages: (city: string) => Promise<string[] | null>;
   createTrip: (data: { tripName: string, destination: string, numberOfDays: number, isPublic: boolean, imageUrl: string, isCustomImage: boolean }) => Promise<string | null>;
 }
@@ -153,6 +154,33 @@ export const useTripStore = create<TripState>((set, get) => ({
           "Content-Type": "application/json",
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await response.json();
+      setUpdateData();
+
+    } catch (err) {
+      console.log("Fetch error:", err);
+    }
+  },
+
+  editActivity: async (tripId, dayId, activityId, data) => {
+    const url = `${API_URL}/trips/${tripId}/days/${dayId}/activities/${activityId}`;
+    const { accessToken } = useAuthStore.getState();
+    const { setUpdateData } = get();
+
+    try {
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+        body: JSON.stringify(data)
       });
 
       if (!response.ok) {
