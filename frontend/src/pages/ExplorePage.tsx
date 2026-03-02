@@ -3,6 +3,8 @@ import { useAuthStore } from "../stores/AuthStore";
 import { TripsGrid } from "../components/common/TripsGrid";
 import { SearchBar } from "../components/common/SearchBar";
 import { useTripStore } from "../stores/TripStore";
+import { LoadingState } from "../components/status/LoadingState";
+import { ErrorState } from "../components/status/ErrorState";
 
 
 export const ExplorePage = () => {
@@ -20,7 +22,7 @@ export const ExplorePage = () => {
     const url = `${API_URL}/trips`;
     setLoading(true);
     setError(false);
-    
+
     try {
       const headers: HeadersInit = {};
 
@@ -81,10 +83,13 @@ export const ExplorePage = () => {
         </div>
       )}
 
-      {/* Error */}
-      {!loading && error && (
-        <p className="text-red-500">Something went wrong</p>
-      )}
+      {/* Loading State */}
+      {loading && <LoadingState />}
+
+      {/* Error State */}
+      {!loading && error && 
+        <ErrorState text="We couldn't load trips right now. Please try again in a moment." />
+      }
 
       {!loading && !error && trips && trips.length > 0 && (
         <div className="px-4 sm:px-6 lg:px-8">

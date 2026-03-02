@@ -7,6 +7,9 @@ import { useAuthStore } from "../stores/AuthStore";
 import { useTripPermissions } from "../components/hooks/useTripPermissions";
 import { DragDropProvider } from "@dnd-kit/react"
 import { MainBtn } from "../components/buttons/MainBtn";
+import { LoadingState } from "../components/status/LoadingState";
+import { ErrorState } from "../components/status/ErrorState";
+import { EmptyState } from "../components/status/EmptyState";
 
 
 export const TripDetailsPage = () => {
@@ -63,15 +66,6 @@ export const TripDetailsPage = () => {
 
   return (
     <>
-      {/* TO DO: Loading & Error States */}
-
-      {/* {loading && (
-      )} */}
-
-      {/* Error State */}
-      {/* {!loading && error && (
-      )} */}
-
       <DragDropProvider
         onDragEnd={(event) => {
           if (event.canceled || !trip) return;
@@ -167,6 +161,15 @@ export const TripDetailsPage = () => {
             <h2>Created by: {trip.creator.userName}</h2>
             </Link>
             }
+
+            {/* Loading State */}
+            {loading && <LoadingState />}
+
+            {/* Error State */}
+            {!loading && error && 
+              <ErrorState text="Couldn't load your trip. Please try again in a moment." />
+            }
+
             {/* Grid State */}
             {!loading && !error && (
               <DayGrid

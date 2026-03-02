@@ -1,18 +1,27 @@
-export const EmptyState = ({ text }: {text: string}) => {
-  <div className="flex flex-col items-center justify-center h-full text-center">
+import Player from "lottie-react";
+import emptyStateAnimation from "../../assets/empty-state-animation.json";
 
-    {/* Lottie placeholder */}
-    <div className="w-72 h-72 bg-gray-200 rounded-2xl mb-8" />
 
-    <h2 className="text-2xl font-semibold mb-2">
-      No trips yet
-    </h2>
+export const EmptyState = ({ headline, text }: {headline: string, text?: string}) => {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center">
 
-    <p className="text-gray-500 max-w-sm">
-      {text ??
-      "Looks like it's empty here."
-      }
-    </p>
+      {/* Lottie placeholder */}
+      <div className="mb-8">
+        <Player
+          animationData={emptyStateAnimation}
+          loop
+          autoplay
+          style={{ width: 300, height: 200 }}
+        />
+      </div>
 
-  </div>
+      {headline && <h2 className="text-2xl font-semibold mb-2">{headline ?? "Looks like it's empty here."}</h2>}
+
+      {text && <p className="text-gray-500 max-w-sm">
+        {text}
+      </p>}
+
+    </div>
+  )
 };
