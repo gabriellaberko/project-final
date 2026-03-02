@@ -119,7 +119,7 @@ router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) =>
 
     const publicTrips = await Trip
       .find(query)
-      .populate("creator", "userName") // If we want to show who created the trip, otherwise remove
+      .populate("creator", "userName avatarUrl") // If we want to show who created the trip, otherwise remove
 
     return res.status(200).json({
       success: true,
@@ -149,7 +149,7 @@ router.get("/my", authenticateUser, async (req: Request, res: Response) => {
 
     const myTrips = await Trip.find({
       creator: req.user._id
-    }).sort({ createdAt: -1 }).populate("creator", "userName");
+    }).sort({ createdAt: -1 }).populate("creator", "userName avatarUrl");
 
     return res.status(200).json({
       success: true,
@@ -170,7 +170,7 @@ router.get("/my", authenticateUser, async (req: Request, res: Response) => {
 // Route to a user's starred trips
 router.get("/my/starred", authenticateUser, async (req: Request, res: Response) => { 
   try {
-    const starredTrips = await Trip.find({ starredBy: req.user._id }).populate("creator", "userName");
+    const starredTrips = await Trip.find({ starredBy: req.user._id }).populate("creator", "userName avatarUrl");
     res.json(starredTrips);
     
   } catch (err) { 
@@ -191,7 +191,7 @@ router.get("/user/:userId", optionalAuthenticateUser, async (req: Request, res: 
     const userTrips = await Trip.find({
       creator: userId,
       isPublic: true,
-    }).sort({ createdAt: -1 }).populate("creator", "userName");
+    }).sort({ createdAt: -1 }).populate("creator", "userName avatarUrl");
 
     return res.status(200).json({
       success: true,
@@ -214,7 +214,7 @@ router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Respo
   try {
     const { tripId } = req.params;
 
-    const trip = await Trip.findById(tripId).populate("creator", "userName");
+    const trip = await Trip.findById(tripId).populate("creator", "userName avatarUrl");
 
     if (!trip) {
       return res.status(404).json({
@@ -405,7 +405,7 @@ router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Respon
       { _id: tripId },
       { $addToSet: { starredBy: req.user._id } }, // Add ID, only if not there
       { new: true, runValidators: true }
-    ).populate("creator", "userName");
+    ).populate("creator", "userName avatarUrl");
 
     return res.status(200).json({
       success: true,
@@ -449,7 +449,7 @@ router.patch("/:tripId/unstar", authenticateUser, async (req: Request, res: Resp
       { _id: tripId },
       { $pull: { starredBy: req.user._id } }, // Remove user ID
       { new: true, runValidators: true }
-    ).populate("creator", "userName");
+    ).populate("creator", "userName avatarUrl");
 
     return res.status(200).json({
       success: true,
