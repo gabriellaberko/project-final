@@ -3,15 +3,15 @@ import { Navigate } from "react-router-dom";
 import useEmblaCarousel from "embla-carousel-react"
 import AutoScroll from "embla-carousel-auto-scroll"
 import { ProfileComponent } from "../components/common/ProfileComponent";
-import hero from "../assets/hero.jpg"
-import plan from "../assets/plan.jpg"
-import share from "../assets/share.jpg"
-import explore from "../assets/explore.jpg"
-import edit from "../assets/edit.jpg"
-import mapBg from "../assets/map.png"
-import Asako from "../assets/Asako.png"
-import Gabriella from "../assets/Gabriella.png"
-import Sandra from "../assets/Sandra.png"
+import hero from "../assets/home/hero.jpg"
+import plan from "../assets/home/plan.jpg"
+import share from "../assets/home/share.jpg"
+import explore from "../assets/home/explore.jpg"
+import edit from "../assets/home/edit.jpg"
+import mapBg from "../assets/home/map.png"
+import Asako from "../assets/profile/Asako.png"
+import Gabriella from "../assets/profile/Gabriella.png"
+import Sandra from "../assets/profile/Sandra.png"
 import Card from "@mui/material/Card";
 import { ScrollReveal } from "../components/common/ScrollReveal";
 import { motion } from "framer-motion";
@@ -51,22 +51,22 @@ export const PublicHomePage = () => {
     name: "Asako",
     imgSrc: Asako,
     altText: "Profile picture of Asako",
-    githubLink: "",
-    linkedinLink: ""
+    githubLink: "https://github.com/Appilistus",
+    linkedinLink: "https://www.linkedin.com/in/asako-kanno/"
     }, 
     {
       name: "Gabriella",
       imgSrc: Gabriella,
       altText: "Profile picture of Gabriella",
-      githubLink: "",
-      linkedinLink: ""
+      githubLink: "https://github.com/gabriellaberko",
+      linkedinLink: "https://www.linkedin.com/in/gabriella-berkowicz/"
     }, 
     {
       name: "Sandra",
       imgSrc: Sandra,
       altText: "Profile picture of Sandra",
-      githubLink: "",
-      linkedinLink: ""
+      githubLink: "https://github.com/sandrahagevall",
+      linkedinLink: "https://www.linkedin.com/in/sandra-hagevall-8001b5183/"
     }
   ]
 
@@ -175,19 +175,6 @@ export const PublicHomePage = () => {
         </ScrollReveal>
       </section>
 
-      <section className="flex flex-col justify-between items-center p-4 md:p-10 my-10 md:m-20">
-        <ScrollReveal>
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-10 text-center">Meet the Explorers Behind the App</h2>
-        </ScrollReveal>
-        <ScrollReveal>
-          <div className="flex flex-col md:flex-row justify-around items-center gap-10 md:gap-5">
-            {profiles.map((profile) => (
-              <ProfileComponent key={profile.name} {...profile} />
-            ))}
-          </div>
-        </ScrollReveal>
-      </section>
-
       <section className="flex flex-col items-center my-10 md:m-20 px-4">
         <ScrollReveal>
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-5 text-center">Everything You Need to Know</h2>
@@ -212,6 +199,19 @@ export const PublicHomePage = () => {
               <p className="a"><b>A: </b>While we’re web-based, our platform is fully optimized for mobile. You can access your plans seamlessly from any browser on your phone while you're out exploring.</p>
             </motion.div>
         </motion.div>
+      </section>
+
+      <section className="flex flex-col justify-between items-center p-4 md:p-10 my-10 md:m-20">
+        <ScrollReveal>
+          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-10 text-center">Meet the Explorers Behind the App</h2>
+        </ScrollReveal>
+        <ScrollReveal>
+          <div className="flex flex-col md:flex-row justify-around items-center gap-10 md:gap-5">
+            {profiles.map((profile) => (
+              <ProfileComponent key={profile.name} {...profile} />
+            ))}
+          </div>
+        </ScrollReveal>
       </section>
 
       <footer className="text-center p-6">
