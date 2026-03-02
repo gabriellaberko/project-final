@@ -6,7 +6,7 @@ import { useAuthStore } from "../../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 
 
-export const ExploreTripCard = ({ trip }: TripCardProps) => {
+export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) => {
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const { isStarredByUser, isTripCreator } = useTripPermissions(trip);
   const starTrip = useTripStore(state => state.starTrip);
@@ -20,36 +20,49 @@ export const ExploreTripCard = ({ trip }: TripCardProps) => {
   return (
     <div
       onClick={handleCardClick}
-      className="
-    group
-    bg-white
-    rounded-2xl
-    shadow-md
-    hover:shadow-xl
-    transition-all
-    duration-300
-    cursor-pointer
-    overflow-hidden
-    flex
-    flex-col
-  "
+      className={`
+        group
+        bg-white
+        rounded-2xl
+        shadow-md
+        hover:shadow-xl
+        transition-all
+        duration-300
+        cursor-pointer
+        overflow-hidden
+         ${variant === "horizontal"
+          ? "flex flex-col md:flex-row md:h-80"
+          : "flex flex-col"
+        }
+      `}
     >
 
       {/* IMAGE */}
-      <div className="w-full">
+      <div className={`
+         ${variant === "horizontal"
+          ? "w-full md:w-2/5 md:order-2"
+          : "w-full"
+        }
+      `}>
         <img
           src={trip.imageUrl}
           alt={trip.destination}
-          className="
-        w-full
-        h-48
-        object-cover
-      "
+          className={`
+            w-full
+            object-cover
+            ${variant === "horizontal" ? "h-56 md:h-full" : "h-48"}
+          `}
         />
       </div>
 
       {/* CONTENT */}
-      <div className="p-6 flex flex-col grow">
+      <div className={`
+        p-6
+        flex
+        flex-col
+        ${variant === "horizontal" ? "md:w-3/5 md:order-1" : "grow"}
+       `}
+      >
 
         {/* HEADER */}
         <div className="flex items-start justify-between gap-3">
