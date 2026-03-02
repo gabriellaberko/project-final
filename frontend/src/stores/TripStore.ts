@@ -11,17 +11,15 @@ interface TripState {
   setError: (value: boolean) => void;
   trip: TripInterFace | null;
   setTrip: (trip: TripInterFace | null) => void;
-  removeDay: (tripId: string, dayId: string) => Promise<void>;
-  addDay: (tripId: string) => Promise<void>;
-  removeActivity: (tripId: string, dayId: string, activityId: string) => Promise<void>;
-  starTrip: (tripId: string) => Promise<void>;
-  unstarTrip: (tripId: string) => Promise<void>;
-  updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
-  trips: TripInterFace[];
-  setTrips: (trips: TripInterFace[]) => void;
-  moveActivity: (activityId: string, newDayId: string, newIndex: number) => Promise<void>;
-  fetchCityImages: (city: string) => Promise<string[] | null>;
-  createTrip: (data: { tripName: string, destination: string, numberOfDays: number, isPublic: boolean, imageUrl: string, isCustomImage: boolean }) => Promise<string | null>;
+  trips:TripInterFace[] | null;
+  setTrips: (trips: TripInterFace[] | null) => void;
+  removeDay: (tripId: string, dayId: string) => void;
+  addDay: (tripId: string) => void;
+  removeActivity: (tripId: string, dayId: string, activityId: string) => void;
+  starTrip: (tripId: string) => void;
+  unstarTrip: (tripId: string) => void;
+  fetchMyTrips: () => void;
+  fetchPublicTripsFromUser: (userId: string) => void;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -44,6 +42,74 @@ export const useTripStore = create<TripState>((set, get) => ({
   // For setting several trips
   trips: [],
   setTrips: (trips) => set({ trips }),
+
+  fetchMyTrips: async () => {
+    const url = `${API_URL}/trips/my`;
+    const { accessToken } = useAuthStore.getState();
+    const { setLoading } = get();
+    const { setError } = get();
+    const { setTrips } = get();
+    
+    setError(false);
+    setLoading(true);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || `Request failed with status ${response.status}`);
+      }
+      
+      setTrips(data.response);
+  
+    } catch (err) {
+      console.log("Fetch error:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  },
+
+  fetchPublicTripsFromUser: async (userId) => {
+    const url = `${API_URL}/trips/user/${userId}`;
+    const { accessToken } = useAuthStore.getState();
+    const { setLoading } = get();
+    const { setError } = get();
+    const { setTrips } = get();
+    
+    setError(false);
+    setLoading(true);
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.message || `Request failed with status ${response.status}`);
+      }
+      
+      setTrips(data.response);
+  
+    } catch (err) {
+      console.log("Fetch error:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  },
 
   removeDay: async (tripId, dayId) => {
     const url = `${API_URL}/trips/${tripId}/days/${dayId}`;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useTripStore } from "../stores/TripStore";
 import { DayGrid } from "../components/common/DayGrid";
 import { StarBtn } from "../components/buttons/StarBtn";
@@ -161,6 +161,11 @@ export const TripDetailsPage = () => {
                   ? <StarBtn onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
                   : <StarBtn onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
               )
+            }
+            {!isTripCreator && 
+            <Link to={`/profile/${trip.creator._id}`}>
+            <h2>Created by: {trip.creator.userName}</h2>
+            </Link>
             }
             {/* Grid State */}
             {!loading && !error && (

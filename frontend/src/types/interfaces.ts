@@ -29,13 +29,13 @@ export interface TripInterFace {
 };
 
 export interface UserProfileInterface {
+  _id: string;
   userName: string;
   bio: string;
   avatarUrl?: string;
   isPublic: boolean;
-  followers: number;
-  following: number;
-  trips: TripInterFace[];
+  followers: string[];
+  following: string[];
 };
 
 export interface DayGridProps {

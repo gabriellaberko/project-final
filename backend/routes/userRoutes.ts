@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import { User } from "../models/User";
 import { authenticateUser } from "../middlewares/authMiddleware";
+import { Request, Response } from "express";
 
 
 const router = express.Router();
@@ -150,6 +151,146 @@ router.get("/:userId", async (req, res) => {
       message: "Failed to fetch user"
     })
   }
-})
+});
+
+// Route to get all the followers of a user
+router.get("/:userId/followers", async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const followers = await User.findById(userId)
+      .select("followers")
+      .populate("followers", "userName avatarUrl");
+
+    if (!followers) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    };
+
+    return res.status(200).json({
+      success: true,
+      response: followers,
+      message: "Successfully fetched user's follower list"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch the user's follower list"
+    });
+  }
+});
+
+
+// Route to get all users the user is following
+router.get("/:userId/following", async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const following = await User.findById(userId)
+      .select("following")
+      .populate("following", "userName avatarUrl");
+
+    if (!following) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    };
+
+    return res.status(200).json({
+      success: true,
+      response: following,
+      message: "Successfully fetched user's following list"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch the user's following list"
+    });
+  }
+});
+
+
+// Route to follow a user (and add to that user's followers list)
+router.patch("/:userId/follow", authenticateUser, async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const [addUserToFollowing, addToUsersFollowers] = await Promise.all([
+      User.findOneAndUpdate(
+        { _id: req.user._id },
+        { $addToSet: { following: userId } },
+        { new: true, runValidators: true }
+      ),
+      User.findOneAndUpdate(
+        { _id: userId },
+        { $addToSet: { followers: req.user._id } },
+        { new: true, runValidators: true }
+      )
+    ]);
+    
+    if (!addUserToFollowing || !addToUsersFollowers) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      response: addToUsersFollowers,
+      message: "User successfully followed"
+    });
+
+  } catch(err){
+    return res.status(500).json({
+      success: false,
+      message: "Failed to follow user"
+    });
+  }
+});
+
+
+// Route to un-follow a user
+router.patch("/:userId/unfollow", authenticateUser, async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const [removeUserInFollowing, removeFromUsersFollowers] = await Promise.all([
+      User.findOneAndUpdate(
+        { _id: req.user._id },
+        { $pull: { following: userId } },
+        { new: true, runValidators: true }
+      ),
+      User.findOneAndUpdate(
+        { _id: userId },
+        { $pull: { followers: req.user._id } },
+        { new: true, runValidators: true }
+      )
+    ]);
+     
+    if (!removeUserInFollowing || !removeFromUsersFollowers) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      response: removeFromUsersFollowers,
+      message: "User successfully unfollowed"
+    });
+
+  } catch(err){
+    return res.status(500).json({
+      success: false,
+      message: "Failed to unfollow user"
+    });
+  }
+});
+
 
 export default router;
