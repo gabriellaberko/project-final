@@ -29,7 +29,7 @@ export const MyTripsPage = () => {
     <div className="px-6 py-8">
 
       {/* Header */}
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex justify-center md:justify-start items-center mb-10">
         <h1 className="text-3xl font-bold tracking-tight">
           My Trips
         </h1>
@@ -60,11 +60,14 @@ export const MyTripsPage = () => {
           />
         )}
 
+              <div className="flex justify-center md:justify-start">
         <MainBtn
           onClick={() => navigate("/trips/new")}
+          className="my-10"
         >
           Create a new trip
         </MainBtn>
+      </div>
       </div>
     </div>
   );
