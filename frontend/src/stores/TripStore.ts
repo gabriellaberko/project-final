@@ -16,10 +16,14 @@ interface TripState {
   removeDay: (tripId: string, dayId: string) => void;
   addDay: (tripId: string) => void;
   removeActivity: (tripId: string, dayId: string, activityId: string) => void;
-  starTrip: (tripId: string) => void;
-  unstarTrip: (tripId: string) => void;
+  starTrip: (tripId: string) => Promise<void>;
+  unstarTrip: (tripId: string) => Promise<void>;
   fetchMyTrips: () => void;
   fetchPublicTripsFromUser: (userId: string) => void;
+  updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
+  moveActivity: (activityId: string, newDayId: string, newIndex: number) => Promise<void>;
+  fetchCityImages: (city: string) => Promise<string[] | null>;
+  createTrip: (data: { tripName: string, destination: string, numberOfDays: number, isPublic: boolean, imageUrl: string, isCustomImage: boolean }) => Promise<string | null>;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -220,6 +224,7 @@ export const useTripStore = create<TripState>((set, get) => ({
   starTrip: async (tripId) => {
     const url = `${API_URL}/trips/${tripId}/star`;
     const { accessToken } = useAuthStore.getState();
+    const { setUpdateData } = get();
 
     try {
       const response = await fetch(url, {
@@ -231,13 +236,14 @@ export const useTripStore = create<TripState>((set, get) => ({
       });
 
       const data = await response.json();
+      setUpdateData();
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       set((state) => ({
-        trips: state.trips.map((trip) =>
+        trips: (state.trips || []).map((trip) =>
           trip._id === tripId ? data.response : trip
         ),
         trip: state.trip?._id === tripId
@@ -253,6 +259,7 @@ export const useTripStore = create<TripState>((set, get) => ({
   unstarTrip: async (tripId) => {
     const url = `${API_URL}/trips/${tripId}/unstar`;
     const { accessToken } = useAuthStore.getState();
+    const { setUpdateData } = get();
 
     try {
       const response = await fetch(url, {
@@ -264,13 +271,14 @@ export const useTripStore = create<TripState>((set, get) => ({
       });
 
       const data = await response.json();
+      setUpdateData();
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       set((state) => ({
-        trips: state.trips.map((trip) =>
+        trips: (state.trips || []).map((trip) =>
           trip._id === tripId ? data.response : trip
         ),
         trip: state.trip?._id === tripId
