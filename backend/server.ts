@@ -7,6 +7,7 @@ import listEndpoints from "express-list-endpoints";
 import userRoutes from "./routes/userRoutes";
 import tripRoutes from "./routes/tripRoutes";
 import cityImagesRoutes from "./routes/cityImages";
+import uploadImageRoutes from "./routes/uploadImage";
 
 
 cloudinary.config({
@@ -35,6 +36,7 @@ app.get("/", (req, res) => {
 app.use("/users", userRoutes);
 app.use("/trips", tripRoutes);
 app.use("/city-images", cityImagesRoutes);
+app.use("/uploadImage", uploadImageRoutes);
 
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/final-project";

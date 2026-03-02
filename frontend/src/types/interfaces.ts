@@ -75,7 +75,7 @@ export type AvatarProps = {
   onLogoutClick?: () => void;
 };
 
-
+// Change this to StarBtnProps? Not used in MainBtn
 export type BtnProps = {
   children?: string;
   onClick: () => void;
