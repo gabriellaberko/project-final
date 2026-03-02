@@ -4,12 +4,12 @@ import { useAuthStore } from "../stores/AuthStore";
 import { UserProfileInterface } from "../types/interfaces";
 import { useTripStore } from "../stores/TripStore";
 import { TripsGrid } from "../components/common/TripsGrid";
+import { LoadingState } from "../components/status/LoadingState";
+import { ErrorState } from "../components/status/ErrorState";
 
 // MUI & Icons
 import Avatar from "@mui/joy/Avatar";
-import Switch from "@mui/joy/Switch";
 import Button from "@mui/joy/Button";
-import Input from "@mui/joy/Input";
 import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
 
@@ -27,12 +27,9 @@ export const UserProfilePage = () => {
   const navigate = useNavigate();
   const { userId } = useParams<{ userId: string }>();
   const { userId: authUserId, accessToken } = useAuthStore();
-
   const [profile, setProfile] = useState<UserProfileInterface | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  // const [isPublic, setIsPublic] = useState(true);
   const error = useTripStore(state => state.error);
   const setError = useTripStore(state => state.setError);
   const loading = useTripStore(state => state.error);
@@ -71,9 +68,7 @@ export const UserProfilePage = () => {
 
         const data = await response.json();
         setProfile(data);
-        setUsername(data.username)
         setBio(data.bio || "");
-        // setIsPublic(data.isPublic ?? true)
       } catch (err) {
         console.error(err);
         setError(true);
@@ -103,15 +98,13 @@ export const UserProfilePage = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`
         },
-        body: JSON.stringify({ bio, userName: username})
+        body: JSON.stringify({ bio })
       })
       if (response.ok) {
         const updatedData = await response.json()
         setIsEditing(false)
         setProfile(updatedData)
-        setUsername(updatedData.userName)
         setBio(updatedData.bio || "");
-        // setIsPublic(updatedData.isPublic ?? true)
       }
     } catch (err) {
       console.error(err)
@@ -159,45 +152,19 @@ export const UserProfilePage = () => {
           </h1>
         </div>
 
-
         {/* Loading State */}
-        {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-40 bg-gray-200 rounded-xl animate-pulse"
-              />
-            ))}
-          </div>
-        )}
+        {loading && <LoadingState />}
 
         {/* Error State */}
-        {!loading && error && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="bg-red-50 border border-red-200 text-red-600 px-6 py-4 rounded-xl">
-              <h2 className="font-semibold mb-1">
-                Something went wrong
-              </h2>
-              <p className="text-sm">{error}</p>
-            </div>
-          </div>
-        )}
+        {!loading && error && 
+          <ErrorState text="Something went wrong while loading the profile. Please try again in a moment." />
+        }
 
         <div className='flex row items-center m-5'>
           <Avatar size='lg' />
 
           <div className='m-5'>
-            {isEditing ? (
-              <Input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
-              />
-            ) : (
-              <Typography level="h2">{profile?.userName || "Username"}</Typography>
-            )}
+            <Typography level="h2">{profile?.userName || "Username"}</Typography>
             <div className="flex gap-5">
               <div className="flex flex-row gap-5">
                 <Stat label="Trips" count={trips ? trips.length : 0} />
@@ -233,17 +200,6 @@ export const UserProfilePage = () => {
         <div className="mb-10">
           {isOwner ? (
             <div>
-              {/* {isEditing && (
-                <div className="flex items-center gap-3 my-4">
-                  <Typography level="body-sm">Public</Typography>
-                  <Switch
-                    checked={!isPublic}
-                    onChange={(e) => setIsPublic(!e.target.checked)}
-                  />
-                  <Typography level="body-sm">Private</Typography>
-                </div>
-              )} */}
-
               <div className="flex gap-2">
                 {isEditing ? (
                   <div className="flex gap-5">

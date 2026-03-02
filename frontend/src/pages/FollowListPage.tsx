@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { UserProfileInterface } from "../types/interfaces";
+import { LoadingState } from "../components/status/LoadingState";
+import { ErrorState } from "../components/status/ErrorState";
+import { EmptyState } from "../components/status/EmptyState";
 
 
 export const FollowListPage = () => {
@@ -27,7 +30,6 @@ export const FollowListPage = () => {
 
         const fetchedUsers = await response.json();
         setUsers(fetchedUsers.response[listType]);
-        
       } catch (err) {
         console.log("Fetch error:", err);
         setError(true);
@@ -53,28 +55,21 @@ export const FollowListPage = () => {
       <div className="min-h-[65vh]">
 
         {/* Loading State */}
-        {loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-40 bg-gray-200 rounded-xl animate-pulse"
-              />
-            ))}
-          </div>
-        )}
+        {loading && <LoadingState />}
 
         {/* Error State */}
-        {!loading && error && (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="bg-red-50 border border-red-200 text-red-600 px-6 py-4 rounded-xl">
-              <h2 className="font-semibold mb-1">
-                Something went wrong
-              </h2>
-              <p className="text-sm">{error}</p>
-            </div>
-          </div>
-        )}
+        {!loading && error && 
+          <ErrorState text={isFollowersListRoute 
+            ? "Couldn't load followers. Please try again." 
+            : "Couldn't load following. Please try again."} />
+        }
+
+        {/* Empty State */}
+        {!loading && !error && users && users.length === 0 &&
+          <EmptyState headline={isFollowersListRoute 
+            ? "No followers yet" 
+            : "Not following anyone yet"} />
+        }
 
         {/* TO DO: Replace with proper user cards with avatar */}
         {!loading && !error && users && users.length > 0 && (
@@ -88,7 +83,7 @@ export const FollowListPage = () => {
               {/* <MainBtn onClick={}></MainBtn> */}
             </Link>
           ))
-        )}
+          )}
       </div>
     </div>
   );
