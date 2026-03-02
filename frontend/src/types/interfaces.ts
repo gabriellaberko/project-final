@@ -43,7 +43,7 @@ export interface DayGridProps {
 };
 
 export interface TripsGridProps extends DayGridProps {
-  trips: TripInterFace[];
+  trips: TripInterFace[] | null;
   showPrivacy?: boolean;
 };
 

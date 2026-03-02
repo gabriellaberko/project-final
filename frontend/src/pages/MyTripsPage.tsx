@@ -1,58 +1,24 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useAuthStore } from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 import { TripsGrid } from "../components/common/TripsGrid";
 import { MainBtn } from "../components/buttons/MainBtn";
-import { TripInterFace } from "../types/interfaces";
+import { useTripStore } from "../stores/TripStore";
 
 
 export const MyTripsPage = () => {
-  const API_URL = import.meta.env.VITE_API_URL;
-  const [trips, setTrips] = useState<TripInterFace[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
+  const fetchMyTrips = useTripStore(state => state.fetchMyTrips);
+  const trips = useTripStore(state => state.trips);
+  const loading = useTripStore(state => state.loading);
+  const error = useTripStore(state => state.error);
+  const accessToken = useAuthStore(state => state.accessToken);
   const navigate = useNavigate();
 
-  const accessToken = useAuthStore(state => state.accessToken);
 
   useEffect(() => {
-    if (!accessToken) {
-      setTrips([]);
-      setLoading(false);
-      return;
-    }
-
-    const url = `${API_URL}/trips/my`;
-
-    const fetchMyTrips = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`
-          }
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data?.message || `Request failed with status ${response.status}`);
-        }
-
-        setTrips(data.response);
-        setError(null);
-
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Something went wrong")
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    if (!accessToken) return;
     fetchMyTrips();
-  }, [accessToken]);
+  }, [accessToken])
 
 
   return (
@@ -85,15 +51,15 @@ export const MyTripsPage = () => {
           <div className="flex flex-col items-center justify-center h-full text-center">
             <div className="bg-red-50 border border-red-200 text-red-600 px-6 py-4 rounded-xl">
               <h2 className="font-semibold mb-1">
-                Something went wrong
+                Error
               </h2>
-              <p className="text-sm">{error}</p>
+              <p className="text-sm">Something went wrong</p>
             </div>
           </div>
         )}
 
         {/* Empty State */}
-        {!loading && !error && trips.length === 0 && (
+        {!loading && !error && trips && trips.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center">
 
             {/* Lottie placeholder */}
@@ -111,7 +77,7 @@ export const MyTripsPage = () => {
         )}
 
         {/* Grid State */}
-        {!loading && !error && trips.length > 0 && (
+        {!loading && !error && trips && trips.length > 0 && (
           <TripsGrid
             trips={trips}
             columns={3}
