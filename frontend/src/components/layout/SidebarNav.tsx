@@ -27,7 +27,7 @@ export const SidebarNav = () => {
         flex md:hidden fixed
         top-0 left-0 right-0
         h-16 items-center justify-between
-        px-5 z-50 bg-white shadow-sm
+        px-5 py-10 z-50 bg-white shadow-sm
       "
       >
         <div onClick={() => navigate("/dashboard")} className="cursor-pointer">Logo</div>

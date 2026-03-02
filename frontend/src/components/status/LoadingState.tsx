@@ -8,7 +8,7 @@ export const LoadingState = () => {
         animationData={loadingSpinner}
         loop
         autoplay
-        style={{ width: 50, height: 50 }}
+        style={{ width: 150, height: 150 }}
       />
     </div>
   )

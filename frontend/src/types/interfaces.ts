@@ -31,6 +31,7 @@ export interface TripInterFace {
   creator: {
     _id: string;
     userName: string;
+    avatarUrl?: string;
   },
   isPublic: boolean,
   starredBy: string[];

@@ -6,9 +6,9 @@ import { useTripStore } from "../stores/TripStore";
 import { TripsGrid } from "../components/common/TripsGrid";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
+import Avatar from "../assets/avatar.png"
 
 // MUI & Icons
-import Avatar from "@mui/joy/Avatar";
 import Button from "@mui/joy/Button";
 import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
@@ -161,7 +161,11 @@ export const UserProfilePage = () => {
         }
 
         <div className='flex row items-center m-5'>
-          <Avatar size='lg' />
+          <img 
+            src={profile?.avatarUrl || Avatar}
+            alt="Profile picture"
+            className="w-28 h-28 rounded-full object-cover shrink-0" 
+          />
 
           <div className='m-5'>
             <Typography level="h2">{profile?.userName || "Username"}</Typography>

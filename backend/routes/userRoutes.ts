@@ -31,7 +31,7 @@ router.post("/signup", async (req, res) => {
     const user = new User({
       userName,
       email: email.toLowerCase(),
-      password: bcrypt.hashSync(password, salt)
+      password: bcrypt.hashSync(password, salt),
     });
 
     await user.save();
@@ -68,6 +68,7 @@ router.post("/login", async (req, res) => {
         userName: user.userName,
         userId: user._id,
         accessToken: user.accessToken,
+        avatarUrl: user.avatarUrl
       })
     } else {
       res.status(401).json({
