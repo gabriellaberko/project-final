@@ -1,8 +1,10 @@
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../stores/AuthStore";
 import { Navigate } from "react-router-dom";
 import useEmblaCarousel from "embla-carousel-react"
 import AutoScroll from "embla-carousel-auto-scroll"
 import { ProfileComponent } from "../components/common/ProfileComponent";
+import { PublicTripCard } from "../components/common/PublicTripCard";
 import hero from "../assets/home/hero.jpg"
 import plan from "../assets/home/plan.jpg"
 import share from "../assets/home/share.jpg"
@@ -12,12 +14,14 @@ import mapBg from "../assets/home/map.png"
 import Asako from "../assets/profile/Asako.png"
 import Gabriella from "../assets/profile/Gabriella.png"
 import Sandra from "../assets/profile/Sandra.png"
-import Card from "@mui/material/Card";
 import { ScrollReveal } from "../components/common/ScrollReveal";
 import { motion } from "framer-motion";
+import { TripInterFace } from "../types/interfaces";
 
 
 export const PublicHomePage = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
+  const [trips, setTrips] = useState<TripInterFace[]>([]);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const [emblaRef1] = useEmblaCarousel({ loop: true}, [
     AutoScroll({ speed: 0.8, stopOnInteraction: false })
@@ -25,6 +29,22 @@ export const PublicHomePage = () => {
   const [emblaRef2] = useEmblaCarousel({ loop: true, direction: 'rtl' }, [
     AutoScroll({ speed: 0.8, stopOnInteraction: false })
   ])
+
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        const response = await fetch(`${API_URL}/trips`);
+        const data = await response.json();
+        if (response.ok) {
+          setTrips(data.response);
+        }
+      } catch (error) {
+        console.error("Failed to fetch trips", error);
+      }
+    };
+    fetchTrips();
+  }, [API_URL]);
+
   const containerVariants = {
     hidden: {},
     visible: {
@@ -99,18 +119,18 @@ export const PublicHomePage = () => {
         </div>
         <div className="embla overflow-hidden" ref={emblaRef1}>
             <div className="embla__container flex">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={`paris-${i}`}>
-                  <Card className="p-10 md:p-20 text-center shadow-lg">Paris {i}</Card>
+              {trips.map((trip) => (
+                <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={trip._id}>
+                  <PublicTripCard trip={trip} />
                 </div>
               ))}
             </div>
           </div>
         <div className="embla overflow-hidden" ref={emblaRef2} dir="rtl">
             <div className="embla__container flex">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={`nice-${i}`}>
-                  <Card className="p-10 md:p-20 text-center shadow-lg">Nice {i}</Card>
+              {trips.map((trip) => (
+                <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={`rtl-${trip._id}`} dir="ltr">
+                  <PublicTripCard trip={trip} />
                 </div>
               ))}
             </div>
