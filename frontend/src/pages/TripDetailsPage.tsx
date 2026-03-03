@@ -219,7 +219,7 @@ export const TripDetailsPage = () => {
                   disabled={!isTripCreator}
                 />
               ) : (
-                  <p className="mt-2 text-sm">{trip.description || ""}</p>
+                  <p className="mt-2 text-base">{trip.description || ""}</p>
               )}
 
               {/* Editable for owner */}
@@ -238,7 +238,7 @@ export const TripDetailsPage = () => {
                     ) 
                   : (
                     <SecondaryBtn onClick={() => setIsEditing(true)}>
-                      Edit description
+                      {description ? "Edit description" : "Add description"}
                     </SecondaryBtn>
                     )
                   }
