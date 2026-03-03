@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { authenticateUser } from "../middlewares/authMiddleware";
 import { optionalAuthenticateUser } from "../middlewares/optionalAuthenticateUser";
 import mongoose from "mongoose";
+import { User } from "../models/User";
 
 
 const router = express.Router();
@@ -94,7 +95,7 @@ router.patch("/:tripId/days/:dayId/activities/:activityId/move", authenticateUse
       error: err instanceof Error ? err.message : String(err)
     })
   }
-}); 
+});
 
 // Route to update an activity
 router.patch("/:tripId/days/:dayId/activities/:activityId", authenticateUser, async (req: Request, res: Response) => {
@@ -170,18 +171,17 @@ router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) =>
 
     let publicTrips = await Trip
       .find(query)
-      .populate("creator", "userName avatarUrl") // If we want to show who created the trip, otherwise remove
-
-    if (!sort || sort === "newest") {
-      publicTrips = publicTrips.sort((a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
-      );
-    }
+      .populate("creator", "userName avatarUrl");
 
     if (sort === "likes") {
-      publicTrips = publicTrips.sort(
+      publicTrips.sort(
         (a, b) => b.starredBy.length - a.starredBy.length
+      );
+    } else {
+      publicTrips.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() -
+          new Date(a.createdAt).getTime()
       );
     }
 
@@ -204,6 +204,51 @@ router.get("/", optionalAuthenticateUser, async (req: Request, res: Response) =>
   }
 });
 
+
+// Route to get followers feed
+router.get("/feed", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!._id
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    if (!user.following || user.following.length === 0) {
+      return res.status(200).json({
+        success: true,
+        response: [],
+        message: "No followed users"
+      });
+    }
+
+    const feedTrips = await Trip.find({
+      creator: { $in: user.following },
+      isPublic: true
+    })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .populate("creator", "userName avatarUrl");
+
+    return res.status(200).json({
+      success: true,
+      response: feedTrips,
+      message: "Feed fetched successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch feed",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
 
 // Route to get my trips
 router.get("/my", authenticateUser, async (req: Request, res: Response) => {
@@ -275,7 +320,6 @@ router.get("/user/:userId", optionalAuthenticateUser, async (req: Request, res: 
     });
   }
 });
-
 
 // Route to get a single trip
 router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Response) => {

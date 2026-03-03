@@ -25,14 +25,15 @@
   * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;;
+    box-sizing: border-box;
+    ;
   }
 
   body {
     font-family: sans-serif;
     color: var(--text-primary);
     background-color: var(--bg-color);
-  
+
   }
 
   h1 {
@@ -106,7 +107,7 @@
     background-color: var(--form-bg);
     padding: 20px;
   }
-  
+
   .activity {
     background-color: var(--activity-bg);
     padding: 20px;
@@ -126,12 +127,12 @@
   .embla__viewport {
     overflow: hidden;
   }
-  
+
   .embla__container {
     display: flex;
     touch-action: pan-y pinch-zoom;
   }
-  
+
   .embla__slide {
     flex: 0 0 100%;
     min-width: 0;
@@ -151,7 +152,7 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 20px;
-  
+
   }
 
   .social-icons {

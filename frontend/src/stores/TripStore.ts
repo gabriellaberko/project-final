@@ -23,10 +23,15 @@ interface TripState {
   removeTrip: (tripId: string) => void;
   fetchMyTrips: () => void;
   fetchPublicTripsFromUser: (userId: string) => void;
-  fetchPublicTrips: (query?: string) => void;
+  fetchPublicTrips: (query?: string, target?: "default" | "trending") => void;
   updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
   fetchCityImages: (city: string) => Promise<string[] | null>;
   createTrip: (data: { tripName: string, destination: string, numberOfDays: number, isPublic: boolean, imageUrl: string, isCustomImage: boolean }) => Promise<string | null>;
+  fetchFeedTrips: () => Promise<void>;
+  setFeedTrips: (trips: TripInterFace[] | null) => void;
+  setTrendingTrips: (trips: TripInterFace[] | null) => void;
+  feedTrips: TripInterFace[] | null;
+  trendingTrips: TripInterFace[] | null;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -49,6 +54,12 @@ export const useTripStore = create<TripState>((set, get) => ({
   // For setting several trips
   trips: [],
   setTrips: (trips) => set({ trips }),
+
+  feedTrips: [],
+  trendingTrips: [],
+
+  setFeedTrips: (trips) => set({ feedTrips: trips }),
+  setTrendingTrips: (trips) => set({ trendingTrips: trips }),
 
   fetchMyTrips: async () => {
     const url = `${API_URL}/trips/my`;
@@ -118,10 +129,10 @@ export const useTripStore = create<TripState>((set, get) => ({
     }
   },
 
-  fetchPublicTrips: async (query = "") => {
+  fetchPublicTrips: async (query = "", target: "default" | "trending" = "default") => {
     const url = `${API_URL}/trips${query}`;
     const { accessToken } = useAuthStore.getState();
-    const { setLoading, setError, setTrips } = get();
+    const { setLoading, setError, setTrips, setTrendingTrips } = get();
 
     setError(false);
     setLoading(true);
@@ -141,9 +152,44 @@ export const useTripStore = create<TripState>((set, get) => ({
       if (!response.ok) {
         throw new Error(data?.message || "Failed to fetch trips");
       }
-      setTrips(data.response);
+      if (target === "trending") {
+        setTrendingTrips(data.response);
+      } else {
+        setTrips(data.response);
+      }
+
     } catch (err) {
-      console.log("Fetch error:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  },
+
+  fetchFeedTrips: async () => {
+    const url = `${API_URL}/trips/feed`;
+    const { accessToken } = useAuthStore.getState();
+    const { setFeedTrips, setLoading, setError } = get();
+
+    setLoading(true);
+    setError(false);
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      setFeedTrips(data.response);
+
+    } catch (err) {
+      setError(true);
     } finally {
       setLoading(false);
     }
