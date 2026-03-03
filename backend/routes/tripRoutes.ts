@@ -232,7 +232,7 @@ router.get("/feed", authenticateUser, async (req: Request, res: Response) => {
       isPublic: true
     })
       .sort({ createdAt: -1 })
-      .limit(10)
+      .limit(20)
       .populate("creator", "userName avatarUrl");
 
     return res.status(200).json({

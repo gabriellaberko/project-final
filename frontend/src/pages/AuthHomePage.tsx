@@ -1,16 +1,28 @@
 import { useEffect } from "react";
 import { useTripStore } from "../stores/TripStore";
 import { ExploreTripCard } from "../components/common/ExploreTripCard";
+import useEmblaCarousel from "embla-carousel-react";
+import AutoScroll from "embla-carousel-auto-scroll";
 
 export const AuthHomePage = () => {
-  const trips = useTripStore(state => state.trips);
-  const fetchPublicTrips = useTripStore(state => state.fetchPublicTrips);
-  const loading = useTripStore(state => state.loading);
-  const error = useTripStore(state => state.error);
+  const {
+    feedTrips,
+    trendingTrips,
+    fetchFeedTrips,
+    fetchPublicTrips,
+    loading,
+    error
+  } = useTripStore();
+
+  const [emblaRef] = useEmblaCarousel(
+    { loop: true },
+    [AutoScroll({ speed: 0.6, stopOnInteraction: false })]
+  );
 
   useEffect(() => {
-    fetchPublicTrips("?sort=likes&limit=5");
-  }, [fetchPublicTrips]);
+    fetchFeedTrips();
+    fetchPublicTrips("?sort=likes&limit=5", "trending");
+  }, [fetchFeedTrips, fetchPublicTrips]);
 
   if (loading) {
     return (
@@ -29,24 +41,55 @@ export const AuthHomePage = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-semibold mb-10">
-        Trending tips
-      </h1>
+    <div className="max-w-6xl mx-auto px-6 py-12 space-y-16">
 
-      <div className="flex flex-col gap-6">
-        {trips && trips.length > 0 ? (
-          trips.map(trip => (
-            <ExploreTripCard
-              key={trip._id}
-              trip={trip}
-              variant="horizontal"
-            />
-          ))
+      {/* 🔥 TRENDING CAROUSEL */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-6">
+          Trending trips
+        </h2>
+
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex">
+            {trendingTrips?.map(trip => (
+              <div
+                key={trip._id}
+                className="flex-[0_0_90%] sm:flex-[0_0_60%] lg:flex-[0_0_32%] px-3"
+              >
+                <ExploreTripCard trip={trip} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 🧑‍🤝‍🧑 FEED */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-6">
+          Following
+        </h2>
+
+        {feedTrips && feedTrips.length > 0 ? (
+          <div className="w-full flex justify-center">
+            <div className="w-full max-w-4xl flex flex-col gap-8">
+              {feedTrips.map(trip => (
+                <ExploreTripCard
+                  key={trip._id}
+                  trip={trip}
+                  variant="horizontal"
+                />
+              ))}
+            </div>
+          </div>
         ) : (
-          <p>No trips found.</p>
+          <div className="bg-gray-50 p-10 rounded-2xl text-center">
+            <p className="text-gray-600">
+              You're not following anyone yet.
+            </p>
+          </div>
         )}
-      </div>
+      </section>
+
     </div>
-  )
+  );
 };
