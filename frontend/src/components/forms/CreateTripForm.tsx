@@ -19,7 +19,7 @@ export const CreateTripForm = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [tripName, setTripName] = useState("");
+  const [description, setDescription] = useState("");
   const [destination, setDestination] = useState("");
   const [numberOfDays, setNumberOfDays] = useState("1");
   const [isPublic, setIsPublic] = useState(true);
@@ -90,8 +90,8 @@ export const CreateTripForm = () => {
     setIsLoading(true);
 
     const tripId = await createTrip({
-      tripName,
       destination,
+      description,
       numberOfDays: Number(numberOfDays),
       isPublic,
       imageUrl: selectedImage,
@@ -138,13 +138,19 @@ export const CreateTripForm = () => {
         <Stack gap={4}>
           <h2>Create trip</h2>
           <div>
-            <FormLabel htmlFor="tripname">Name of the trip</FormLabel>
+            <FormLabel htmlFor="destination">Destination</FormLabel>
             <Input
-              id="tripname"
+              id="destination"
               type="text"
-              value={tripName}
-              placeholder="..."
-              onChange={(e) => setTripName(e.target.value)}
+              value={destination}
+              placeholder="Paris"
+              required
+              onChange={(e) => {
+                setDestination(e.target.value);
+                setErrorMessage(null);
+                setImages([]);
+                setSelectedImage(null);
+              }}
               sx={{
                 '&::before': {
                   border: '1.5px solid var(--Input-focusedHighlight)',
@@ -165,19 +171,13 @@ export const CreateTripForm = () => {
             />
           </div>
           <div>
-            <FormLabel htmlFor="destination">Destination</FormLabel>
+            <FormLabel htmlFor="tripdescription">Description of the trip</FormLabel>
             <Input
-              id="destination"
+              id="tripdescription"
               type="text"
-              value={destination}
-              placeholder="Paris"
-              required
-              onChange={(e) => {
-                setDestination(e.target.value);
-                setErrorMessage(null);
-                setImages([]);
-                setSelectedImage(null);
-              }}
+              value={description}
+              placeholder="..."
+              onChange={(e) => setDescription(e.target.value)}
               sx={{
                 '&::before': {
                   border: '1.5px solid var(--Input-focusedHighlight)',
