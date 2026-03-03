@@ -6,7 +6,7 @@ import { useTripStore } from "../stores/TripStore";
 import { TripsGrid } from "../components/common/TripsGrid";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
-import Avatar from "../assets/avatar.png"
+import Avatar from "../assets/avatar.png";
 
 // MUI & Icons
 import Button from "@mui/joy/Button";
@@ -41,6 +41,7 @@ export const UserProfilePage = () => {
   const trips = useTripStore(state => state.trips);
   const isOwner = authUserId === userId;
   const isAlreadyFollowingUser = profile?.followers.some(f => f === authUserId); 
+  const setAvatarUrl = useAuthStore(state => state.setAvatarUrl);
 
 
   useEffect(() => {
@@ -112,7 +113,7 @@ export const UserProfilePage = () => {
   }
 
 
-  const HandleFollowing = async () => {
+  const handleFollowing = async () => {
     try {
       const url = isAlreadyFollowingUser
         ? `${API_URL}/users/${userId}/unfollow`
@@ -139,6 +140,60 @@ export const UserProfilePage = () => {
   };
 
 
+  const changeAvatar = async (file: File) => {
+    const imageUploadUrl = `${API_URL}/uploadImage/profile`;
+    const updateDbAvatarUrl = `${API_URL}/users/profile/avatar`;
+    let uploadResponse = null;
+
+    // Upload (post) to Cloudinary
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await fetch(imageUploadUrl, {
+        method: "POST",
+        headers: {
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      uploadResponse = await response.json();
+      console.log(uploadResponse)
+
+    } catch(err) {
+      console.log("Fetch error:", err);
+    }
+
+    // Update avatarUrl in the database profile
+    try {
+      const response = await fetch(updateDbAvatarUrl, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+        body: JSON.stringify({ avatarUrl: uploadResponse.imageUrl })
+      });
+
+      const data = await response.json();
+      setAvatarUrl(data.response.avatarUrl);
+      setUpdateData();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+    } catch (err) {
+      console.log("Fetch error:", err);
+    }
+  };
+
+
   if (loading) return <div>Loading...</div>
 
   return (
@@ -160,17 +215,33 @@ export const UserProfilePage = () => {
           <ErrorState text="Something went wrong while loading the profile. Please try again in a moment." />
         }
 
-        <div className='flex row items-center m-5'>
+        <div className='flex row items-center'>
           <img 
             src={profile?.avatarUrl || Avatar}
             alt="Profile picture"
             className="w-28 h-28 rounded-full object-cover shrink-0" 
           />
 
+          {/* Profile image upload */}
+          <label htmlFor="avatarUpload" className="cursor-pointer text-sm text-blue-600 hover:underline">
+            +
+          </label>
+          <input
+            id="avatarUpload"
+            type="file"
+            accept="image/*"
+            className="sr-only"
+            onChange={(e) => {
+              if (e.target.files?.[0]) {
+                changeAvatar(e.target.files[0]);
+              }
+            }}
+          />
+
           <div className='m-5'>
             <Typography level="h2">{profile?.userName || "Username"}</Typography>
             <div className="flex gap-5">
-              <div className="flex flex-row gap-5">
+              <div className="flex flex-row gap-5 mt-2">
                 <Stat label="Trips" count={trips ? trips.length : 0} />
                 <Stat 
                   label="Followers" 
@@ -230,7 +301,7 @@ export const UserProfilePage = () => {
               <Button
                 type="button"
                 className="m-5"
-                onClick = {HandleFollowing}
+                onClick = {handleFollowing}
               >
                 {isAlreadyFollowingUser
                   ? "Unfollow" 

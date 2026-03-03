@@ -9,9 +9,10 @@ interface AuthState {
   login: (payload: { accessToken: string; userName: string; userId: string, avatarUrl: string }) => void;
   logout: () => void;
   checkAuthStatus: () => void;
+  setAvatarUrl: (responseUrl: string) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
 
   accessToken: null,
   isAuthenticated: false, // Used for conditional rendering of certain components (that should only be seen by logged in users)
@@ -54,7 +55,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     const userName = localStorage.getItem("userName");
     const userId = localStorage.getItem("userId");
     const avatarUrl = localStorage.getItem("avatarUrl") || null;
-    
+
     if(accessToken) {
       set({
         accessToken,
@@ -64,5 +65,13 @@ export const useAuthStore = create<AuthState>((set) => ({
         avatarUrl
       });
     }
+  },
+
+  setAvatarUrl: (responseUrl) => {
+    localStorage.setItem("avatarUrl", responseUrl); // Update local storage so checkAuthStatus doesn't read from old value
+    set({
+      avatarUrl: responseUrl
+    });
   }
+
 }));
