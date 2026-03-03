@@ -41,55 +41,61 @@ export const AuthHomePage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12 space-y-16">
+    <div className="px-3 py-10">
+      <div className="mx-auto w-full max-w-sm md:max-w-5xl space-y-20">
 
-      {/* 🔥 TRENDING CAROUSEL */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-6">
-          Trending trips
-        </h2>
+        {/* TRENDING CAROUSEL */}
+        <section>
+          <h2 className="text-lg md:text-xl font-medium text-gray-600 mb-4">
+            Trending trips
+          </h2>
 
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex">
-            {trendingTrips?.map(trip => (
-              <div
-                key={trip._id}
-                className="flex-[0_0_90%] sm:flex-[0_0_60%] lg:flex-[0_0_32%] px-3"
-              >
-                <ExploreTripCard trip={trip} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 🧑‍🤝‍🧑 FEED */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-6">
-          Following
-        </h2>
-
-        {feedTrips && feedTrips.length > 0 ? (
-          <div className="w-full flex justify-center">
-            <div className="w-full max-w-4xl flex flex-col gap-8">
-              {feedTrips.map(trip => (
-                <ExploreTripCard
+          <div className="overflow-hidden -ml-4" ref={emblaRef}>
+            <div className="flex">
+              {trendingTrips?.map(trip => (
+                <div
                   key={trip._id}
-                  trip={trip}
-                  variant="horizontal"
-                />
+                  className="
+                    flex-[0_0_75%]
+                    md:flex-[0_0_30%]
+                    min-w-0
+                    pl-4
+                  "
+                >
+                  <ExploreTripCard trip={trip} />
+                </div>
               ))}
             </div>
           </div>
-        ) : (
-          <div className="bg-gray-50 p-10 rounded-2xl text-center">
-            <p className="text-gray-600">
-              You're not following anyone yet.
-            </p>
-          </div>
-        )}
-      </section>
+        </section>
 
+        {/* FEED */}
+        <section className="pt-10">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+            Following Trips
+          </h2>
+
+          {feedTrips && feedTrips.length > 0 ? (
+            <div className="w-full flex justify-center">
+              <div className="w-full max-w-4xl flex flex-col gap-8">
+                {feedTrips.map(trip => (
+                  <ExploreTripCard
+                    key={trip._id}
+                    trip={trip}
+                    variant="horizontal"
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-gray-50 p-10 rounded-2xl text-center">
+              <p className="text-gray-600">
+                You're not following anyone yet.
+              </p>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   );
 };

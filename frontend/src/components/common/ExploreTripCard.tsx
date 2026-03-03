@@ -22,15 +22,13 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
     <div
       onClick={handleCardClick}
       className={`
-        group
-        bg-white
-        rounded-2xl
-        shadow-md
+        group bg-white
+        rounded-2xl shadow-md
         hover:shadow-xl
         transition-all
         duration-300
         cursor-pointer
-        overflow-hidden
+        overflow-hidden 
          ${variant === "horizontal"
           ? "flex flex-col md:flex-row md:h-80"
           : "flex flex-col"
@@ -60,7 +58,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
       <div className={`
         p-6
         flex
-        flex-col
+        flex-col 
         ${variant === "horizontal" ? "md:w-7/12 md:order-1" : "grow"}
        `}
       >
