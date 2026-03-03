@@ -38,7 +38,7 @@ export const TripDetailsPage = () => {
   const addDay = useTripStore(state => state.addDay);
   const moveActivity = useTripStore(state => state.moveActivity);
   const [isEditing, setIsEditing] = useState(false);
-  const [description, setDescription] = useState("");
+  const [description, setDescription] = useState(trip?.description ?? "");
 
 
 
@@ -91,7 +91,7 @@ export const TripDetailsPage = () => {
       await response.json()
       setIsEditing(false)
       setUpdateData();
-      
+
     } catch (err) {
       console.error(err)
     }
@@ -219,7 +219,7 @@ export const TripDetailsPage = () => {
                   disabled={!isTripCreator}
                 />
               ) : (
-                  <p className="mt-2">{trip.description || ""}</p>
+                  <p className="mt-2 text-sm">{trip.description || ""}</p>
               )}
 
               {/* Editable for owner */}
