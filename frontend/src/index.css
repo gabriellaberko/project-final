@@ -38,17 +38,19 @@
   h1 {
     font-size: x-large;
     margin: 10px;
-    
+    font-weight: 700;
   }
 
   h2 {
     font-size: medium;
     margin: 10px;
+    font-weight: 700;
   }
 
   h3 {
     font-size: small;
     margin: 10px;
+    font-weight: 700;
   }
 
   p {
