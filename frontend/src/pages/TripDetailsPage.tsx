@@ -10,6 +10,12 @@ import { MainBtn } from "../components/buttons/MainBtn";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
 import Avatar from "../assets/avatar.png";
+import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
+import { SecondaryBtn } from "../components/buttons/SecondaryBtn";
+
+// MUI & Icons
+import FormLabel from "@mui/joy/FormLabel";
+import Typography from "@mui/joy/Typography"
 
 
 export const TripDetailsPage = () => {
@@ -22,6 +28,7 @@ export const TripDetailsPage = () => {
   const trip = useTripStore(state => state.trip);
   const setTrip = useTripStore(state => state.setTrip);
   const updateData = useTripStore(state => state.updateData);
+  const setUpdateData = useTripStore(state => state.setUpdateData);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const accessToken = useAuthStore(state => state.accessToken);
   const starTrip = useTripStore(state => state.starTrip);
@@ -30,6 +37,9 @@ export const TripDetailsPage = () => {
   const { isTripCreator, isStarredByUser } = useTripPermissions(trip);
   const addDay = useTripStore(state => state.addDay);
   const moveActivity = useTripStore(state => state.moveActivity);
+  const [isEditing, setIsEditing] = useState(false);
+  const [description, setDescription] = useState("");
+
 
 
   useEffect(() => {
@@ -62,6 +72,30 @@ export const TripDetailsPage = () => {
     fetchTrip();
   }, [updateData, accessToken, tripId]);
 
+  const saveDescription = async () => {
+    try {
+      const url = `${API_URL}/trips/${tripId}/description`;
+      const response = await fetch(url, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({ description })
+      })
+      
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      await response.json()
+      setIsEditing(false)
+      setUpdateData();
+      
+    } catch (err) {
+      console.error(err)
+    }
+  };
 
 
   return (
@@ -174,9 +208,43 @@ export const TripDetailsPage = () => {
                 </div>
               </Link>
             }
-            {trip.description &&
-              <div className="w-[70%] mb-12"><p>{trip.description}</p></div>
-            }
+
+            <div className="flex flex-col  items-center w-[70%] mb-12 gap-5">
+              {isEditing ? (
+                <textarea
+                  className="border rounded-md p-2 w-full max-w-md"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Tell us about your travels..."
+                  disabled={!isTripCreator}
+                />
+              ) : (
+                  <p className="mt-2">{trip.description || ""}</p>
+              )}
+
+              {/* Editable for owner */}
+              {isTripCreator &&
+                <div className="flex gap-2">
+                  {isEditing 
+                  ? (
+                    <div className="flex gap-5">
+                      <SecondaryBtn onClick={() => setIsEditing(false)}>
+                        Cancel
+                      </SecondaryBtn>
+                      <PrimaryBtn color="success" onClick={saveDescription}>
+                        Save Changes
+                      </PrimaryBtn>
+                    </div>
+                    ) 
+                  : (
+                    <SecondaryBtn onClick={() => setIsEditing(true)}>
+                      Edit description
+                    </SecondaryBtn>
+                    )
+                  }
+              </div>
+              }
+            </div>
             {/* Loading State */}
             {loading && <LoadingState />}
 
