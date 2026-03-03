@@ -493,6 +493,39 @@ router.patch("/:tripId/image", authenticateUser, async (req: Request, res: Respo
 });
 
 
+// Route to update trip description
+router.patch("/:tripId/description", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    const { description } = req.body;
+
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
+
+    if (!trip) return;
+
+    trip.description = description;
+    const updatedTrip = await trip.save();
+
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Trip description updated successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update trip description",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
 // Route to star a trip
 router.patch("/:tripId/star", authenticateUser, async (req: Request, res: Response) => {
   try {
