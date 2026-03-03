@@ -27,7 +27,7 @@ export const SidebarNav = () => {
         flex md:hidden fixed
         top-0 left-0 right-0
         h-16 items-center justify-between
-        px-5 py-10 z-50 bg-white shadow-sm
+        px-5 py-10 z-50 shadow-sm
       "
       >
         <div onClick={() => navigate("/dashboard")} className="cursor-pointer">Logo</div>
@@ -40,7 +40,6 @@ export const SidebarNav = () => {
         flex md:hidden fixed bottom-0
         left-0 right-0 h-16 items-center
         justify-around px-2 z-50
-        shadow-[0_-1px_4px_rgba(0,0,0,0.04)]
       "
       >
         {items.map((item) => (
@@ -78,7 +77,7 @@ export const SidebarNav = () => {
                 className={({ isActive }) =>
                   [
                     "w-full rounded-xl px-4 py-3 text-left text-lg font-medium transition",
-                    "hover:bg-gray-100",
+                    "hover:bg-gray-50",
                     isActive ? "bg-gray-100" : "bg-transparent",
                   ].join(" ")
                 }
