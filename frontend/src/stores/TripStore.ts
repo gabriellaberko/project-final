@@ -353,6 +353,13 @@ export const useTripStore = create<TripState>((set, get) => ({
         trips: (state.trips || []).map((trip) =>
           trip._id === tripId ? data.response : trip
         ),
+        feedTrips: (state.feedTrips || []).map((trip) =>
+          trip._id === tripId ? data.response : trip
+        ),
+
+        trendingTrips: (state.trendingTrips || []).map((trip) =>
+          trip._id === tripId ? data.response : trip
+        ),
         trip: state.trip?._id === tripId
           ? data.response
           : state.trip
@@ -386,6 +393,13 @@ export const useTripStore = create<TripState>((set, get) => ({
 
       set((state) => ({
         trips: (state.trips || []).map((trip) =>
+          trip._id === tripId ? data.response : trip
+        ),
+        feedTrips: (state.feedTrips || []).map((trip) =>
+          trip._id === tripId ? data.response : trip
+        ),
+
+        trendingTrips: (state.trendingTrips || []).map((trip) =>
           trip._id === tripId ? data.response : trip
         ),
         trip: state.trip?._id === tripId
