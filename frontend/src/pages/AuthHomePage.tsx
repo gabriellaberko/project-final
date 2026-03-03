@@ -50,7 +50,9 @@ export const AuthHomePage = () => {
             Trending trips
           </h2>
 
-          <div className="overflow-hidden -ml-4" ref={emblaRef}>
+          <div className="overflow-hidden -ml-4 pb-2"
+            ref={emblaRef}
+          >
             <div className="flex">
               {trendingTrips?.map(trip => (
                 <div

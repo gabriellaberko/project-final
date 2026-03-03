@@ -1,7 +1,7 @@
 import { TripCardProps } from "../../types/interfaces";
 import { useTripStore } from "../../stores/TripStore";
 import { useNavigate } from "react-router-dom";
-import { Trash } from "lucide-react";
+import { Trash, Calendar } from "lucide-react";
 import { useAuthStore } from "../../stores/AuthStore";
 
 export const MyTripCard = ({ trip }: TripCardProps) => {
@@ -36,13 +36,26 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
   };
 
   return (
-    <div className="
+    <div
+      onClick={handleCardClick}
+      className="
       relative bg-white rounded-xl
       shadow-md hover:shadow-lg transition
-      h-48 flex items-center justify-center
+      flex flex-col
+      overflow-hidden
       cursor-pointer
-    "
-      onClick={handleCardClick}>
+      "
+    >
+
+      {trip.imageUrl && (
+        <div className="w-full h-46">
+          <img
+            src={trip.imageUrl}
+            alt={trip.destination}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       {/* Privacy tag top right */}
       <span className="absolute top-4 right-4 text-xs px-3 py-1 bg-white rounded-full shadow-sm">
@@ -50,18 +63,15 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
       </span>
 
       {/* Centered content */}
-      <div className="text-center">
+      <div className="p-6 pb-8 flex flex-col gap-3">
 
-        {trip.tripName && (
-          <p className="text-xs text-gray-400 uppercase mb-1">
-            {trip.tripName}
-          </p>
-        )}
-
-        <h3 className="text-xl font-semibold">
+        <h3 className="text-lg font-semibold">
           {trip.destination}
         </h3>
 
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <Calendar size={14} className="text-gray-400" />
+          <span>
         {/* DESCRIPTION */}
         <div className="relative">
           <p className="text-sm text-gray-600 leading-relaxed mt-2 line-clamp-3">
@@ -76,10 +86,9 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
             {trip.days.length === 1 ? "day" : "days"}
           </span>
         </div>
-
       </div>
 
-      <Trash 
+      <Trash
         onClick={handleDelete}
         className="absolute bottom-4 right-4 text-[#505050] hover:text-red-500 cursor-pointer" />
     </div>
