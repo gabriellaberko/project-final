@@ -25,7 +25,7 @@ export const NavAvatar = ({ username, onLogoutClick }: AvatarProps) => {
             className="mt-1 text-sm text-white hover:text-gray-700 cursor-pointer transition"
             onClick={onLogoutClick}
           >
-            Logout
+            Log out
           </button>
         </div>
       </div>
