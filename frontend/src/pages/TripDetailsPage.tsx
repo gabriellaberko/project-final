@@ -2,10 +2,21 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTripStore } from "../stores/TripStore";
 import { DayGrid } from "../components/common/DayGrid";
+import { ActivityPreview } from "../components/common/Activity";
 import { StarBtn } from "../components/buttons/StarBtn";
 import { useAuthStore } from "../stores/AuthStore";
 import { useTripPermissions } from "../components/hooks/useTripPermissions";
-import { DragDropProvider } from "@dnd-kit/react"
+import {
+  DndContext,
+  DragOverlay,
+  closestCenter,
+  pointerWithin,
+  CollisionDetection,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
+import { arrayMove } from "@dnd-kit/sortable"
 import { MainBtn } from "../components/buttons/MainBtn";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
@@ -30,6 +41,7 @@ export const TripDetailsPage = () => {
   const { isTripCreator, isStarredByUser } = useTripPermissions(trip);
   const addDay = useTripStore(state => state.addDay);
   const moveActivity = useTripStore(state => state.moveActivity);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -64,58 +76,111 @@ export const TripDetailsPage = () => {
 
 
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
+  );
+
+  const collisionDetection: CollisionDetection = (args) => {
+    const pointerCollisions = pointerWithin(args);
+    if (pointerCollisions.length > 0) {
+      const activityCollision = pointerCollisions.find((c) => {
+        const data = args.droppableContainers
+          .find((container) => container.id === c.id)
+          ?.data.current as { type?: string } | undefined;
+        return data?.type === "activity";
+      });
+      if (activityCollision) return [activityCollision];
+
+      const dayCollision = pointerCollisions.find((c) => {
+        const data = args.droppableContainers
+          .find((container) => container.id === c.id)
+          ?.data.current as { type?: string } | undefined;
+        return data?.type === "day";
+      });
+      return dayCollision ? [dayCollision] : pointerCollisions;
+    }
+    return closestCenter(args);
+  };
+
   return (
     <>
-      <DragDropProvider
+      <DndContext
+        sensors={sensors}
+        collisionDetection={collisionDetection}
+        onDragStart={(event) => {
+          setActiveId(String(event.active.id));
+        }}
         onDragEnd={(event) => {
-          if (event.canceled || !trip) return;
+          if (!trip || !isTripCreator) return;
 
-          const { source, target } = event.operation;
-          if (!source || !target) return;
+          const { active, over } = event;
+          setActiveId(null);
+          if (!over) return;
 
-          const sourceData = (source as any).data as { dayId?: string } | undefined;
-          const targetData = (target as any).data as { dayId?: string } | undefined;
-          const sourceDayId = sourceData?.dayId ?? String((source as any).sortable?.group ?? "");
-          const targetDayId = targetData?.dayId ?? String((target as any).sortable?.group ?? target.id ?? "");
+          const activeId = String(active.id);
+          const overId = String(over.id);
 
-          if (!sourceDayId || !targetDayId) {
-            return;
-          }
+          const findDayByActivityId = (activityId: string) =>
+            trip.days.find((d) => d.activities.some((a) => a._id === activityId));
 
-          const sourceDayIndex = trip.days.findIndex((day) => day._id === sourceDayId);
-          const targetDayIndex = trip.days.findIndex((day) => day._id === targetDayId);
-          if (sourceDayIndex < 0 || targetDayIndex < 0) return;
+          const sourceDay = findDayByActivityId(activeId);
+          if (!sourceDay) return;
 
-          const sourceIndex = (source as any).sortable?.index ?? -1;
-          let targetIndex = (target as any).sortable?.index ?? -1;
+          const targetDay =
+            (over.data.current as { dayId?: string } | undefined)?.dayId
+              ? trip.days.find((d) => d._id === (over.data.current as any).dayId)
+              : trip.days.find((d) => d._id === overId) || findDayByActivityId(overId);
+
+          if (!targetDay) return;
+
+          const sourceDayId = sourceDay._id;
+          const targetDayId = targetDay._id;
+
+          const sourceIndex = sourceDay.activities.findIndex((a) => a._id === activeId);
           if (sourceIndex < 0) return;
 
-          const sourceDay = trip.days[sourceDayIndex];
-          const targetDay = trip.days[targetDayIndex];
-          if (!sourceDay || !targetDay) return;
+          const targetIndexFromOver = targetDay.activities.findIndex((a) => a._id === overId);
 
           const sourceActivities = [...sourceDay.activities];
           const [moved] = sourceActivities.splice(sourceIndex, 1);
           if (!moved) return;
 
-          const targetActivities =
-            sourceDayId === targetDayId ? sourceActivities : [...targetDay.activities];
+          if (sourceDayId === targetDayId) {
+            const targetIndex =
+              targetIndexFromOver < 0 ? sourceDay.activities.length - 1 : targetIndexFromOver;
+            if (sourceIndex === targetIndex) return;
 
-          if (targetIndex < 0 || targetIndex > targetActivities.length) {
-            targetActivities.push(moved);
-          } else {
-            targetActivities.splice(targetIndex, 0, moved);
+            const reordered = arrayMove(sourceDay.activities, sourceIndex, targetIndex);
+
+            const updatedTrip = {
+              ...trip,
+              days: trip.days.map((d) =>
+                d._id === sourceDayId ? { ...d, activities: reordered } : d
+              ),
+            };
+
+            setTrip(updatedTrip);
+            moveActivity(activeId, targetDayId, targetIndex);
+            return;
           }
+
+          const targetActivities = [...targetDay.activities];
+
+          const droppingOnContainer = targetIndexFromOver < 0;
+          let insertIndex = droppingOnContainer ? targetActivities.length : targetIndexFromOver;
+          if (insertIndex < 0) insertIndex = 0;
+
+          targetActivities.splice(insertIndex, 0, moved);
 
           const updatedTrip = {
             ...trip,
-            days: trip.days.map((d, index) => {
-              if (sourceDayId === targetDayId && index === sourceDayIndex)
+            days: trip.days.map((d) => {
+              if (sourceDayId === targetDayId && d._id === sourceDayId)
                 return { ...d, activities: targetActivities }
-              if (index === sourceDayIndex) {
+              if (d._id === sourceDayId) {
                 return { ...d, activities: sourceActivities };
               }
-              if (index === targetDayIndex) {
+              if (d._id === targetDayId) {
                 return { ...d, activities: targetActivities };
               }
               return d;
@@ -123,11 +188,12 @@ export const TripDetailsPage = () => {
           };
 
           setTrip(updatedTrip);
-          moveActivity(String(source.id), targetDayId, targetIndex)
+          moveActivity(activeId, targetDayId, insertIndex)
         }}
+        onDragCancel={() => setActiveId(null)}
       >
         {trip &&
-          <div className="text-center flex flex-col items-center m-5">
+          <div className="text-center flex flex-col items-center m-5 overflow-visible">
             <div className="flex w-full justify-center items-center gap-2 mb-5">
 
               <h1>My {trip.destination} Trip</h1>
@@ -191,7 +257,17 @@ export const TripDetailsPage = () => {
             )}
           </div>
         }
-      </DragDropProvider>
+        <DragOverlay>
+          {activeId && trip ? (() => {
+            const activity = trip.days
+              .map((d) => d.activities)
+              .reduce((acc, val) => acc.concat(val), [])
+              .find((a) => a._id === activeId);
+            if (!activity) return null;
+            return <ActivityPreview activity={activity} />;
+          })() : null}
+        </DragOverlay>
+      </DndContext>
 
       {isAuthenticated &&
         <div className="flex justify-center">
