@@ -25,6 +25,7 @@ export interface TripInterFace {
   tripName: string,
   _id: string,
   destination: string,
+  description: string,
   days: DayInterface[],
   imageUrl: string,
   isCustomImgage: boolean,
