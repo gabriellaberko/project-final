@@ -252,10 +252,12 @@ export const UserProfilePage = () => {
               className="w-28 h-28 rounded-full object-cover cursor-pointer"
               onClick={() => document.getElementById("avatarUpload")?.click()}
             />
+            {isOwner &&
             <div className="absolute bottom-0 right-0">
               <ImageUploadBtn onClick={() => document.getElementById("avatarUpload")?.click()} />
             </div>
-            {profile?.avatarUrl && 
+            }
+            {isOwner && profile?.avatarUrl && 
               <button 
                 onClick={removeAvatar} 
                 className="text-xs hover:underline mt-2">
