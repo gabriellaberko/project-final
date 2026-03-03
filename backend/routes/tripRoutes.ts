@@ -379,7 +379,7 @@ router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Respo
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
   try {
-    const { tripName, destination, isPublic, numberOfDays, imageUrl, isCustomImage } = req.body;
+    const { tripName, destination, description, isPublic, numberOfDays, imageUrl, isCustomImage } = req.body;
 
     // Possible to not add any days, change this if we want to have min number of days = 1. 
     const totalDays = Number(numberOfDays) || 0;
@@ -395,6 +395,7 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
     const newTrip = new Trip({
       tripName,
       destination,
+      description,
       days,
       creator: req.user!._id,
       isPublic,
@@ -486,6 +487,39 @@ router.patch("/:tripId/image", authenticateUser, async (req: Request, res: Respo
     return res.status(500).json({
       success: false,
       message: "Failed to update trip image",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Route to update trip description
+router.patch("/:tripId/description", authenticateUser, async (req: Request, res: Response) => {
+  try {
+    const { tripId } = req.params;
+    const { description } = req.body;
+
+    const trip = await getTripIfOwner(
+      tripId as string,
+      req.user!._id,
+      res
+    );
+
+    if (!trip) return;
+
+    trip.description = description;
+    const updatedTrip = await trip.save();
+
+    return res.status(200).json({
+      success: true,
+      response: updatedTrip,
+      message: "Trip description updated successfully"
+    });
+
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update trip description",
       error: err instanceof Error ? err.message : String(err)
     });
   }

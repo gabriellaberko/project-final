@@ -72,6 +72,16 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar size={14} className="text-gray-400" />
           <span>
+        {/* DESCRIPTION */}
+        <div className="relative">
+          <p className="text-sm text-gray-600 leading-relaxed mt-2 line-clamp-3">
+            {trip.description}
+          </p>
+          <div className="absolute bottom-0 left-0 right-0 h-6 bg-linear-to-t from-white to-transparent" />
+        </div>
+
+        <div className="mt-4">
+          <span className="px-4 py-1 border rounded-lg text-sm text-gray-600">
             {trip.days.length}{" "}
             {trip.days.length === 1 ? "day" : "days"}
           </span>

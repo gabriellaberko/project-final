@@ -26,7 +26,7 @@ interface TripState {
   fetchPublicTrips: (query?: string, target?: "default" | "trending") => void;
   updatePrivacy: (tripId: string, isPublic: boolean) => Promise<void>;
   fetchCityImages: (city: string) => Promise<string[] | null>;
-  createTrip: (data: { tripName: string, destination: string, numberOfDays: number, isPublic: boolean, imageUrl: string, isCustomImage: boolean }) => Promise<string | null>;
+  createTrip: (data: { destination: string, description: string, numberOfDays: number, isPublic: boolean, imageUrl: string, isCustomImage: boolean }) => Promise<string | null>;
   fetchFeedTrips: () => Promise<void>;
   setFeedTrips: (trips: TripInterFace[] | null) => void;
   setTrendingTrips: (trips: TripInterFace[] | null) => void;
@@ -295,7 +295,6 @@ export const useTripStore = create<TripState>((set, get) => ({
       if (!response.ok) {
         throw new Error(`Failed to move activity: ${response.status}`)
       }
-      setUpdateData()
 
     } catch (err) {
       console.error(err)
@@ -475,8 +474,8 @@ export const useTripStore = create<TripState>((set, get) => ({
   },
 
   createTrip: async ({
-    tripName,
     destination,
+    description,
     numberOfDays,
     isPublic,
     imageUrl,
@@ -494,8 +493,8 @@ export const useTripStore = create<TripState>((set, get) => ({
           Authorization: `Bearer ${accessToken}`
         },
         body: JSON.stringify({
-          tripName,
           destination,
+          description,
           numberOfDays,
           isPublic,
           imageUrl,

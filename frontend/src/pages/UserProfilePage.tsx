@@ -8,9 +8,10 @@ import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
 import Avatar from "../assets/avatar.png";
 import { ImageUploadBtn } from "../components/buttons/ImageUploadBtn";
+import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
+import { SecondaryBtn } from "../components/buttons/SecondaryBtn";
 
 // MUI & Icons
-import Button from "@mui/joy/Button";
 import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
 
@@ -319,35 +320,33 @@ export const UserProfilePage = () => {
               <div className="flex gap-2">
                 {isEditing ? (
                   <div className="flex gap-5">
-                    <Button color="success" onClick={handleSave}>
-                      Save Changes
-                    </Button>
-                    <Button onClick={() => setIsEditing(false)}>
+                    <SecondaryBtn onClick={() => setIsEditing(false)}>
                       Cancel
-                    </Button>
+                    </SecondaryBtn>
+                    <PrimaryBtn color="success" onClick={handleSave}>
+                      Save Changes
+                    </PrimaryBtn>
                   </div>
                 ) : (
-                  <Button
+                  <PrimaryBtn
                     type="button"
-                    className="m-5"
                     onClick={() => setIsEditing(true)}
                   >
                     Edit Profile
-                  </Button>
+                  </PrimaryBtn>
                 )}
               </div>
             </div>
           ) : (
             <div className="flex flex-col mt-3 mb-3">
-              <Button
+              <PrimaryBtn
                 type="button"
-                className="m-5"
                 onClick = {handleFollowing}
               >
                 {isAlreadyFollowingUser
                   ? "Unfollow" 
                   : "Follow"}
-              </Button> 
+              </PrimaryBtn> 
             </div>
           )}
         </div>
