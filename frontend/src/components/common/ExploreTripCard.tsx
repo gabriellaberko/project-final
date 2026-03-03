@@ -95,7 +95,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
 
         {/* DESCRIPTION */}
         <div className="relative">
-          <p className="text-sm text-gray-600 leading-relaxed mt-4 line-clamp-3">
+          <p className="text-sm text-gray-600 leading-relaxed mt-2 line-clamp-3">
             {trip.description}
           </p>
           <div className="absolute bottom-0 left-0 right-0 h-6 bg-linear-to-t from-white to-transparent" />

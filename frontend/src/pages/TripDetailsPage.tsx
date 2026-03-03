@@ -174,7 +174,9 @@ export const TripDetailsPage = () => {
                 </div>
               </Link>
             }
-
+            {trip.description &&
+              <div className="w-[70%] mb-12"><p>{trip.description}</p></div>
+            }
             {/* Loading State */}
             {loading && <LoadingState />}
 
