@@ -84,7 +84,6 @@ export const FollowListPage = () => {
                     alt="Profile picture"
                     className="w-12 h-12 rounded-full object-cover shrink-0" 
                   />
-                  <img src={user.avatarUrl} alt="" />
                   <h2>{user.userName}</h2>
                 </div>
               </Link>
