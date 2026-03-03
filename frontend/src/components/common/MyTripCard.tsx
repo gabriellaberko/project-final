@@ -62,35 +62,36 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
         {trip.isPublic ? "Public" : "Private"}
       </span>
 
-      {/* Centered content */}
-      <div className="p-6 pb-8 flex flex-col gap-3">
+      {/* content */}
+      <div className="p-6 pb-8 flex flex-col justify-between h-45">
+        <div>
+          <h3 className="text-lg font-semibold">
+            {trip.destination}
+          </h3>
 
-        <h3 className="text-lg font-semibold">
-          {trip.destination}
-        </h3>
+          {/* DESCRIPTION */}
+          {trip.description && (
+            <div className="relative mt-2">
+              <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                {trip.description}
+              </p>
+              <div className="absolute bottom-0 left-0 right-0 h-6 bg-linear-to-t from-white to-transparent" />
+            </div>
+          )}
+        </div>
 
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar size={14} className="text-gray-400" />
           <span>
-        {/* DESCRIPTION */}
-        <div className="relative">
-          <p className="text-sm text-gray-600 leading-relaxed mt-2 line-clamp-3">
-            {trip.description}
-          </p>
-          <div className="absolute bottom-0 left-0 right-0 h-6 bg-linear-to-t from-white to-transparent" />
-        </div>
-
-        <div className="mt-4">
-          <span className="px-4 py-1 border rounded-lg text-sm text-gray-600">
             {trip.days.length}{" "}
             {trip.days.length === 1 ? "day" : "days"}
           </span>
         </div>
-      </div>
 
-      <Trash
-        onClick={handleDelete}
-        className="absolute bottom-4 right-4 text-[#505050] hover:text-red-500 cursor-pointer" />
+        <Trash
+          onClick={handleDelete}
+          className="absolute bottom-4 right-4 text-[#505050] hover:text-red-500 cursor-pointer" />
+      </div>
     </div>
   );
 };
