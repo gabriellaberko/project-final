@@ -128,7 +128,7 @@ export const TripDetailsPage = () => {
       >
         {trip &&
           <div className="text-center flex flex-col items-center m-5">
-            <div className="flex w-full justify-center items-center gap-2">
+            <div className="flex w-full justify-center items-center gap-2 mb-5">
               
               <h1>My {trip.destination} Trip</h1>
 
@@ -161,8 +161,7 @@ export const TripDetailsPage = () => {
             </div>
             {!isTripCreator && 
             <Link to={`/profile/${trip.creator._id}`}>
-              <div className="flex flex-col justify-center gap-2 min-w-0 mt-2 mb-10">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 mb-10">
                   <p>Created by</p>
                   <img 
                     src={trip.creator?.avatarUrl || Avatar}
@@ -173,7 +172,6 @@ export const TripDetailsPage = () => {
                     {trip.creator?.userName}
                   </span>
                 </div>
-              </div>
             </Link>
             }
 
