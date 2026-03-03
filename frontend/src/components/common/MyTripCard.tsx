@@ -36,13 +36,26 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
   };
 
   return (
-    <div className="
+    <div
+      onClick={handleCardClick}
+      className="
       relative bg-white rounded-xl
       shadow-md hover:shadow-lg transition
-      h-48 flex items-center justify-center
+      flex flex-col
+      overflow-y-hidden
       cursor-pointer
-    "
-      onClick={handleCardClick}>
+      "
+    >
+
+      {trip.imageUrl && (
+        <div className="w-full h-46">
+          <img
+            src={trip.imageUrl}
+            alt={trip.destination}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
 
       {/* Privacy tag top right */}
       <span className="absolute top-4 right-4 text-xs px-3 py-1 bg-white rounded-full shadow-sm">
@@ -50,13 +63,7 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
       </span>
 
       {/* Centered content */}
-      <div className="text-center">
-
-        {trip.tripName && (
-          <p className="text-xs text-gray-400 uppercase mb-1">
-            {trip.tripName}
-          </p>
-        )}
+      <div className="p-6 pb-12 text-center">
 
         <h3 className="text-xl font-semibold">
           {trip.destination}
@@ -71,7 +78,7 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
 
       </div>
 
-      <Trash 
+      <Trash
         onClick={handleDelete}
         className="absolute bottom-4 right-4 text-[#505050] hover:text-red-500 cursor-pointer" />
     </div>
