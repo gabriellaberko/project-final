@@ -50,7 +50,7 @@ export const SidebarNav = () => {
             className={({ isActive }) =>
               [
                 "text-sm font-medium transition",
-                isActive ? "text-black" : "text-gray-500",
+                isActive ? "text-white" : "text-white/70",
               ].join(" ")
             }
           >
@@ -77,8 +77,8 @@ export const SidebarNav = () => {
                 className={({ isActive }) =>
                   [
                     "w-full rounded-xl px-4 py-3 text-left text-lg font-medium transition",
-                    "hover:bg-gray-50",
-                    isActive ? "bg-gray-100" : "bg-transparent",
+                    "hover:bg-[#6CD9CE]",
+                    isActive ? "border 2px white" : "bg-transparent",
                   ].join(" ")
                 }
               >

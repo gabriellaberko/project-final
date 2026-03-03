@@ -32,10 +32,13 @@ const CATEGORIES = [
 
 export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
   const API_URL = import.meta.env.VITE_API_URL;
-  const { accessToken } = useAuthStore();
-  const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const accessToken = useAuthStore(state => state.accessToken);
+  const userId = useAuthStore(state => state.userId);
+  const trip = useTripStore(state => state.trip);
   const removeActivity = useTripStore(state => state.removeActivity);
   const editActivity = useTripStore(state => state.editActivity);
+
+  const isOwner = userId && trip && userId === trip.creator?._id;
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -54,7 +57,7 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
       dayId,
       activityId: activity._id,
     },
-    disabled: isEditing
+    disabled: isEditing || !isOwner
   })
 
   const setNodeRef = (node: Element | null) => {
@@ -162,14 +165,15 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
     <div
         ref={setNodeRef}
         className={[
-          "shadow-sm cursor-grab active:cursor-grabbing",
+          "shadow-sm",
+          isOwner ? "cursor-grab active:cursor-grabbing" : "cursor-default",
           isDragging ? "opacity-60" : "",
         ].join(" ")}
         style={{ touchAction: "none" }}
       >
         <Card>
           <div className="flex flex-row gap-2 self-end absolute top-2 right-2 z-10">
-                {isAuthenticated &&
+                {isOwner &&
                   <Pencil 
                     size={18}
                     onClick={(e) => {
@@ -179,7 +183,7 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
                     className="cursor-pointer text-gray-500 hover:text-blue-600"
                   />
                 }
-                {isAuthenticated &&
+                {isOwner &&
                   <Trash 
                     size={18}
                     onClick={(e) => {
