@@ -7,6 +7,7 @@ import { TripsGrid } from "../components/common/TripsGrid";
 import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
 import Avatar from "../assets/avatar.png";
+import { ImageUploadBtn } from "../components/buttons/ImageUploadBtn";
 
 // MUI & Icons
 import Button from "@mui/joy/Button";
@@ -216,16 +217,19 @@ export const UserProfilePage = () => {
         }
 
         <div className='flex row items-center'>
-          <img 
-            src={profile?.avatarUrl || Avatar}
-            alt="Profile picture"
-            className="w-28 h-28 rounded-full object-cover shrink-0" 
-          />
+          <div className="relative w-28 h-28">
+            <img 
+              src={profile?.avatarUrl || Avatar}
+              alt="Profile picture"
+              className="w-28 h-28 rounded-full object-cover cursor-pointer"
+              onClick={() => document.getElementById("avatarUpload")?.click()}
+            />
+            <div className="absolute bottom-0 right-0">
+              <ImageUploadBtn onClick={() => document.getElementById("avatarUpload")?.click()} />
+            </div>
+          </div>
 
           {/* Profile image upload */}
-          <label htmlFor="avatarUpload" className="cursor-pointer text-sm text-blue-600 hover:underline">
-            +
-          </label>
           <input
             id="avatarUpload"
             type="file"

@@ -77,10 +77,13 @@ export type AvatarProps = {
   onLogoutClick?: () => void;
 };
 
-export type StarBtnProps = {
+export type ClickBtnProps = {
   children?: string;
-  onClick: () => void;
-  isStarredByUser?: boolean;
+  onClick?: () => void;
   className?: string;
   size?: string;
+};
+
+export interface StarBtnProps extends ClickBtnProps {
+  isStarredByUser?: boolean;
 };
