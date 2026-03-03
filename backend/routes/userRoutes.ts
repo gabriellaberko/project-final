@@ -100,6 +100,7 @@ router.get("/profile", authenticateUser, async (req, res) => {
   }
 });
 
+
 // Edit profile
 router.patch("/profile", authenticateUser, async (req, res) => {
   try {
@@ -123,6 +124,57 @@ router.patch("/profile", authenticateUser, async (req, res) => {
     });
   }
 });
+
+
+// Update profile picture
+router.patch("/profile/avatar", authenticateUser, async (req, res) => {
+  try {
+    const { avatarUrl } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatarUrl },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    res.status(200).json({
+      success: true,
+      response: updatedUser
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile picture",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
+
+// Delete profile picture
+router.delete("/profile/avatar", authenticateUser, async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { avatarUrl: "" },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    res.status(200).json({
+      success: true,
+      response: updatedUser
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete profile picture",
+      error: err instanceof Error ? err.message : String(err)
+    });
+  }
+});
+
 
 // Get public profile of another user
 router.get("/:userId", async (req, res) => {
