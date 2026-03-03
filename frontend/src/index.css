@@ -13,8 +13,8 @@
     --activity-bg: white;
     --day-bg: white;
     --form-bg: white;
-    --btn-primary: #F2B705;
-    --btn-secondary: #F3E167;
+    --btn-primary: #FF8000;
+    --btn-secondary: #F2B705;
     --qa-primary: #0066D2;
 
     --radius-card: 8px;
@@ -89,7 +89,7 @@
 
   .btn {
     background-color: var(--btn-primary);
-    color: var(--text-primary);
+    color: var(--text-secondary);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -117,6 +117,7 @@
 
   .navbar {
     background-color: var(--navbar-bg);
+    color: var(--text-secondary);
     padding: 20px;
   }
 
