@@ -88,7 +88,7 @@ export const UserProfilePage = () => {
     if (!isOwner && userId) {
       fetchPublicTripsFromUser(userId);
     };
-  }, [])
+  }, [updateData])
 
 
   const handleSave = async () => {
@@ -194,6 +194,31 @@ export const UserProfilePage = () => {
     }
   };
 
+  const removeAvatar = async () => {
+    const url = `${API_URL}/users/profile/avatar`;
+
+    try {
+      const response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        }
+      });
+
+      const data = await response.json();
+      setAvatarUrl(data.response.avatarUrl);
+      setUpdateData();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+    } catch (err) {
+      console.log("Fetch error:", err);
+    }
+  };
+
 
   if (loading) return <div>Loading...</div>
 
@@ -215,9 +240,12 @@ export const UserProfilePage = () => {
         {!loading && error && 
           <ErrorState text="Something went wrong while loading the profile. Please try again in a moment." />
         }
+        
+        {/* Profile section */}
+        <div className='flex row items-center mb-12'>
 
-        <div className='flex row items-center'>
-          <div className="relative w-28 h-28">
+          {/* Profile avatar */}
+          <div className="flex flex-col relative w-28 h-28 mr-4 items-center">
             <img 
               src={profile?.avatarUrl || Avatar}
               alt="Profile picture"
@@ -227,6 +255,13 @@ export const UserProfilePage = () => {
             <div className="absolute bottom-0 right-0">
               <ImageUploadBtn onClick={() => document.getElementById("avatarUpload")?.click()} />
             </div>
+            {profile?.avatarUrl && 
+              <button 
+                onClick={removeAvatar} 
+                className="text-xs hover:underline mt-2">
+                  Remove image
+              </button>
+            }
           </div>
 
           {/* Profile image upload */}
