@@ -16,7 +16,8 @@ export const NavAvatar = ({ username, onLogoutClick }: AvatarProps) => {
         <img 
           src={avatarUrl || Avatar}
           alt="Profile picture"
-          className="w-16 h-16 rounded-full object-cover shrink-0" 
+          className="w-16 h-16 rounded-full object-cover shrink-0 cursor-pointer" 
+          onClick={() => navigate(`/profile/${userId}`)}
         />
         <div className=''>
           <h1 onClick={() => navigate(`/profile/${userId}`)} className="cursor-pointer m-0 text-base md:text-xl">{username}</h1>
