@@ -379,7 +379,7 @@ router.get("/:tripId", optionalAuthenticateUser, async (req: Request, res: Respo
 // Post a new trip
 router.post("/", authenticateUser, async (req: Request, res: Response) => {
   try {
-    const { tripName, destination, isPublic, numberOfDays, imageUrl, isCustomImage } = req.body;
+    const { tripName, destination, description, isPublic, numberOfDays, imageUrl, isCustomImage } = req.body;
 
     // Possible to not add any days, change this if we want to have min number of days = 1. 
     const totalDays = Number(numberOfDays) || 0;
@@ -395,6 +395,7 @@ router.post("/", authenticateUser, async (req: Request, res: Response) => {
     const newTrip = new Trip({
       tripName,
       destination,
+      description,
       days,
       creator: req.user!._id,
       isPublic,
