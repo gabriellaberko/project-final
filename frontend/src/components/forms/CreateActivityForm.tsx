@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useTripStore } from "../../stores/TripStore";
+import { SecondaryBtn } from "../buttons/SecondaryBtn";
 
 // MUI imports
 import Input from "@mui/joy/Input";
@@ -11,7 +12,6 @@ import Option from "@mui/joy/Option";
 import Stack from "@mui/joy/Stack"
 import FormLabel from "@mui/joy/FormLabel";
 import Card from "@mui/joy/Card";
-import Button from "@mui/joy/Button";
 import Textarea from "@mui/joy/Textarea"
 
 type Props = {
@@ -77,11 +77,13 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
   return (
     <form 
       onSubmit={handleSubmit}
-      className="flex justify-center items-center"
-      style={{ height: "100vh" }}
+      className="flex justify-center items-center min-h-screen px-4 py-10"
     >
-      <Card sx={{ width: "600px" }}>
-        <Stack gap={2}>
+      <Card
+        sx={{ width: "100%", maxWidth: "600px" }}
+        className="w-full"
+      >
+        <Stack gap={2} className="w-full">
           <h2>Create new activity</h2>
           <div>
             <FormLabel htmlFor="name">Name</FormLabel>
@@ -142,14 +144,19 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
             />
           </div>
           {error && <FormErrorMessage errorMessage={errorMessage} />}
-          <div className="flex justify-end">
-            <Button 
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6">
+            <SecondaryBtn
+              type="button"
+              onClick={() => navigate(-1)}
+            >
+              Cancel
+            </SecondaryBtn>
+            <button 
               type="submit"
-              size="lg"
-              sx={{ width: "40%" }}
+              className="btn"
               >
                 Save
-              </Button>
+              </button>
           </div>
         </Stack>
       </Card>

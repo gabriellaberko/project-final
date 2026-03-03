@@ -3,7 +3,8 @@ import { useTripStore } from "../../stores/TripStore";
 import { useAuthStore } from "../../stores/AuthStore";
 import { ActivityInterface } from "../../types/interfaces";
 import { ActivityIcon } from "./ActivityIcons"
-import { useSortable } from "@dnd-kit/react/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { useSortable } from "@dnd-kit/sortable"
 import { Trash, Pencil } from "lucide-react"
 
 import Card from "@mui/joy/Card"
@@ -12,6 +13,10 @@ import Textarea from "@mui/joy/Textarea"
 import Select from "@mui/joy/Select"
 import Option from "@mui/joy/Option"
 import Button from "@mui/joy/Button"
+
+interface ActivityPreviewProps {
+  activity: ActivityInterface;
+}
 
 interface ActivityProps {
   tripId: string;
@@ -29,6 +34,25 @@ const CATEGORIES = [
   "Entertainment", 
   "Relaxation"
 ];
+
+export const ActivityPreview = ({ activity }: ActivityPreviewProps) => (
+  <Card className="overflow-visible">
+    <div className="flex flex-row items-center">
+      <div>
+        <ActivityIcon
+          category={activity.category}
+          size={28}
+          className="text-blue-600"
+        />
+      </div>
+      <div className="flex flex-col gap-2 p-4 items-start text-left">
+        {activity.name && <h4>{activity.name}</h4>}
+        {activity.description && <p>{activity.description}</p>}
+        {activity.time && <p><b>Time:</b> {activity.time}</p>}
+      </div>
+    </div>
+  </Card>
+);
 
 export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -49,21 +73,21 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
     googleMapLink: activity.googleMapLink || ""
   });
 
-  const { ref, targetRef, isDragging } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: activity._id,
-    index,
-    group: dayId,
     data: {
       dayId,
       activityId: activity._id,
+      type: "activity",
     },
     disabled: isEditing || !isOwner
   })
-
-  const setNodeRef = (node: Element | null) => {
-    ref(node);
-    targetRef(node);
-  };
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    touchAction: "none",
+    zIndex: isDragging ? 50 : "auto",
+  }
 
   const handleSave = async () => {
     try {
@@ -109,7 +133,7 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
         className="shadow-sm cursor-default"
         style={{ touchAction: "none" }}
       >
-        <Card>
+        <Card className="overflow-visible">
           <div className="flex flex-col gap-3">
             <Input 
               placeholder="Activity Name" 
@@ -164,12 +188,14 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
     
     <div
         ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
         className={[
-          "shadow-sm",
+          "shadow-sm relative",
           isOwner ? "cursor-grab active:cursor-grabbing" : "cursor-default",
           isDragging ? "opacity-60" : "",
         ].join(" ")}
-        style={{ touchAction: "none" }}
       >
         <Card>
           <div className="flex flex-row gap-2 self-end absolute top-2 right-2 z-10">

@@ -295,7 +295,6 @@ export const useTripStore = create<TripState>((set, get) => ({
       if (!response.ok) {
         throw new Error(`Failed to move activity: ${response.status}`)
       }
-      setUpdateData()
 
     } catch (err) {
       console.error(err)

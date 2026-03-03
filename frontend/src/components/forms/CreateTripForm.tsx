@@ -126,16 +126,17 @@ export const CreateTripForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="min-h-screen flex items-center justify-center bg-gray-50 px-4"
+      className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-10"
     >
       <Card
         sx={{
-          width: 600,
+          width: "100%",
+          maxWidth: 600,
           p: 4,
           borderRadius: "10px",
           boxShadow: "0 15px 40px rgba(0,0,0,0.08)",
         }}>
-        <Stack gap={4}>
+        <Stack gap={4} className="w-full">
           <h2>Create trip</h2>
           <div>
             <FormLabel htmlFor="destination">Destination</FormLabel>
@@ -214,7 +215,7 @@ export const CreateTripForm = () => {
                 Select one of the suggestions or upload your own image.
               </p>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {images.map((img, index) => (
                   <button
                     key={img}
@@ -293,7 +294,7 @@ export const CreateTripForm = () => {
           )}
           <div>
             <FormLabel htmlFor="days">Amount of days</FormLabel>
-            <div className="flex col gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Input
                 id="days"
                 type="number"
@@ -361,20 +362,20 @@ export const CreateTripForm = () => {
           {errorMessage && (
             <FormErrorMessage errorMessage={errorMessage} />
           )}
-          <div className="flex justify-end gap-3 pt-6">
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-6">
             <SecondaryBtn
               type="button"
               onClick={() => navigate(-1)}
             >
               Cancel
             </SecondaryBtn>
-            <MainBtn
+            <button
               type="submit"
               disabled={isLoading}
-              className="md:w-40"
+              className="btn md:w-40"
             >
               {isLoading ? "Saving.." : "Save"}
-            </MainBtn>
+            </button>
           </div>
         </Stack>
       </Card>
