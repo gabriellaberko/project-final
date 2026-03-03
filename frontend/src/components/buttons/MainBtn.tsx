@@ -1,4 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
+import { Plus } from "lucide-react";
 
 interface MainBtnProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,7 +23,7 @@ export const MainBtn = ({ children, className = "", ...props }: MainBtnProps) =>
       ].join(" ")}
     >
       {/* Mobile: show plus */}
-      <span className="block md:hidden text-3xl font-bold leading-none">+</span>
+      <span className="block md:hidden"><Plus size={24} /></span>
 
       {/* Desktop: show children */}
       <span className="hidden md:inline">{children}</span>
