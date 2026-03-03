@@ -1,7 +1,7 @@
 import { TripCardProps } from "../../types/interfaces";
 import { useTripStore } from "../../stores/TripStore";
 import { useNavigate } from "react-router-dom";
-import { Trash } from "lucide-react";
+import { Trash, Calendar } from "lucide-react";
 import { useAuthStore } from "../../stores/AuthStore";
 
 export const MyTripCard = ({ trip }: TripCardProps) => {
@@ -42,7 +42,7 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
       relative bg-white rounded-xl
       shadow-md hover:shadow-lg transition
       flex flex-col
-      overflow-y-hidden
+      overflow-hidden
       cursor-pointer
       "
     >
@@ -63,19 +63,19 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
       </span>
 
       {/* Centered content */}
-      <div className="p-6 pb-12 text-center">
+      <div className="p-6 pb-8 flex flex-col gap-3">
 
-        <h3 className="text-xl font-semibold">
+        <h3 className="text-lg font-semibold">
           {trip.destination}
         </h3>
 
-        <div className="mt-4">
-          <span className="px-4 py-1 border rounded-lg text-sm text-gray-600">
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <Calendar size={14} className="text-gray-400" />
+          <span>
             {trip.days.length}{" "}
             {trip.days.length === 1 ? "day" : "days"}
           </span>
         </div>
-
       </div>
 
       <Trash
