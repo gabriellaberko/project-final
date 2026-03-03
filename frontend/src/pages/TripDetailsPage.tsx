@@ -111,7 +111,7 @@ export const TripDetailsPage = () => {
             ...trip,
             days: trip.days.map((d, index) => {
               if (sourceDayId === targetDayId && index === sourceDayIndex)
-                return { ...d, activities: targetActivities}
+                return { ...d, activities: targetActivities }
               if (index === sourceDayIndex) {
                 return { ...d, activities: sourceActivities };
               }
@@ -129,7 +129,7 @@ export const TripDetailsPage = () => {
         {trip &&
           <div className="text-center flex flex-col items-center m-5">
             <div className="flex w-full justify-center items-center gap-2 mb-5">
-              
+
               <h1>My {trip.destination} Trip</h1>
 
               {isTripCreator && (
@@ -159,27 +159,27 @@ export const TripDetailsPage = () => {
                 )
               }
             </div>
-            {!isTripCreator && 
-            <Link to={`/profile/${trip.creator._id}`}>
+            {!isTripCreator &&
+              <Link to={`/profile/${trip.creator._id}`}>
                 <div className="flex items-center gap-2 mb-10">
                   <p>Created by</p>
-                  <img 
+                  <img
                     src={trip.creator?.avatarUrl || Avatar}
                     alt="Profile picture"
-                    className="w-7 h-7 rounded-full object-cover shrink-0" 
+                    className="w-7 h-7 rounded-full object-cover shrink-0"
                   />
                   <span className="text-base text-gray-500 truncate">
                     {trip.creator?.userName}
                   </span>
                 </div>
-            </Link>
+              </Link>
             }
 
             {/* Loading State */}
             {loading && <LoadingState />}
 
             {/* Error State */}
-            {!loading && error && 
+            {!loading && error &&
               <ErrorState text="Couldn't load your trip. Please try again in a moment." />
             }
 
@@ -206,3 +206,5 @@ export const TripDetailsPage = () => {
     </>
   )
 };
+
+// TODO: add img in page
