@@ -1,12 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/AuthStore";
 import { NavAvatar } from "../common/Avatar";
+import { House, Search, Heart, Briefcase } from "lucide-react"
 
 const items = [
-  { label: "Home", path: "/dashboard" },
-  { label: "My Trips", path: "/mytrips" },
-  { label: "My Favorites", path: "/myfavorites" },
-  { label: "Explore", path: "/explore" },
+  { label: "Home", path: "/dashboard", icon: House },
+  { label: "My Trips", path: "/mytrips", icon: Briefcase },
+  { label: "My Favorites", path: "/myfavorites", icon: Heart },
+  { label: "Explore", path: "/explore", icon: Search },
 ];
 
 export const SidebarNav = () => {
@@ -42,21 +43,25 @@ export const SidebarNav = () => {
         justify-around px-2 z-50
       "
       >
-        {items.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            end={item.path === "/dashboard"}
-            className={({ isActive }) =>
-              [
-                "text-sm font-medium transition",
-                isActive ? "text-white" : "text-white/70",
-              ].join(" ")
-            }
-          >
-            <span>{item.label}</span>
-          </NavLink>
-        ))}
+        {items.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              end={item.path === "/dashboard"}
+              className={({ isActive }) =>
+                [
+                  "flex flex-col items-center gap-1 text-xs font-medium transition",
+                  isActive ? "text-white" : "text-white/70",
+                ].join(" ")
+              }
+            >
+              <Icon size={20} />
+              <span>{item.label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* desktop sidebar */}
