@@ -8,6 +8,7 @@ export const NavAvatar = ({ username, onLogoutClick }: AvatarProps) => {
   const navigate = useNavigate();
   const userId = useAuthStore(state => state.userId);
   const avatarUrl = useAuthStore(state => state.avatarUrl);
+  console.log(typeof avatarUrl, JSON.stringify(avatarUrl))
 
   return (
     <>

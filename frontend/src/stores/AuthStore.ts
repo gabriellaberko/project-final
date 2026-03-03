@@ -24,7 +24,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("userName", userName);
     localStorage.setItem("userId", userId);
-    localStorage.setItem("avatarUrl", avatarUrl);
+    localStorage.setItem("avatarUrl", avatarUrl ?? "");    
     set({
       accessToken,
       isAuthenticated: true,
@@ -53,8 +53,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     const accessToken = localStorage.getItem("accessToken");
     const userName = localStorage.getItem("userName");
     const userId = localStorage.getItem("userId");
-    const avatarUrl = localStorage.getItem("avatarUrl");
-
+    const avatarUrl = localStorage.getItem("avatarUrl") || null;
+    
     if(accessToken) {
       set({
         accessToken,
