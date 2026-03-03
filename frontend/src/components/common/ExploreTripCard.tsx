@@ -64,7 +64,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
       >
 
         {/* HEADER */}
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center justify-between gap-3">
           <h3
             className="
           text-lg
@@ -94,9 +94,12 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
         </div>
 
         {/* DESCRIPTION */}
-        <p className="text-sm text-gray-600 leading-relaxed mt-4 line-clamp-3">
-          Description text text text text text
-        </p>
+        <div className="relative">
+          <p className="text-sm text-gray-600 leading-relaxed mt-2 line-clamp-3">
+            {trip.description}
+          </p>
+          <div className="absolute bottom-0 left-0 right-0 h-6 bg-linear-to-t from-white to-transparent" />
+        </div>
 
         {/* PUSH FOOTER DOWN */}
         <div className="mt-auto pt-6 flex items-center justify-between gap-3">
@@ -121,6 +124,3 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
     </div>
   );
 };
-
-// TODO: Fix the design.
-// TODO: Fix what to show here, more than x likes? 

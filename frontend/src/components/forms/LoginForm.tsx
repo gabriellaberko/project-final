@@ -48,7 +48,7 @@ export const LoginForm = () => {
 
       const loggedInUser = await response.json();
       // Retrieve accessToken from response and login the user
-      login({ accessToken: loggedInUser.accessToken, userName: loggedInUser.userName, userId: loggedInUser.userId });
+      login({ accessToken: loggedInUser.accessToken, userName: loggedInUser.userName, userId: loggedInUser.userId, avatarUrl: loggedInUser.avatarUrl });
       setError(false);
 
 
