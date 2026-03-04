@@ -59,7 +59,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
         p-6
         flex
         flex-col 
-        ${variant === "horizontal" ? "md:w-7/12 md:order-1" : "grow"}
+        ${variant === "horizontal" ? "md:w-7/12 md:order-1" : "h-56"}
        `}
       >
 
