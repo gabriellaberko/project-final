@@ -51,7 +51,8 @@ export const AuthHomePage = () => {
           </h2>
           <p className="text-sm mb-10">Find inspiration from the most popular trips in our community right now.</p>
 
-          <div className="overflow-hidden -ml-4 pb-2"
+          <div 
+            className="overflow-hidden pb-2"
             ref={emblaRef}
           >
             <div className="flex">
