@@ -100,12 +100,15 @@ export const PublicHomePage = () => {
         />
         <div className="absolute right-0 top-10 md:top-auto items-center text-right p-6 md:p-10 w-full md:w-auto">
           <h1 className="text-white text-3xl md:text-4xl font-bold drop-shadow-2xl">Your journey starts here</h1>
-          <h2 className="text-white text-lg md:text-xl font-bold drop-shadow-2xl">Plan, share, and explore the world with ease</h2>
+          <h2 className="text-white text-lg md:text-xl font-bold drop-shadow-2xl">Plan, share & explore the world with ease</h2>
+          <p className="text-white/80 text-sm md:text-base max-w-md text-right drop-shadow">
+            Create day-by-day itineraries, discover trips from other travelers, and share your adventures with the world.
+          </p>
           <button
             type="button"
-            className="btn mt-6 md:mt-10 text-lg font-extrabold"
+            className="btn mt-6 md:mt-10 text-lg font-extrabold mr-4"
           >
-            Register for more!
+            Sign up to start planning
           </button>
         </div>
       </section>
