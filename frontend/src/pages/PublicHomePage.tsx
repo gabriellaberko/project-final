@@ -145,7 +145,7 @@ export const PublicHomePage = () => {
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-10 text-center">The Ultimate Tool for Your Next Adventure</h2>
         </ScrollReveal>
         <ScrollReveal>
-          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_4px_15px_#0066D2] bg-white rounded-2xl">
+          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
             <div className="app-text flex-1">
               <h3 className="text-xl font-extrabold tracking-tight">Craft Your Perfect Route</h3>
               <p className="mt-4 text-lg">Stop juggling tabs. Map out your entire journey in one intuitive workspace, from hidden gems to must-see landmarks.</p>
@@ -158,7 +158,7 @@ export const PublicHomePage = () => {
           </div>
         </ScrollReveal> 
         <ScrollReveal>
-          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_4px_15px_#0066D2] bg-white rounded-2xl">
+          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
             <img 
               src={share} 
               alt=""
@@ -171,7 +171,7 @@ export const PublicHomePage = () => {
           </div>
         </ScrollReveal>
         <ScrollReveal>
-          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_4px_15px_#0066D2] bg-white rounded-2xl">
+          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
             <div className="app-text flex-1">
               <h3 className="text-xl font-extrabold tracking-tight">Never Start from Scratch</h3>
               <p className="mt-4 text-lg ">Browse thousands of real itineraries. Filter by destination or style to find your next adventure, curated by people who’ve been there.</p>
@@ -184,7 +184,7 @@ export const PublicHomePage = () => {
           </div>
         </ScrollReveal>
         <ScrollReveal>
-          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_4px_15px_#0066D2] bg-white rounded-2xl">
+          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
             <img 
               src={edit} 
               alt="" 
@@ -199,9 +199,7 @@ export const PublicHomePage = () => {
       </section>
 
       <section className="flex flex-col items-center my-10 md:m-20 px-4">
-        <ScrollReveal>
-          <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-5 text-center">Everything You Need to Know</h2>
-        </ScrollReveal>
+        <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-5 text-center">Everything You Need to Know</h2>
         <motion.div
           initial="hidden"
           whileInView="visible"
