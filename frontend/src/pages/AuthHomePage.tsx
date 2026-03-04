@@ -46,9 +46,10 @@ export const AuthHomePage = () => {
 
         {/* TRENDING CAROUSEL */}
         <section>
-          <h2 className="text-lg md:text-xl font-medium text-gray-600 mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
             Trending trips
           </h2>
+          <p className="text-sm mb-10">Find inspiration from the most popular trips in our community right now.</p>
 
           <div className="overflow-hidden -ml-4 pb-2"
             ref={emblaRef}
@@ -73,9 +74,10 @@ export const AuthHomePage = () => {
 
         {/* FEED */}
         <section className="pt-10">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
             Following Trips
           </h2>
+          <p className="text-sm mb-10">See what the people you follow are planning most recently and get inspired for your next adventure.</p>
 
           {feedTrips && feedTrips.length > 0 ? (
             <div className="w-full flex justify-center">
