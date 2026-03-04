@@ -63,7 +63,7 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
       </span>
 
       {/* content */}
-      <div className="p-6 pb-8 flex flex-col justify-between h-45">
+      <div className="p-6 pb-8 flex flex-col h-56">
         <div>
           <h3 className="text-lg font-semibold">
             {trip.destination}
@@ -71,16 +71,16 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
 
           {/* DESCRIPTION */}
           {trip.description && (
-            <div className="relative mt-2">
+            <div className="relative">
               <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
                 {trip.description}
               </p>
-              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-4 bg-linear-to-t from-white to-transparent" />
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-3 bg-linear-to-t from-white to-transparent" />
             </div>
           )}
         </div>
 
-        <div className="flex items-center gap-2 text-sm text-gray-600">
+        <div className="mt-auto flex items-center gap-2 text-sm text-gray-600">
           <Calendar size={14} className="text-gray-400" />
           <span>
             {trip.days.length}{" "}
