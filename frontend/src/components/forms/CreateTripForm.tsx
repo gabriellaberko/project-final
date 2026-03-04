@@ -177,7 +177,7 @@ export const CreateTripForm = () => {
               id="tripdescription"
               type="text"
               value={description}
-              placeholder="..."
+              placeholder="Tell us about your travels..."
               onChange={(e) => setDescription(e.target.value)}
               sx={{
                 '&::before': {
@@ -339,11 +339,11 @@ export const CreateTripForm = () => {
                 className="sr-only peer"
               />
 
-              <div className="
-                w-12 h-7 bg-gray-300 rounded-full 
-                peer-checked:bg-blue-500 
+              <div className={`
+                w-12 h-7 rounded-full 
+                ${isPublic ? "bg-[#0066D2]" : "bg-gray-300"}
                 transition-colors duration-300
-                "
+                `}
               >
               </div>
 
