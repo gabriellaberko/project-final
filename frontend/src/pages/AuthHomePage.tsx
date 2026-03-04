@@ -3,6 +3,7 @@ import { useTripStore } from "../stores/TripStore";
 import { ExploreTripCard } from "../components/common/ExploreTripCard";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
+import { LoadingState } from "../components/status/LoadingState";
 
 export const AuthHomePage = () => {
   const {
@@ -26,8 +27,8 @@ export const AuthHomePage = () => {
 
   if (loading) {
     return (
-      <div className="p-10 text-center">
-        <p>Loading trips...</p>
+      <div className="w-full h-full flex justify-center items-center">
+      <LoadingState />
       </div>
     );
   }
