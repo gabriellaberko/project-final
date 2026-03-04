@@ -111,16 +111,8 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
 
   const handleDelete = async () => {
     try {
-      const url = `${API_URL}/trips/${tripId}/days/${dayId}/activities/${activity._id}`;
-      const response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
-      if (response.ok) {
-        removeActivity(tripId, dayId, activity._id)
-      }
+      await removeActivity(tripId, dayId, activity._id);
+
     } catch (err) {
       console.error(err)
     }
@@ -220,7 +212,6 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
                   />
                 }
           </div>
-          {/* <div className="flex flex-row justify-between gap-2"> */}
             <div className="flex flex-row items-center">
               <div>
                 <ActivityIcon
@@ -244,10 +235,7 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
                   </a>
                 }
               </div>
-            </div>
-            
-          {/* </div>          */}
-            
+            </div>            
         </Card>
       </div>
     </>
