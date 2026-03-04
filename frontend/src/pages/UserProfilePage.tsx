@@ -89,7 +89,7 @@ export const UserProfilePage = () => {
     if (!isOwner && userId) {
       fetchPublicTripsFromUser(userId);
     };
-  }, [updateData])
+  }, [updateData, userId])
 
 
   const handleSave = async () => {
