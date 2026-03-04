@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../stores/AuthStore";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import useEmblaCarousel from "embla-carousel-react"
 import AutoScroll from "embla-carousel-auto-scroll"
 import { ProfileComponent } from "../components/common/ProfileComponent";
@@ -23,6 +23,7 @@ export const PublicHomePage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const [trips, setTrips] = useState<TripInterFace[]>([]);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  const navigate = useNavigate();
   const [emblaRef1] = useEmblaCarousel({ loop: true}, [
     AutoScroll({ speed: 0.8, stopOnInteraction: false })
   ])
@@ -107,6 +108,7 @@ export const PublicHomePage = () => {
           <button
             type="button"
             className="btn mt-6 md:mt-10 text-lg font-extrabold mr-4"
+            onClick={() => navigate("/auth?mode=signup")}
           >
             Sign up to start planning
           </button>
