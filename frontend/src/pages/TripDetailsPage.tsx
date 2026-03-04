@@ -253,19 +253,18 @@ export const TripDetailsPage = () => {
               {isAuthenticated && !isTripCreator &&
                 (
                   isStarredByUser
-                    ? <StarBtn size="7" className="self-end" onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
-                    : <StarBtn size="7" className="self-end" onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                    ? <StarBtn size="10" className="self-end" onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                    : <StarBtn size="10" className="self-end" onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
                 )
               }
             </div>
             {!isTripCreator &&
               <Link to={`/profile/${trip.creator._id}`}>
-                <div className="flex items-center gap-2 mb-10">
-                  <p>Created by</p>
+                <div className="flex items-center gap-2">
                   <img
                     src={trip.creator?.avatarUrl || Avatar}
                     alt="Profile picture"
-                    className="w-7 h-7 rounded-full object-cover shrink-0"
+                    className="w-9 h-9 rounded-full object-cover shrink-0"
                   />
                   <span className="text-base text-gray-500 truncate">
                     {trip.creator?.userName}
@@ -338,7 +337,7 @@ export const TripDetailsPage = () => {
         </DragOverlay>
       </DndContext>
 
-      {isAuthenticated &&
+      {isAuthenticated && isTripCreator &&
         <div className="flex justify-center">
           <MainBtn
             onClick={() => addDay(trip!._id)}
