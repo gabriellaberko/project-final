@@ -35,6 +35,7 @@ export const ExplorePage = () => {
 
   return (
     <div className="px-6 py-8">
+      <h1 className="sr-only">Explore trips</h1>
       <div className="w-full h-72 rounded-2xl mb-10 flex items-center justify-center overflow-hidden">
         <Player
           animationData={exploreAnimation}
@@ -45,9 +46,10 @@ export const ExplorePage = () => {
       </div>
 
       {/* SearchBar */}
-      <div className="mb-10">
+      <section className="mb-10">
+        <h2 className="sr-only">Search trips</h2>
         <SearchBar onSearch={handleSearch} />
-      </div>
+      </section>
 
       {loading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
