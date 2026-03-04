@@ -58,7 +58,10 @@ export const SignupForm = () => {
 
       const newUser = await response.json();
       // Retrieve accessToken from response and login the the newly created user
-      login({ accessToken: newUser.accessToken, userName: newUser.userName, userId: newUser.userId });
+      login({
+        accessToken: newUser.accessToken, userName: newUser.userName, userId: newUser.userId,
+        avatarUrl: ""
+      });
       setError(false);
 
     } catch (err) {
@@ -160,7 +163,13 @@ export const SignupForm = () => {
         </div>
 
         {error && <FormErrorMessage errorMessage={errorMessage} />}
-        <Button size="lg" type="submit" sx={{ mt: 2 }}>Sign up</Button>
+        <Button
+          size="lg"
+          type="submit"
+          sx={{ mt: 2 }}
+        >
+          Sign up
+        </Button>
 
       </Stack>
     </form>

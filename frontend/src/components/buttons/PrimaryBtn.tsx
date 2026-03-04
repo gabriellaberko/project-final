@@ -14,11 +14,11 @@ export const PrimaryBtn = ({
     <button
       {...props}
       className={[
-        "bg-[#0066D2] text-white font-medium",
-        "px-6 py-2 rounded-lg",
-        "transition-all duration-200",
-        "hover:bg-[#175a91] hover:shadow-md",
-        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
+        "bg-(--btn-primary)  text-white font-medium",
+        "px-6 py-2 rounded-lg min-w-35",
+        "transition-all duration-200 cursor-pointer",
+        "hover:bg-(--btn-secondary) hover:shadow-md",
+        "focus:outline-none focus:ring-2 focus:ring-(--btn-primary) focus:ring-offset-2",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         className,
       ].join(" ")}

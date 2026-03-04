@@ -4,6 +4,7 @@ import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useTripStore } from "../../stores/TripStore";
 import { SecondaryBtn } from "../buttons/SecondaryBtn";
+import { PrimaryBtn } from "../buttons/PrimaryBtn";
 
 // MUI imports
 import Input from "@mui/joy/Input";
@@ -42,7 +43,7 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
     setUpdateData();
   };
 
-  const postNewActivity = async () => { 
+  const postNewActivity = async () => {
     const url = `${API_URL}/trips/${tripId}/days/${dayId}/activities`; // Replace with deployed API link 
     try {
       const response = await fetch(url, {
@@ -56,18 +57,18 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
         }),
         headers: {
           "Content-Type": "application/json",
-            ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
         },
       });
 
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       await response.json();
       setError(false);
 
-    } catch (err) { 
+    } catch (err) {
       console.error("Sending error:", err);
       setErrorMessage("Could not create new activity");
       setError(true);
@@ -75,7 +76,7 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
   }
 
   return (
-    <form 
+    <form
       onSubmit={handleSubmit}
       className="flex justify-center items-center min-h-screen px-4 py-10"
     >
@@ -87,21 +88,21 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
           <h2>Create new activity</h2>
           <div>
             <FormLabel htmlFor="name">Name</FormLabel>
-            <Input 
-              id="name" 
-              type="text" 
+            <Input
+              id="name"
+              type="text"
               name="name"
-              placeholder="Enter name of activity" 
-              required 
+              placeholder="Enter name of activity"
+              required
               onChange={(e) => setName(e.target.value)}
             />
           </div>
           <div>
             <FormLabel htmlFor="description">Description</FormLabel>
-            <Textarea 
-              id="description" 
+            <Textarea
+              id="description"
               name="description"
-              placeholder="Enter description of activity" 
+              placeholder="Enter description of activity"
               onChange={(e) => setDescription(e.target.value)}
               minRows={3}
             />
@@ -113,7 +114,7 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
               name="category"
               value={category}
               onChange={(e, value) => setCategory(value ?? "")}  //Special case for MUI Joy Select
-              >
+            >
               <Option value="" disabled>-- Select an option --</Option>
               <Option value="Culture & Events">Culture & Events</Option>
               <Option value="Sightseeing">Sightseeing</Option>
@@ -131,15 +132,15 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
               type="time"
               name="time"
               onChange={(e) => setTime(e.target.value)}
-        />
+            />
           </div>
           <div>
             <FormLabel htmlFor="googleMapLink">Google Map Link</FormLabel>
-            <Input 
-              id="googleMapLink" 
+            <Input
+              id="googleMapLink"
               type="url"
               name="googleMapLink"
-              placeholder="https://www.google.com/maps/..." 
+              placeholder="https://www.google.com/maps/..."
               onChange={(e) => setGoogleMapLink(e.target.value)}
             />
           </div>
@@ -151,12 +152,12 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
             >
               Cancel
             </SecondaryBtn>
-            <button 
+            <PrimaryBtn
               type="submit"
               className="btn"
-              >
-                Save
-              </button>
+            >
+              Save
+            </PrimaryBtn>
           </div>
         </Stack>
       </Card>

@@ -123,7 +123,13 @@ export const LoginForm = () => {
         </div>
 
         {error && <FormErrorMessage errorMessage={errorMessage} />}
-        <Button size="lg" type="submit" sx={{ mt: 2 }}>Log in</Button>
+        <Button
+          size="lg"
+          type="submit"
+          sx={{ mt: 2 }}
+        >
+          Log in
+        </Button>
       </Stack>
     </form>
   )
