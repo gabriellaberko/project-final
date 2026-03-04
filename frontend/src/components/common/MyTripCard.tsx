@@ -75,7 +75,7 @@ export const MyTripCard = ({ trip }: TripCardProps) => {
               <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
                 {trip.description}
               </p>
-              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white to-transparent" />
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-4 bg-linear-to-t from-white to-transparent" />
             </div>
           )}
         </div>
