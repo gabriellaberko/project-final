@@ -17,6 +17,7 @@ import Sandra from "../assets/profile/Sandra.png"
 import { ScrollReveal } from "../components/common/ScrollReveal";
 import { motion } from "framer-motion";
 import { TripInterFace } from "../types/interfaces";
+import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
 
 
 export const PublicHomePage = () => {
@@ -24,7 +25,7 @@ export const PublicHomePage = () => {
   const [trips, setTrips] = useState<TripInterFace[]>([]);
   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
   const navigate = useNavigate();
-  const [emblaRef1] = useEmblaCarousel({ loop: true}, [
+  const [emblaRef1] = useEmblaCarousel({ loop: true }, [
     AutoScroll({ speed: 0.8, stopOnInteraction: false })
   ])
   const [emblaRef2] = useEmblaCarousel({ loop: true, direction: 'rtl' }, [
@@ -57,8 +58,8 @@ export const PublicHomePage = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5 }
     },
@@ -74,28 +75,28 @@ export const PublicHomePage = () => {
     altText: "Profile picture of Asako",
     githubLink: "https://github.com/Appilistus",
     linkedinLink: "https://www.linkedin.com/in/asako-kanno/"
-    }, 
-    {
-      name: "Gabriella",
-      imgSrc: Gabriella,
-      altText: "Profile picture of Gabriella",
-      githubLink: "https://github.com/gabriellaberko",
-      linkedinLink: "https://www.linkedin.com/in/gabriella-berkowicz/"
-    }, 
-    {
-      name: "Sandra",
-      imgSrc: Sandra,
-      altText: "Profile picture of Sandra",
-      githubLink: "https://github.com/sandrahagevall",
-      linkedinLink: "https://www.linkedin.com/in/sandra-hagevall-8001b5183/"
-    }
+  },
+  {
+    name: "Gabriella",
+    imgSrc: Gabriella,
+    altText: "Profile picture of Gabriella",
+    githubLink: "https://github.com/gabriellaberko",
+    linkedinLink: "https://www.linkedin.com/in/gabriella-berkowicz/"
+  },
+  {
+    name: "Sandra",
+    imgSrc: Sandra,
+    altText: "Profile picture of Sandra",
+    githubLink: "https://github.com/sandrahagevall",
+    linkedinLink: "https://www.linkedin.com/in/sandra-hagevall-8001b5183/"
+  }
   ]
 
   return (
     <>
       <section className="flex flex-col relative bg-black display-inline-block">
-        <img 
-          src={hero} 
+        <img
+          src={hero}
           alt=""
           className="hero-img opacity-50"
         />
@@ -123,27 +124,27 @@ export const PublicHomePage = () => {
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-center">Trending Destinations</h2>
         </div>
         <div className="embla overflow-hidden" ref={emblaRef1}>
-            <div className="embla__container flex">
-              {trips.map((trip) => (
-                <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={trip._id}>
-                  <PublicTripCard trip={trip} />
-                </div>
-              ))}
-            </div>
+          <div className="embla__container flex">
+            {trips.map((trip) => (
+              <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={trip._id}>
+                <PublicTripCard trip={trip} />
+              </div>
+            ))}
           </div>
+        </div>
         <div className="embla overflow-hidden" ref={emblaRef2} dir="rtl">
-            <div className="embla__container flex">
-              {trips.map((trip) => (
-                <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={`rtl-${trip._id}`} dir="ltr">
-                  <PublicTripCard trip={trip} />
-                </div>
-              ))}
-            </div>
+          <div className="embla__container flex">
+            {trips.map((trip) => (
+              <div className="embla__slide flex-[0_0_85%] md:flex-[0_0_30%] min-w-0 px-4" key={`rtl-${trip._id}`} dir="ltr">
+                <PublicTripCard trip={trip} />
+              </div>
+            ))}
           </div>
+        </div>
       </section>
 
       <section className="flex flex-col gap-10 md:gap-16 mx-auto max-w-6xl px-6 my-10 md:my-20 w-full">
-      <ScrollReveal>
+        <ScrollReveal>
           <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-10 text-center">The Ultimate Tool for Your Next Adventure</h2>
         </ScrollReveal>
         <ScrollReveal>
@@ -152,17 +153,17 @@ export const PublicHomePage = () => {
               <h3 className="text-xl font-extrabold tracking-tight">Craft Your Perfect Route</h3>
               <p className="mt-4 text-lg">Stop juggling tabs. Map out your entire journey in one intuitive workspace, from hidden gems to must-see landmarks.</p>
             </div>
-            <img 
-              src={plan} 
+            <img
+              src={plan}
               alt=""
               className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
             />
           </div>
-        </ScrollReveal> 
+        </ScrollReveal>
         <ScrollReveal>
           <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
-            <img 
-              src={share} 
+            <img
+              src={share}
               alt=""
               className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
             />
@@ -178,18 +179,18 @@ export const PublicHomePage = () => {
               <h3 className="text-xl font-extrabold tracking-tight">Never Start from Scratch</h3>
               <p className="mt-4 text-lg ">Browse thousands of real itineraries. Filter by destination or style to find your next adventure, curated by people who’ve been there.</p>
             </div>
-            <img 
-              src={explore} 
-              alt="" 
+            <img
+              src={explore}
+              alt=""
               className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
             />
           </div>
         </ScrollReveal>
         <ScrollReveal>
           <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
-            <img 
-              src={edit} 
-              alt="" 
+            <img
+              src={edit}
+              alt=""
               className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
             />
             <div className="app-text flex-1">
@@ -209,18 +210,18 @@ export const PublicHomePage = () => {
           variants={containerVariants}
           className="flex flex-col self-start justify-between items-center gap-5 w-full"
         >
-            <motion.div variants={itemVariants} className="w-full max-w-2xl">
-              <p className="q"><b>Q: </b>Does it cost anything to join?</p>
-              <p className="a"><b>A: </b>Not at all. You can start planning, sharing, and exploring for free today. We believe great travel should be accessible to everyone.</p>
-            </motion.div>
-            <motion.div variants={itemVariants} className="w-full max-w-2xl">
-              <p className="q"><b>Q: </b>Can I keep my itineraries private?</p>
-              <p className="a"><b>A: </b>Of course. You’re in the driver’s seat. Choose to keep your plans private for personal use, or toggle them to public whenever you’re ready to inspire others.</p>
-            </motion.div>
-            <motion.div variants={itemVariants} className="w-full max-w-2xl">
-              <p className="q"><b>Q: </b>Is there a mobile app?</p>
-              <p className="a"><b>A: </b>While we’re web-based, our platform is fully optimized for mobile. You can access your plans seamlessly from any browser on your phone while you're out exploring.</p>
-            </motion.div>
+          <motion.div variants={itemVariants} className="w-full max-w-2xl">
+            <p className="q"><b>Q: </b>Does it cost anything to join?</p>
+            <p className="a"><b>A: </b>Not at all. You can start planning, sharing, and exploring for free today. We believe great travel should be accessible to everyone.</p>
+          </motion.div>
+          <motion.div variants={itemVariants} className="w-full max-w-2xl">
+            <p className="q"><b>Q: </b>Can I keep my itineraries private?</p>
+            <p className="a"><b>A: </b>Of course. You’re in the driver’s seat. Choose to keep your plans private for personal use, or toggle them to public whenever you’re ready to inspire others.</p>
+          </motion.div>
+          <motion.div variants={itemVariants} className="w-full max-w-2xl">
+            <p className="q"><b>Q: </b>Is there a mobile app?</p>
+            <p className="a"><b>A: </b>While we’re web-based, our platform is fully optimized for mobile. You can access your plans seamlessly from any browser on your phone while you're out exploring.</p>
+          </motion.div>
         </motion.div>
       </section>
 
@@ -238,7 +239,7 @@ export const PublicHomePage = () => {
       </section>
 
       <footer className="text-center p-6">
-      © 2026 (App name). All rights reserved.
+        © 2026 (App name). All rights reserved.
       </footer>
     </>
   );

@@ -52,6 +52,10 @@ export const TripDetailsPage = () => {
   const [description, setDescription] = useState(trip?.description ?? "");
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  useEffect(() => {
+    setDescription(trip?.description ?? "");
+    setIsEditing(false);
+  }, [trip]);
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -94,9 +98,9 @@ export const TripDetailsPage = () => {
         },
         body: JSON.stringify({ description })
       })
-      
+
       if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       await response.json()
@@ -237,16 +241,16 @@ export const TripDetailsPage = () => {
               />
               <div className="absolute inset-0 bg-black/60 backdrop-blur-[5px]" />
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-white">
-              <div className="flex items-center justify-center gap-2">
-                <h1>My {trip.destination} Trip</h1>
-                {isAuthenticated && !isTripCreator && (
-                  isStarredByUser
-                    ? <StarBtn size="10" onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
-                    : <StarBtn size="10" onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
-                )}
+                <div className="flex items-center justify-center gap-2">
+                  <h1>My {trip.destination} Trip</h1>
+                  {isAuthenticated && !isTripCreator && (
+                    isStarredByUser
+                      ? <StarBtn size="10" onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                      : <StarBtn size="10" onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                  )}
                 </div>
 
-              {/* Trip creator */}
+                {/* Trip creator */}
                 {!isTripCreator &&
                   <Link to={`/profile/${trip.creator._id}`}>
                     <div className="flex items-center gap-2">
@@ -293,30 +297,30 @@ export const TripDetailsPage = () => {
                   disabled={!isTripCreator}
                 />
               ) : (
-                  <p className="mt-2 text-base">{trip.description || ""}</p>
+                <p className="mt-2 text-base">{trip.description || ""}</p>
               )}
 
               {/* Editable for owner */}
               {isTripCreator &&
                 <div className="flex gap-2">
-                  {isEditing 
-                  ? (
-                    <div className="flex gap-5">
-                      <SecondaryBtn onClick={() => setIsEditing(false)}>
-                        Cancel
+                  {isEditing
+                    ? (
+                      <div className="flex gap-5">
+                        <SecondaryBtn onClick={() => setIsEditing(false)}>
+                          Cancel
+                        </SecondaryBtn>
+                        <PrimaryBtn onClick={saveDescription}>
+                          Save Changes
+                        </PrimaryBtn>
+                      </div>
+                    )
+                    : (
+                      <SecondaryBtn onClick={() => setIsEditing(true)}>
+                        {trip.description ? "Edit description" : "Add trip description"}
                       </SecondaryBtn>
-                      <PrimaryBtn color="success" onClick={saveDescription}>
-                        Save Changes
-                      </PrimaryBtn>
-                    </div>
-                    ) 
-                  : (
-                    <SecondaryBtn onClick={() => setIsEditing(true)}>
-                      {trip.description ? "Edit description" : "Add trip description"}
-                    </SecondaryBtn>
                     )
                   }
-              </div>
+                </div>
               }
             </div>
             {/* Loading State */}

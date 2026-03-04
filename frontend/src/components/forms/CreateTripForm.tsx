@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 import { useTripStore } from "../../stores/TripStore";
-import { MainBtn } from "../buttons/MainBtn";
 import { PrimaryBtn } from "../buttons/PrimaryBtn";
 import { SecondaryBtn } from "../buttons/SecondaryBtn";
 
@@ -198,13 +197,19 @@ export const CreateTripForm = () => {
               }}
             />
           </div>
-          <PrimaryBtn
+          <button
             type="button"
             onClick={handleFetchImages}
             disabled={isFetchingImages}
+            className="
+              bg-(--navbar-bg) text-white
+              px-6 py-2 rounded-lg
+              transition-all duration-200
+              hover:bg-(--navbar-selected) hover:shadow-md
+              disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isFetchingImages ? "Loading..." : "Fetch city images"}
-          </PrimaryBtn>
+          </button>
 
           {images.length > 0 && (
             <fieldset className="mt-6">
@@ -369,13 +374,12 @@ export const CreateTripForm = () => {
             >
               Cancel
             </SecondaryBtn>
-            <button
+            <PrimaryBtn
               type="submit"
               disabled={isLoading}
-              className="btn md:w-40"
             >
               {isLoading ? "Saving.." : "Save"}
-            </button>
+            </PrimaryBtn>
           </div>
         </Stack>
       </Card>
