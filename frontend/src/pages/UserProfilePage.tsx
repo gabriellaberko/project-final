@@ -320,10 +320,14 @@ export const UserProfilePage = () => {
               <div className="flex gap-2">
                 {isEditing ? (
                   <div className="flex gap-5">
-                    <SecondaryBtn onClick={() => setIsEditing(false)}>
+                    <SecondaryBtn 
+                      onClick={() => setIsEditing(false)} 
+                      className="w-88">
                       Cancel
                     </SecondaryBtn>
-                    <PrimaryBtn color="success" onClick={handleSave}>
+                    <PrimaryBtn 
+                      onClick={handleSave} 
+                      className="w-88">
                       Save Changes
                     </PrimaryBtn>
                   </div>
@@ -331,6 +335,7 @@ export const UserProfilePage = () => {
                   <PrimaryBtn
                     type="button"
                     onClick={() => setIsEditing(true)}
+                    className="w-88"
                   >
                     Edit Profile
                   </PrimaryBtn>
@@ -338,10 +343,11 @@ export const UserProfilePage = () => {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col mt-3 mb-3">
+            <div className="flex">
               <PrimaryBtn
                 type="button"
                 onClick = {handleFollowing}
+                className="w-88"
               >
                 {isAlreadyFollowingUser
                   ? "Unfollow" 
