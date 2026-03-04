@@ -4,6 +4,7 @@ import { ExploreTripCard } from "../components/common/ExploreTripCard";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
 import { LoadingState } from "../components/status/LoadingState";
+import { ErrorState } from "../components/status/ErrorState";
 
 export const AuthHomePage = () => {
   const {
@@ -35,8 +36,8 @@ export const AuthHomePage = () => {
 
   if (error) {
     return (
-      <div className="p-10 text-center">
-        <p>Something went wrong.</p>
+      <div className="w-full h-full flex justify-center items-center">
+        <ErrorState text="We couldn't load trips right now. Please try again in a moment." />
       </div>
     );
   }
