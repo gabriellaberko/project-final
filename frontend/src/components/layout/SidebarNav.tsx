@@ -82,7 +82,7 @@ export const SidebarNav = () => {
                 className={({ isActive }) =>
                   [
                     "w-full rounded-xl px-4 py-3 text-left text-lg font-medium transition",
-                    "hover:bg-[#6CD9CE]",
+                    "hover:bg-white hover:text-[#0066D2]",
                     isActive ? "border 2px white" : "bg-transparent",
                   ].join(" ")
                 }
