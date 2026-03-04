@@ -55,11 +55,6 @@ export const PublicTripCard = ({ trip }: { trip: TripInterFace }) => {
                 </div>
             </div>
     
-            {/* DESCRIPTION */}
-            <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-              Description text text text text text
-            </p>
-    
             {/* PUSH FOOTER DOWN */}
             <div className="flex items-center justify-between gap-3">
               <span className="px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-600 shrink-0">
