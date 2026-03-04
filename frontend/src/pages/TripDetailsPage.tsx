@@ -226,54 +226,64 @@ export const TripDetailsPage = () => {
         onDragCancel={() => setActiveId(null)}
       >
         {trip &&
-          <div className="text-center flex flex-col items-center m-5 overflow-visible">
-            <div className="flex w-full justify-center items-center gap-2 mb-5">
+          <div className="text-center flex flex-col items-center overflow-visible">
 
-              <h1>My {trip.destination} Trip</h1>
+            {/* IMAGE */}
+            <div className="relative w-full">
+              <img
+                src={trip.imageUrl}
+                alt={trip.destination}
+                className="w-full object-cover h-56 md:h-75"
+              />
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-[5px]" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-white">
+              <div className="flex items-center justify-center gap-2">
+                <h1>My {trip.destination} Trip</h1>
+                {isAuthenticated && !isTripCreator && (
+                  isStarredByUser
+                    ? <StarBtn size="10" onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                    : <StarBtn size="10" onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
+                )}
+                </div>
 
+              {/* Trip creator */}
+                {!isTripCreator &&
+                  <Link to={`/profile/${trip.creator._id}`}>
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={trip.creator?.avatarUrl || Avatar}
+                        alt="Profile picture"
+                        className="w-9 h-9 rounded-full object-cover shrink-0"
+                      />
+                      <span className="text-base text-white truncate">
+                        {trip.creator?.userName}
+                      </span>
+                    </div>
+                  </Link>
+                }
+              </div>
+
+              {/* Public toggle */}
               {isTripCreator && (
-                <div className="absolute right-5 flex items-center gap-3">
-                  <span className="text-sm text-gray-500">
+                <div className="absolute top-5 right-5 flex items-center gap-3">
+                  <span className="text-sm text-white">
                     {trip.isPublic ? "Public" : "Private"}
                   </span>
-
                   <button
                     onClick={() => updatePrivacy(trip._id, !trip.isPublic)}
-                    className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${trip.isPublic ? "bg-gray-700" : "bg-gray-300"
-                      }`}
+                    className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${trip.isPublic ? "bg-[#0066D2]" : "bg-gray-300"}`}
                   >
                     <span
-                      className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${trip.isPublic ? "translate-x-5" : ""
-                        }`}
+                      className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${trip.isPublic ? "translate-x-5" : ""}`}
                     />
                   </button>
                 </div>
               )}
-
-              {isAuthenticated && !isTripCreator &&
-                (
-                  isStarredByUser
-                    ? <StarBtn size="10" className="self-end" onClick={() => unstarTrip(trip._id)} isStarredByUser={isStarredByUser} />
-                    : <StarBtn size="10" className="self-end" onClick={() => starTrip(trip._id)} isStarredByUser={isStarredByUser} />
-                )
-              }
             </div>
-            {!isTripCreator &&
-              <Link to={`/profile/${trip.creator._id}`}>
-                <div className="flex items-center gap-2">
-                  <img
-                    src={trip.creator?.avatarUrl || Avatar}
-                    alt="Profile picture"
-                    className="w-9 h-9 rounded-full object-cover shrink-0"
-                  />
-                  <span className="text-base text-gray-500 truncate">
-                    {trip.creator?.userName}
-                  </span>
-                </div>
-              </Link>
-            }
 
-            <div className="flex flex-col  items-center w-[70%] mb-12 gap-5">
+            {/* Description */}
+            <div className="flex flex-col items-center w-[70%] my-6 gap-2 mb-12">
+              {trip.description && <h2>Description</h2>}
               {isEditing ? (
                 <textarea
                   className="border rounded-md p-2 w-full max-w-md"
@@ -302,7 +312,7 @@ export const TripDetailsPage = () => {
                     ) 
                   : (
                     <SecondaryBtn onClick={() => setIsEditing(true)}>
-                      {description ? "Edit description" : "Add description"}
+                      {trip.description ? "Edit description" : "Add trip description"}
                     </SecondaryBtn>
                     )
                   }
@@ -350,5 +360,3 @@ export const TripDetailsPage = () => {
     </>
   )
 };
-
-// TODO: add img in page
