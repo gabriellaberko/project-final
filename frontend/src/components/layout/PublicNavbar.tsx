@@ -21,9 +21,8 @@ export const PublicNavbar = () => {
         <div className="flex items-center gap-8 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <div className="font-bold text-xl">Logo</div>
-          <span className="text-lg font-medium">App</span>
-        </div>
+        <div className="font-bold text-xl">Trippio</div>
+      </div>
 
         <div className="flex items-center gap-6">
           <button
