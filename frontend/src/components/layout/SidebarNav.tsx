@@ -31,7 +31,7 @@ export const SidebarNav = () => {
         px-5 py-10 z-50 shadow-sm
       "
       >
-        <div onClick={() => navigate("/dashboard")} className="cursor-pointer">Logo</div>
+        <div onClick={() => navigate("/dashboard")} className="cursor-pointer">Trippio</div>
         <NavAvatar username={userName ?? ""} onLogoutClick={handleLogout} />
       </header>
 
@@ -70,7 +70,7 @@ export const SidebarNav = () => {
           <div className="text-2xl font-semibold"
             onClick={() => navigate("/dashboard")}
           >
-            Logo
+            Trippio
           </div>
 
           <nav className="mt-6 flex flex-col gap-2">
