@@ -239,7 +239,7 @@ export const PublicHomePage = () => {
       </section>
 
       <footer className="text-center p-6">
-        © 2026 (App name). All rights reserved.
+        © 2026 Trippio. All rights reserved.
       </footer>
     </>
   );
