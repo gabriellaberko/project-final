@@ -34,14 +34,19 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
   const [time, setTime] = useState("");
   const [googleMapLink, setGoogleMapLink] = useState("");
 
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    postNewActivity();
-    e.currentTarget.reset();
-    navigate(`/trips/${tripId}/`);
-    setUpdateData();
-  };
+    const isSuccess = await postNewActivity()
+
+    if (isSuccess) {
+      setUpdateData()
+      navigate(`/trips/${tripId}/`)
+    } else {
+      setError(true)
+      setErrorMessage("Could not create new activity")
+    }
+  }
 
   const postNewActivity = async () => {
     const url = `${API_URL}/trips/${tripId}/days/${dayId}/activities`; // Replace with deployed API link 
@@ -67,11 +72,13 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
 
       await response.json();
       setError(false);
+      return true;
 
     } catch (err) {
       console.error("Sending error:", err);
       setErrorMessage("Could not create new activity");
       setError(true);
+      return false;
     }
   }
 
