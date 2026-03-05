@@ -16,7 +16,7 @@ import FormLabel from "@mui/joy/FormLabel";
 import Typography from "@mui/joy/Typography"
 
 
-const Stat = ({ label, count, onClick }: {label: string, count: number, onClick?: () => void}) => (
+const Stat = ({ label, count, onClick }: { label: string, count: number, onClick?: () => void }) => (
   <button className="text-content cursor-pointer" onClick={onClick}>
     <Typography level="body-xs">{count}</Typography>
     <Typography level="body-xs">{label}</Typography>
@@ -42,7 +42,7 @@ export const UserProfilePage = () => {
   const fetchPublicTripsFromUser = useTripStore(state => state.fetchPublicTripsFromUser);
   const trips = useTripStore(state => state.trips);
   const isOwner = authUserId === userId;
-  const isAlreadyFollowingUser = profile?.followers.some(f => f === authUserId); 
+  const isAlreadyFollowingUser = profile?.followers.some(f => f === authUserId);
   const setAvatarUrl = useAuthStore(state => state.setAvatarUrl);
 
 
@@ -85,7 +85,7 @@ export const UserProfilePage = () => {
   useEffect(() => {
     if (isOwner) {
       fetchMyTrips();
-    } 
+    }
     if (!isOwner && userId) {
       fetchPublicTripsFromUser(userId);
     };
@@ -136,7 +136,7 @@ export const UserProfilePage = () => {
       await response.json();
       setUpdateData();
 
-    } catch (err) { 
+    } catch (err) {
       console.log("Fetch error:", err);
     }
   };
@@ -167,7 +167,7 @@ export const UserProfilePage = () => {
       uploadResponse = await response.json();
       console.log(uploadResponse)
 
-    } catch(err) {
+    } catch (err) {
       console.log("Fetch error:", err);
     }
 
@@ -238,31 +238,31 @@ export const UserProfilePage = () => {
         {loading && <LoadingState />}
 
         {/* Error State */}
-        {!loading && error && 
+        {!loading && error &&
           <ErrorState text="Something went wrong while loading the profile. Please try again in a moment." />
         }
-        
+
         {/* Profile section */}
         <div className='flex row items-center mb-12'>
 
           {/* Profile avatar */}
           <div className="flex flex-col relative w-28 h-28 mr-4 items-center">
-            <img 
+            <img
               src={profile?.avatarUrl || Avatar}
               alt="Profile picture"
               className="w-28 h-28 rounded-full object-cover cursor-pointer"
               onClick={() => document.getElementById("avatarUpload")?.click()}
             />
             {isOwner &&
-            <div className="absolute bottom-0 right-0">
-              <ImageUploadBtn onClick={() => document.getElementById("avatarUpload")?.click()} />
-            </div>
+              <div className="absolute bottom-0 right-0">
+                <ImageUploadBtn onClick={() => document.getElementById("avatarUpload")?.click()} />
+              </div>
             }
-            {isOwner && profile?.avatarUrl && 
-              <button 
-                onClick={removeAvatar} 
+            {isOwner && profile?.avatarUrl &&
+              <button
+                onClick={removeAvatar}
                 className="text-xs hover:underline mt-2">
-                  Remove image
+                Remove image
               </button>
             }
           </div>
@@ -285,13 +285,13 @@ export const UserProfilePage = () => {
             <div className="flex gap-5">
               <div className="flex flex-row gap-5 mt-2">
                 <Stat label="Trips" count={trips ? trips.length : 0} />
-                <Stat 
-                  label="Followers" 
-                  count={profile? profile.followers.length: 0}
-                  onClick={() => navigate(`/profile/${userId}/followers`)}/>
-                <Stat 
-                  label="Following" 
-                  count={profile? profile.following.length: 0}
+                <Stat
+                  label="Followers"
+                  count={profile ? profile.followers.length : 0}
+                  onClick={() => navigate(`/profile/${userId}/followers`)} />
+                <Stat
+                  label="Following"
+                  count={profile ? profile.following.length : 0}
                   onClick={() => navigate(`/profile/${userId}/following`)} />
               </div>
             </div>
@@ -303,7 +303,7 @@ export const UserProfilePage = () => {
           <FormLabel>Bio</FormLabel>
           {isEditing ? (
             <textarea
-              className="border rounded-md p-2 w-full max-w-md"
+              className="border rounded-md p-2 w-full max-w-xs sm:max-w-md"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="Tell us about your travels..."
@@ -319,15 +319,17 @@ export const UserProfilePage = () => {
             <div>
               <div className="flex gap-2">
                 {isEditing ? (
-                  <div className="flex gap-5">
-                    <SecondaryBtn 
-                      onClick={() => setIsEditing(false)} 
-                      className="w-88">
+                  <div className="flex gap-5 w-full max-w-xs sm:max-w-md">
+                    <SecondaryBtn
+                      onClick={() => setIsEditing(false)}
+                      className="flex-1 whitespace-nowrap"
+                    >
                       Cancel
                     </SecondaryBtn>
-                    <PrimaryBtn 
-                      onClick={handleSave} 
-                      className="w-88">
+                    <PrimaryBtn
+                      onClick={handleSave}
+                      className="flex-1 whitespace-nowrap"
+                    >
                       Save Changes
                     </PrimaryBtn>
                   </div>
@@ -346,13 +348,13 @@ export const UserProfilePage = () => {
             <div className="flex">
               <PrimaryBtn
                 type="button"
-                onClick = {handleFollowing}
+                onClick={handleFollowing}
                 className="w-88"
               >
                 {isAlreadyFollowingUser
-                  ? "Unfollow" 
+                  ? "Unfollow"
                   : "Follow"}
-              </PrimaryBtn> 
+              </PrimaryBtn>
             </div>
           )}
         </div>
@@ -364,7 +366,7 @@ export const UserProfilePage = () => {
             columns={3}
           />
         )}
-          
+
       </div>
     </>
   )
