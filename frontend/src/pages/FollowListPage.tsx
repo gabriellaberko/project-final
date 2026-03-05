@@ -5,6 +5,7 @@ import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
 import { EmptyState } from "../components/status/EmptyState";
 import Avatar from "../assets/avatar.png";
+import { BackButton } from "../components/buttons/BackButton";
 
 
 export const FollowListPage = () => {
@@ -44,9 +45,9 @@ export const FollowListPage = () => {
 
   return (
     <div className="px-6 py-8">
-
+      <BackButton className="-ml-2 mb-2 -mt-1" />
       {/* Header */}
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex items-center mb-10">
         <h1 className="text-3xl font-bold tracking-tight">
           {isFollowersListRoute ? "Followers" : "Following"}
         </h1>
@@ -59,30 +60,30 @@ export const FollowListPage = () => {
         {loading && <LoadingState />}
 
         {/* Error State */}
-        {!loading && error && 
-          <ErrorState text={isFollowersListRoute 
-            ? "Couldn't load followers. Please try again." 
+        {!loading && error &&
+          <ErrorState text={isFollowersListRoute
+            ? "Couldn't load followers. Please try again."
             : "Couldn't load following. Please try again."} />
         }
 
         {/* Empty State */}
         {!loading && !error && users && users.length === 0 &&
-          <EmptyState headline={isFollowersListRoute 
-            ? "No followers yet" 
+          <EmptyState headline={isFollowersListRoute
+            ? "No followers yet"
             : "Not following anyone yet"} />
         }
         <div className="flex flex-col gap-6">
           {!loading && !error && users && users.length > 0 && (
-            users.map((user) =>(
+            users.map((user) => (
               <Link
-              key={user._id}
-              to={`/profile/${user._id}`}
+                key={user._id}
+                to={`/profile/${user._id}`}
               >
                 <div className="flex gap-1">
-                  <img 
+                  <img
                     src={user.avatarUrl || Avatar}
                     alt="Profile picture"
-                    className="w-12 h-12 rounded-full object-cover shrink-0" 
+                    className="w-12 h-12 rounded-full object-cover shrink-0"
                   />
                   <h2>{user.userName}</h2>
                 </div>

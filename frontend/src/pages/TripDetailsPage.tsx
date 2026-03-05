@@ -23,6 +23,7 @@ import { ErrorState } from "../components/status/ErrorState";
 import Avatar from "../assets/avatar.png";
 import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
 import { SecondaryBtn } from "../components/buttons/SecondaryBtn";
+import { BackButton } from "../components/buttons/BackButton";
 
 // MUI & Icons
 import FormLabel from "@mui/joy/FormLabel";
@@ -285,8 +286,11 @@ export const TripDetailsPage = () => {
               )}
             </div>
 
+            <div className="w-full px-4 pt-4 self-start">
+              <BackButton />
+            </div>
             {/* Description */}
-            <div className="flex flex-col items-center w-[70%] my-6 gap-2 mb-12">
+            <div className="flex flex-col items-center w-[70%] my-4 gap-2 mb-12">
               {trip.description && <h2>Description</h2>}
               {isEditing ? (
                 <textarea

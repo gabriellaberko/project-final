@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useRef, useState, useEffect, FormEvent } from "react";
 import { FormErrorMessage } from "./FormErrorMessage";
 import { useAuthStore } from "../../stores/AuthStore";
 
@@ -19,8 +19,13 @@ export const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const usernameRef = useRef<HTMLInputElement>(null);
+
   const login = useAuthStore(state => state.login);
 
+  useEffect(() => {
+    usernameRef.current?.focus();
+  }, []);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,7 +58,6 @@ export const LoginForm = () => {
 
 
     } catch (err) {
-      console.error("Sending error:", error);
       setError(true);
     }
   };
@@ -65,6 +69,9 @@ export const LoginForm = () => {
           <FormLabel sx={{ mb: 0.5 }}>Username:</FormLabel>
           <Input
             placeholder="Enter username"
+            slotProps={{
+              input: { ref: usernameRef }
+            }}
             onChange={(e) => setUserName(e.target.value)}
             sx={{
               '&::before': {

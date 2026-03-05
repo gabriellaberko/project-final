@@ -34,12 +34,14 @@ export const App = () => {
         {/* ==== PUBLIC ROUTES ==== */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<PublicHomePage />} />
+          <Route path="/login" element={<PublicHomePage />} />
+          <Route path="/signup" element={<PublicHomePage />} />
         </Route>
 
         {/* ==== AUTH ROUTES ==== */}
-        <Route element={<AuthLayout />}>
+        {/* <Route element={<AuthLayout />}>
           <Route path="/auth" element={<AuthenticationPage />} />
-        </Route>
+        </Route> */}
 
         {/* ==== MAIN APP ROUTES ==== */}
         <Route element={<AppLayout />}>
