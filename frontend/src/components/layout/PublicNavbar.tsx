@@ -34,8 +34,8 @@ export const PublicNavbar = () => {
         <button
           onClick={() => navigate("/auth?mode=signup")}
           className="
+            btn
             px-4 py-2 rounded-lg
-            bg-[#F2B705] hover:bg-[#F3E167]
             text-sm font-medium
             transition cursor-pointer
           "

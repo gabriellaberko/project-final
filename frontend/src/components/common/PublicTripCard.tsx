@@ -1,5 +1,6 @@
 import { TripInterFace } from "../../types/interfaces";
 import star from "../../assets/star-filled.svg";
+import Avatar from "../../assets/avatar.png";
 
 export const PublicTripCard = ({ trip }: { trip: TripInterFace }) => {
 
@@ -63,7 +64,11 @@ export const PublicTripCard = ({ trip }: { trip: TripInterFace }) => {
               </span>
     
               <div className="flex items-center gap-2 min-w-0">
-                <div className="w-7 h-7 bg-gray-200 rounded-full shrink-0" />
+                <img
+                  src={trip.creator?.avatarUrl || Avatar}
+                  alt="Profile picture"
+                  className="w-7 h-7 rounded-full object-cover shrink-0"
+                />
                 <span className="text-sm text-gray-500 truncate">
                   {trip.creator?.userName}
                 </span>
