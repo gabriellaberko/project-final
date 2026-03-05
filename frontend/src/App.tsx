@@ -5,11 +5,9 @@ import { PublicHomePage } from "./pages/PublicHomePage";
 import { AuthHomePage } from "./pages/AuthHomePage";
 import { MyTripsPage } from "./pages/MyTripsPage";
 import { TripDetailsPage } from "./pages/TripDetailsPage";
-import { AuthenticationPage } from "./pages/AuthenticationPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
 import { ExplorePage } from "./pages/ExplorePage";
 import { CreateTripPage } from "./pages/CreateTripPage";
-import { AuthLayout } from "./components/layout/AuthLayout";
 import { AppLayout } from "./components/layout/AppLayout";
 import { PublicLayout } from "./components/layout/PublicLayout";
 import { ProtectedRoute } from "./components/routing/ProtectedRoute";
@@ -34,12 +32,14 @@ export const App = () => {
         {/* ==== PUBLIC ROUTES ==== */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<PublicHomePage />} />
+          <Route path="/login" element={<PublicHomePage />} />
+          <Route path="/signup" element={<PublicHomePage />} />
         </Route>
 
         {/* ==== AUTH ROUTES ==== */}
-        <Route element={<AuthLayout />}>
+        {/* <Route element={<AuthLayout />}>
           <Route path="/auth" element={<AuthenticationPage />} />
-        </Route>
+        </Route> */}
 
         {/* ==== MAIN APP ROUTES ==== */}
         <Route element={<AppLayout />}>
