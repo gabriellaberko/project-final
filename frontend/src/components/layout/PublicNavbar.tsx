@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { PrimaryBtn } from "../buttons/PrimaryBtn";
 
 
 export const PublicNavbar = () => {
@@ -35,8 +36,8 @@ export const PublicNavbar = () => {
           onClick={() => navigate("/auth?mode=signup")}
           className="
             px-4 py-2 rounded-lg
-            bg-[#F2B705] hover:bg-[#F3E167]
-            text-sm font-medium
+            bg-(--btn-primary) hover:bg-(--btn-secondary)
+            text-sm font-medium text-white
             transition cursor-pointer
           "
         >
