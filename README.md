@@ -1,13 +1,32 @@
-# Final Project
+#Trippio ✈️ - A social travel planner app
+Trippio is a fullstack travel planning web application where users can discover destinations, build and manage trip itineraries, and connect with other travellers. The project is built as a complete fullstack application with authentication, authorization, social features, and rich media support through custom image uploads and dynamic destination photos.
+The frontend is built with React and TypeScript and communicates with a RESTful backend API to handle authentication, trip management, image handling, and social interactions in real time.
+Live Site: https://trippio.netlify.app/
+Trippio Repository: https://github.com/gabriellaberko/project-final
 
-Replace this readme with your own information about your project.
+##Tech Stack
+###Frontend
+React
+TypeScript
+Zustand for Global State Management
+Tailwind CSS
+REST API Integration
 
-Start by briefly describing the assignment in a sentence or two. Keep it short and to the point.
+###Backend
+Node.js & Express
+MongoDB
+Cloudinary (image storage)
+Unsplash API (destination imagery)
 
-## The problem
 
-Describe how you approached to problem, and what tools and techniques you used to solve it. How did you plan? What technologies did you use? If you had more time, what would be next?
-
-## View it live
-
-Every project should be deployed somewhere. Be sure to include the link to the deployed project so that the viewer can click around and see what it's all about.
+##Features
+- Search and browse travel destinations
+- Create, edit, and delete personal trip itineraries
+- Upload custom trip images or fetch curated destination photos via Unsplash
+- Images stored and served via Cloudinary
+- Share trips publicly with other users
+- Follow other users and explore their trips
+- View and edit your personal profile
+- Sign up & log in with persistent sessions
+- Responsive design across desktop and mobile
+- Error handling and loading states
