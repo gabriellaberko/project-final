@@ -28,7 +28,7 @@ export const PublicNavbar = () => {
           <button
             onClick={() => navigate("/login")}
             className="
-            text-sm font-medium
+            text-base font-medium
             text-gray-600 cursor-pointer
             hover:text-black transition
           "
@@ -41,7 +41,7 @@ export const PublicNavbar = () => {
             className="
             btn
             px-4 py-2 rounded-lg
-            text-sm font-medium
+            text-base font-black
             transition cursor-pointer
           "
           >
