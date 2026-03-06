@@ -31,7 +31,11 @@ export const SidebarNav = () => {
         px-5 py-10 z-50 shadow-sm
       "
       >
-        <div onClick={() => navigate("/dashboard")} className="cursor-pointer">Trippio</div>
+        <img 
+          src="/Trippio-logo-white.png" 
+          alt="Logo" 
+          onClick={() => navigate("/dashboard")}
+        />
         <NavAvatar username={userName ?? ""} onLogoutClick={handleLogout} />
       </header>
 
@@ -67,12 +71,11 @@ export const SidebarNav = () => {
       {/* desktop sidebar */}
       <aside className="navbar hidden md:flex w-64 h-screen shrink-0 flex-col justify-between p-5 shadow-lg overflow-auto sticky top-0">
         <div>
-          <div className="text-2xl font-semibold"
-            onClick={() => navigate("/dashboard")}
-          >
-            Trippio
-          </div>
-
+          <img 
+          src="/Trippio-logo-white.png" 
+          alt="Logo" 
+          onClick={() => navigate("/dashboard")}
+          />
           <nav className="mt-6 flex flex-col gap-2">
             {items.map((item) => (
               <NavLink

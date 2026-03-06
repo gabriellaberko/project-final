@@ -21,7 +21,7 @@ export const PublicNavbar = () => {
         <div className="flex items-center gap-8 cursor-pointer"
           onClick={() => navigate("/")}
         >
-        <div className="font-bold text-xl">Trippio</div>
+        <img src="/Trippio-logo-blue.png" alt="Logo" />
       </div>
 
         <div className="flex items-center gap-6">
