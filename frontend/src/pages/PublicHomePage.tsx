@@ -17,7 +17,6 @@ import Sandra from "../assets/profile/Sandra.png"
 import { ScrollReveal } from "../components/common/ScrollReveal";
 import { motion } from "framer-motion";
 import { TripInterFace } from "../types/interfaces";
-import { PrimaryBtn } from "../components/buttons/PrimaryBtn";
 
 
 export const PublicHomePage = () => {

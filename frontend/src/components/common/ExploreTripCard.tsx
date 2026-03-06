@@ -22,6 +22,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
     <div
       onClick={handleCardClick}
       className={`
+        w-full min-w-0
         group bg-white
         rounded-2xl shadow-md
         hover:shadow-xl
