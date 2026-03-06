@@ -8,7 +8,7 @@ export const AppLayout = () => {
       <main className="   
           flex-1
           pt-16 pb-16        
-          md:pt-0 md:pb-0    
+          md:pt-0 md:pb-0 md:min-w-0   
         "
       >
         <Outlet />

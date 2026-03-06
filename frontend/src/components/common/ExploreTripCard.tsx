@@ -40,7 +40,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
       {/* IMAGE */}
       <div className={`
          ${variant === "horizontal"
-          ? "w-full md:w-5/12 md:order-2"
+          ? "w-full md:w-5/12 md:shrink-0 md:order-2 min-w-0"
           : "w-full"
         }
       `}>
@@ -60,6 +60,7 @@ export const ExploreTripCard = ({ trip, variant = "vertical" }: TripCardProps) =
         p-6
         flex
         flex-col 
+        min-w-0 
         ${variant === "horizontal" ? "md:w-7/12 md:order-1" : "h-56"}
        `}
       >
