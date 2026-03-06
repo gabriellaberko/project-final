@@ -1,25 +1,25 @@
-#Trippio ✈️ - A social travel planner app
+# Trippio ✈️ - A social travel planner app
 Trippio is a fullstack travel planning web application where users can discover destinations, build and manage trip itineraries, and connect with other travellers. The project is built as a complete fullstack application with authentication, authorization, social features, and rich media support through custom image uploads and dynamic destination photos.
 The frontend is built with React and TypeScript and communicates with a RESTful backend API to handle authentication, trip management, image handling, and social interactions in real time.
-Live Site: https://trippio.netlify.app/
-Trippio Repository: https://github.com/gabriellaberko/project-final
 
-##Tech Stack
-###Frontend
-React
-TypeScript
-Zustand for Global State Management
-Tailwind CSS
-REST API Integration
+# Live Site: https://trippio.netlify.app/
 
-###Backend
-Node.js & Express
-MongoDB
-Cloudinary (image storage)
-Unsplash API (destination imagery)
+## Tech Stack
+### Frontend
+- React
+- TypeScript
+- Zustand for Global State Management
+- Tailwind CSS
+- REST API Integration
+
+### Backend
+- Node.js & Express
+- MongoDB
+- Cloudinary (image storage)
+- Unsplash API (destination imagery)
 
 
-##Features
+## Features
 - Search and browse travel destinations
 - Create, edit, and delete personal trip itineraries
 - Upload custom trip images or fetch curated destination photos via Unsplash
