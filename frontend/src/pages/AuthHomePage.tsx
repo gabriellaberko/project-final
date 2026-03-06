@@ -83,8 +83,7 @@ export const AuthHomePage = () => {
           <p className="text-sm mb-10">See what the people you follow are planning most recently and get inspired for your next adventure.</p>
 
           {feedTrips && feedTrips.length > 0 ? (
-            <div className="w-full flex flex-col gap-8">
-              {/* <div className="w-full max-w-4xl flex flex-col gap-8"> */}
+            <div className="w-full flex flex-col gap-8 max-w-4xl mx-auto">
                 {feedTrips.map(trip => (
                   <ExploreTripCard
                     key={trip._id}
@@ -92,7 +91,6 @@ export const AuthHomePage = () => {
                     variant="horizontal"
                   />
                 ))}
-              {/* </div> */}
             </div>
           ) : (
             <div className="bg-gray-50 p-10 rounded-2xl text-center">
