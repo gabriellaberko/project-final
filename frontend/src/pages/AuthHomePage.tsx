@@ -64,7 +64,7 @@ export const AuthHomePage = () => {
                   className="
                     flex-[0_0_75%]
                     md:flex-[0_0_30%]
-                    min-w-0
+                    min-w-62.5
                     pl-4
                   "
                 >
