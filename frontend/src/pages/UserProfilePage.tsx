@@ -268,6 +268,9 @@ export const UserProfilePage = () => {
           </div>
 
           {/* Profile image upload */}
+          <label htmlFor="avatarUpload" className="sr-only">
+            Upload profile picture
+          </label>
           <input
             id="avatarUpload"
             type="file"
