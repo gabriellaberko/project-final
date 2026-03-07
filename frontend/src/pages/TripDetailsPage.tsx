@@ -290,8 +290,7 @@ export const TripDetailsPage = () => {
               <BackButton />
             </div>
             {/* Description */}
-            <div className="flex flex-col items-center w-[70%] my-4 gap-2 mb-12">
-              {trip.description && <h2>Description</h2>}
+            <div className="flex flex-col items-center w-[70%] gap-2">
               {isEditing ? (
                 <textarea
                   className="border rounded-md p-2 w-full max-w-md"
