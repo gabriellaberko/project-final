@@ -34,6 +34,7 @@ export const SidebarNav = () => {
         <img 
           src="/Trippio-logo-white.png" 
           alt="Logo" 
+          className="w-16"
           onClick={() => navigate("/dashboard")}
         />
         <NavAvatar username={userName ?? ""} onLogoutClick={handleLogout} />
@@ -74,6 +75,7 @@ export const SidebarNav = () => {
           <img 
           src="/Trippio-logo-white.png" 
           alt="Logo" 
+          className="w-16 mb-8"
           onClick={() => navigate("/dashboard")}
           />
           <nav className="mt-6 flex flex-col gap-2">
