@@ -99,10 +99,10 @@ export const PublicHomePage = () => {
           alt=""
           className="hero-img opacity-50"
         />
-        <div className="absolute right-0 top-10 md:top-auto items-center text-right p-6 md:p-10 w-full md:w-auto">
-          <h1 className="text-white text-3xl md:text-4xl font-bold drop-shadow-2xl">Your journey starts here</h1>
-          <h2 className="text-white text-lg md:text-xl font-bold drop-shadow-2xl">Plan, share & explore the world with ease</h2>
-          <p className="text-white/80 text-sm md:text-base max-w-md text-right drop-shadow">
+        <div className="absolute inset-x-0 top-10 md:top-auto md:inset-x-auto md:right-0 items-center text-center p-6 mt-8 max-w-md mx-auto md:mx-0 md:max-w-xl md:text-right">
+          <h1 className="text-white text-2xl md:text-4xl font-bold drop-shadow-2xl">Your journey starts here</h1>
+          <h2 className="text-white text-base md:text-xl font-bold drop-shadow-2xl">Plan, share & explore the world with ease</h2>
+          <p className="text-white/80 text-sm drop-shadow md:max-w-sm md:ml-auto">
             Create day-by-day itineraries, discover trips from other travelers, and share your adventures with the world.
           </p>
           <button
