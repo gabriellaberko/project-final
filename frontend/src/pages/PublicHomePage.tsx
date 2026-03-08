@@ -107,7 +107,7 @@ export const PublicHomePage = () => {
           </p>
           <button
             type="button"
-            className="btn mt-6 md:mt-10 text-lg font-extrabold mr-4"
+            className="btn mt-6 text-base font-extrabold md:text-lg md:mt-10 mr-4"
             onClick={() => navigate("/auth?mode=signup")}
           >
             Sign up to start planning
