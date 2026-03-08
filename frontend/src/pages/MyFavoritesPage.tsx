@@ -6,7 +6,7 @@ import { LoadingState } from "../components/status/LoadingState";
 import { ErrorState } from "../components/status/ErrorState";
 import { EmptyState } from "../components/status/EmptyState";
 
-export const MyFavoritesPage = () => { 
+export const MyFavoritesPage = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const accessToken = useAuthStore(state => state.accessToken);
   const trips = useTripStore(state => state.trips);
@@ -19,34 +19,34 @@ export const MyFavoritesPage = () => {
 
 
   useEffect(() => {
-  const fetchFavoriteTrips = async () => {
-    const url = `${API_URL}/trips/my/starred`;
-    setError(false);
-    setLoading(true);
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${accessToken}`
+    const fetchFavoriteTrips = async () => {
+      const url = `${API_URL}/trips/my/starred`;
+      setError(false);
+      setLoading(true);
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+        setTrips(data);
+      } catch (err) {
+        console.log("Fetch error:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
-
-      const data = await response.json();
-      setTrips(data);
-    } catch (err) {
-      console.log("Fetch error:", err);
-      setError(true);
-    } finally {
-      setLoading(false);
     }
-  }
-  fetchFavoriteTrips();
+    fetchFavoriteTrips();
   }, [updateData]);
-  
+
 
   return (
     <div className="px-6 py-8">
@@ -62,7 +62,7 @@ export const MyFavoritesPage = () => {
       {loading && <LoadingState />}
 
       {/* Error State */}
-      {!loading && error && 
+      {!loading && error &&
         <ErrorState text="Something went wrong while loading your favorite trips. Please try again in a moment." />
       }
 
@@ -80,5 +80,5 @@ export const MyFavoritesPage = () => {
       )}
 
     </div>
-  )
+  );
 };

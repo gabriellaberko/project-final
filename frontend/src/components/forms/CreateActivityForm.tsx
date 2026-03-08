@@ -169,5 +169,5 @@ export const CreateActivityForm = ({ tripId, dayId }: Props) => {
         </Stack>
       </Card>
     </form>
-  )
+  );
 };

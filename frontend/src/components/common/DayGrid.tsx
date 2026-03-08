@@ -27,5 +27,5 @@ export const DayGrid = ({ columns = 4 }: DayGridProps) => {
         ))}
       </div>
     </>
-  )
+  );
 };

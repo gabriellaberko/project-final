@@ -23,7 +23,6 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
           aria-label="Search destination"
           className="absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer"
         >
-          {/* Add SVG here instead*/}
           🔍
         </button>
         <input

@@ -16,8 +16,6 @@ import { MyFavoritesPage } from "./pages/MyFavoritesPage";
 import { FollowListPage } from "./pages/FollowListPage";
 
 
-// TO DO: Create more pages and implement routing
-
 export const App = () => {
 
   const checkAuthStatus = useAuthStore(state => state.checkAuthStatus);
@@ -36,11 +34,6 @@ export const App = () => {
           <Route path="/signup" element={<PublicHomePage />} />
         </Route>
 
-        {/* ==== AUTH ROUTES ==== */}
-        {/* <Route element={<AuthLayout />}>
-          <Route path="/auth" element={<AuthenticationPage />} />
-        </Route> */}
-
         {/* ==== MAIN APP ROUTES ==== */}
         <Route element={<AppLayout />}>
           <Route path="/explore" element={<ExplorePage />} />
@@ -58,7 +51,6 @@ export const App = () => {
             <Route path="/myfavorites" element={<MyFavoritesPage />} />
           </Route>
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

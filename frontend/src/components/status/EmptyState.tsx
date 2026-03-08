@@ -2,7 +2,7 @@ import Player from "lottie-react";
 import emptyStateAnimation from "../../assets/empty-state-animation.json";
 
 
-export const EmptyState = ({ headline, text }: {headline: string, text?: string}) => {
+export const EmptyState = ({ headline, text }: { headline: string, text?: string }) => {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center">
 
@@ -23,5 +23,5 @@ export const EmptyState = ({ headline, text }: {headline: string, text?: string}
       </p>}
 
     </div>
-  )
+  );
 };

@@ -28,5 +28,5 @@ export const MainBtn = ({ children, className = "", ...props }: MainBtnProps) =>
       {/* Desktop: show children */}
       <span className="hidden md:inline">{children}</span>
     </button>
-  )
+  );
 };

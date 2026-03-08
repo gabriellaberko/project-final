@@ -26,12 +26,12 @@ interface ActivityProps {
 }
 
 const CATEGORIES = [
-  "Culture & Events", 
-  "Sightseeing", 
-  "Food & Drinks", 
-  "Nature", 
-  "Adventure", 
-  "Entertainment", 
+  "Culture & Events",
+  "Sightseeing",
+  "Food & Drinks",
+  "Nature",
+  "Adventure",
+  "Entertainment",
   "Relaxation"
 ];
 
@@ -127,28 +127,28 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
       >
         <Card className="overflow-visible">
           <div className="flex flex-col gap-3">
-            <Input 
-              placeholder="Activity Name" 
-              value={formData.name} 
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+            <Input
+              placeholder="Activity Name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
-            <Textarea 
-              placeholder="Description" 
+            <Textarea
+              placeholder="Description"
               minRows={2}
-              value={formData.description} 
-              onChange={(e) => setFormData({...formData, description: e.target.value})}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
             />
             <div className="flex gap-2">
-              <Input 
-                placeholder="Time" 
-                value={formData.time} 
-                onChange={(e) => setFormData({...formData, time: e.target.value})}
+              <Input
+                placeholder="Time"
+                value={formData.time}
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                 className="flex-1"
               />
-              <Select 
-                placeholder="Category" 
-                value={formData.category} 
-                onChange={(_, newValue) => setFormData({...formData, category: newValue as string})}
+              <Select
+                placeholder="Category"
+                value={formData.category}
+                onChange={(_, newValue) => setFormData({ ...formData, category: newValue as string })}
                 className="flex-1"
               >
                 {CATEGORIES.map(cat => (
@@ -156,10 +156,10 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
                 ))}
               </Select>
             </div>
-            <Input 
-              placeholder="Google Maps Link" 
-              value={formData.googleMapLink} 
-              onChange={(e) => setFormData({...formData, googleMapLink: e.target.value})}
+            <Input
+              placeholder="Google Maps Link"
+              value={formData.googleMapLink}
+              onChange={(e) => setFormData({ ...formData, googleMapLink: e.target.value })}
             />
             <div className="flex justify-end gap-2 mt-2">
               <Button size="sm" variant="soft" color="neutral" onClick={() => setIsEditing(false)}>
@@ -177,8 +177,8 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
 
   return (
     <>
-    
-    <div
+
+      <div
         ref={setNodeRef}
         style={style}
         {...attributes}
@@ -191,53 +191,53 @@ export const Activity = ({ tripId, dayId, index, activity }: ActivityProps) => {
       >
         <Card>
           <div className="flex flex-row gap-2 self-end absolute top-2 right-2 z-10">
-                {isOwner &&
-                  <Pencil 
-                    size={18}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setIsEditing(true)
-                    }}
-                    className="cursor-pointer text-gray-500 hover:text-blue-600"
-                  />
-                }
-                {isOwner &&
-                  <Trash 
-                    size={18}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleDelete()
-                    }}
-                    className="cursor-pointer text-gray-500 hover:text-red-600"
-                  />
-                }
+            {isOwner &&
+              <Pencil
+                size={18}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsEditing(true)
+                }}
+                className="cursor-pointer text-gray-500 hover:text-blue-600"
+              />
+            }
+            {isOwner &&
+              <Trash
+                size={18}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleDelete()
+                }}
+                className="cursor-pointer text-gray-500 hover:text-red-600"
+              />
+            }
           </div>
-            <div className="flex flex-row items-center">
-              <div>
-                <ActivityIcon
-                  category={activity.category}
-                  size={28}
-                  className="text-blue-600"
-                />
-              </div>
+          <div className="flex flex-row items-center">
+            <div>
+              <ActivityIcon
+                category={activity.category}
+                size={28}
+                className="text-blue-600"
+              />
+            </div>
 
-              <div className="flex flex-col gap-2 p-4 items-start text-left">
-                {activity.name && <h4>{activity.name}</h4>}
-                {activity.description && <p>{activity.description}</p>}
-                {activity.time && <p><b>Time:</b> {activity.time}</p>}
-                {activity.googleMapLink &&
-                  <a 
-                    href={activity.googleMapLink} 
-                    target="_blank" 
-                    className="text-sm outline outline-[#837E7E] px-3 py-1 rounded-lg cursor-pointer"
-                  >
-                    Google Map Link
-                  </a>
-                }
-              </div>
-            </div>            
+            <div className="flex flex-col gap-2 p-4 items-start text-left">
+              {activity.name && <h4>{activity.name}</h4>}
+              {activity.description && <p>{activity.description}</p>}
+              {activity.time && <p><b>Time:</b> {activity.time}</p>}
+              {activity.googleMapLink &&
+                <a
+                  href={activity.googleMapLink}
+                  target="_blank"
+                  className="text-sm outline outline-[#837E7E] px-3 py-1 rounded-lg cursor-pointer"
+                >
+                  Google Map Link
+                </a>
+              }
+            </div>
+          </div>
         </Card>
       </div>
     </>
-  )
-}
+  );
+};

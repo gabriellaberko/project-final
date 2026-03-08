@@ -139,5 +139,5 @@ export const LoginForm = () => {
         </Button>
       </Stack>
     </form>
-  )
+  );
 };

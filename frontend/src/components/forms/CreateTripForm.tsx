@@ -37,7 +37,7 @@ export const CreateTripForm = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await postNewTrip(); // Awaiting in case we later add logic here (e.g., navigation after successful trip creation)
+    await postNewTrip();
   };
 
   const handleCustomImageUpload = async (file: File) => {

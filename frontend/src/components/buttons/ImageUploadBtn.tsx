@@ -10,5 +10,5 @@ export const ImageUploadBtn = ({ onClick, size }: ClickBtnProps) => {
       onClick={onClick}>
       <img src={ImageUploadIcon} alt="Image Upload Icon" className={`w-${size ?? 7} h-${size ?? 7} cursor-pointer`} />
     </button>
-  )
+  );
 };

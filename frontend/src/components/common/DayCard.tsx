@@ -28,7 +28,7 @@ export const DayCard = ({ day }: DayCardProps) => {
 
   return (
     <>
-    <div className="text-center flex flex-col items-center w-full">
+      <div className="text-center flex flex-col items-center w-full">
         <h2 className="self-center m-2">Day {day.dayNumber}</h2>
         <div className="w-full flex justify-center">
 
@@ -40,51 +40,51 @@ export const DayCard = ({ day }: DayCardProps) => {
             ].join(" ")}
           >
             <Card
-              key={day.dayNumber} 
+              key={day.dayNumber}
               className="flex flex-col w-full h-full h-max-786 p-8 shadow-md overflow-visible"
             >
-            <div className="flex flex-col w-full justify-evenly">
-              {isAuthenticated && isTripCreator &&
-                <Trash
-                  onClick={() => removeDay(trip._id, day._id)} 
-                  className="self-end cursor-pointer text-lg text-[#505050] hover:text-red-500"
-                />
-              }
-            </div>  
-
-            <div className="flex flex-col md:items-stretch gap-2 my-4 min-h-16 flex-1 w-full">
-              <SortableContext
-                items={day.activities.map((activity) => activity._id)}
-                strategy={verticalListSortingStrategy}
-              >
-
-              {day.activities.length > 0 ? (
-                day.activities.map((activity, index) => (
-                  <Activity 
-                    key={activity._id} 
-                    tripId={trip._id} 
-                    dayId={day._id} 
-                    index={index}
-                    activity={activity}
+              <div className="flex flex-col w-full justify-evenly">
+                {isAuthenticated && isTripCreator &&
+                  <Trash
+                    onClick={() => removeDay(trip._id, day._id)}
+                    className="self-end cursor-pointer text-lg text-[#505050] hover:text-red-500"
                   />
-                ))
-              ) : (
-                <p>No activities yet</p>
-              )}
-              </SortableContext>
-            </div>
-
-            <div className="mt-auto flex justify-center">
-            {isAuthenticated && isTripCreator &&
-              <div>
-                <MainBtn onClick={() => navigate(`/trips/${trip._id}/day/${day._id}/activities/new`)}>Add activity</MainBtn>
+                }
               </div>
-            }
-            </div>
+
+              <div className="flex flex-col md:items-stretch gap-2 my-4 min-h-16 flex-1 w-full">
+                <SortableContext
+                  items={day.activities.map((activity) => activity._id)}
+                  strategy={verticalListSortingStrategy}
+                >
+
+                  {day.activities.length > 0 ? (
+                    day.activities.map((activity, index) => (
+                      <Activity
+                        key={activity._id}
+                        tripId={trip._id}
+                        dayId={day._id}
+                        index={index}
+                        activity={activity}
+                      />
+                    ))
+                  ) : (
+                    <p>No activities yet</p>
+                  )}
+                </SortableContext>
+              </div>
+
+              <div className="mt-auto flex justify-center">
+                {isAuthenticated && isTripCreator &&
+                  <div>
+                    <MainBtn onClick={() => navigate(`/trips/${trip._id}/day/${day._id}/activities/new`)}>Add activity</MainBtn>
+                  </div>
+                }
+              </div>
             </Card>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 };

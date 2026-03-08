@@ -11,5 +11,5 @@ export const LoadingState = () => {
         style={{ width: 150, height: 150 }}
       />
     </div>
-  )
+  );
 };

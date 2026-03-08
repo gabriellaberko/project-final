@@ -365,5 +365,5 @@ export const TripDetailsPage = () => {
         </div>
       }
     </>
-  )
+  );
 };

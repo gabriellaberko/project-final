@@ -7,7 +7,7 @@ export const StarBtn = ({ onClick, isStarredByUser, size }: StarBtnProps) => {
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    onClick();
+    onClick?.();
   };
 
   return (
