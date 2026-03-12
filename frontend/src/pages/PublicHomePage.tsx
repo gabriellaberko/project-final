@@ -5,15 +5,15 @@ import useEmblaCarousel from "embla-carousel-react"
 import AutoScroll from "embla-carousel-auto-scroll"
 import { ProfileComponent } from "../components/common/ProfileComponent";
 import { PublicTripCard } from "../components/common/PublicTripCard";
-import hero from "../assets/home/hero.jpg"
-import plan from "../assets/home/plan.jpg"
-import share from "../assets/home/share.jpg"
-import explore from "../assets/home/explore.jpg"
-import edit from "../assets/home/edit.jpg"
-import mapBg from "../assets/home/map.png"
-import Asako from "../assets/profile/Asako.png"
-import Gabriella from "../assets/profile/Gabriella.png"
-import Sandra from "../assets/profile/Sandra.png"
+import hero from "../assets/home/hero.jpg";
+import plan from "../assets/home/plan.gif";
+import share from "../assets/home/share.jpg";
+import explore from "../assets/home/explore.gif";
+import edit from "../assets/home/edit.gif";
+import mapBg from "../assets/home/map.png";
+import Asako from "../assets/profile/Asako.png";
+import Gabriella from "../assets/profile/Gabriella.png";
+import Sandra from "../assets/profile/Sandra.png";
 import { ScrollReveal } from "../components/common/ScrollReveal";
 import { motion } from "framer-motion";
 import { TripInterFace } from "../types/interfaces";
@@ -44,7 +44,7 @@ export const PublicHomePage = () => {
       }
     };
     fetchTrips();
-  }, [API_URL]);
+  }, []);
 
   const containerVariants = {
     hidden: {},
@@ -162,6 +162,32 @@ export const PublicHomePage = () => {
         <ScrollReveal>
           <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
             <img
+              src={explore}
+              alt=""
+              className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
+            />
+            <div className="app-text flex-1">
+              <h3 className="text-xl font-extrabold tracking-tight">Never Start from Scratch</h3>
+              <p className="mt-4 text-lg ">Browse thousands of real itineraries. Filter by destination or style to find your next adventure, curated by people who’ve been there.</p>
+            </div>
+          </div>
+        </ScrollReveal>
+        <ScrollReveal>
+          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
+            <div className="app-text flex-1">
+              <h3 className="text-xl font-extrabold tracking-tight">Effortless Flexibility</h3>
+              <p className="mt-4 text-lg">Plans change, and that’s okay. Drag, drop, and reorganize your schedule instantly, keeping your trip stress-free even on the go.</p>
+            </div>
+            <img
+              src={edit}
+              alt=""
+              className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
+            />
+          </div>
+        </ScrollReveal>
+        <ScrollReveal>
+          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
+            <img
               src={share}
               alt=""
               className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
@@ -169,32 +195,6 @@ export const PublicHomePage = () => {
             <div className="app-text flex-1">
               <h3 className="text-xl font-extrabold tracking-tight">Inspire the Community</h3>
               <p className="mt-4 text-lg">Your experiences are valuable. Publish your itineraries to help fellow travelers skip the stress and enjoy the best of every city.</p>
-            </div>
-          </div>
-        </ScrollReveal>
-        <ScrollReveal>
-          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
-            <div className="app-text flex-1">
-              <h3 className="text-xl font-extrabold tracking-tight">Never Start from Scratch</h3>
-              <p className="mt-4 text-lg ">Browse thousands of real itineraries. Filter by destination or style to find your next adventure, curated by people who’ve been there.</p>
-            </div>
-            <img
-              src={explore}
-              alt=""
-              className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
-            />
-          </div>
-        </ScrollReveal>
-        <ScrollReveal>
-          <div className="about-app flex flex-col md:flex-row items-center gap-8 shadow-[0_2px_12px_rgba(0,102,210,0.15)] bg-white rounded-2xl">
-            <img
-              src={edit}
-              alt=""
-              className="app-img w-full md:w-96 h-64 object-cover rounded-lg shadow-md"
-            />
-            <div className="app-text flex-1">
-              <h3 className="text-xl font-extrabold tracking-tight">Effortless Flexibility</h3>
-              <p className="mt-4 text-lg">Plans change, and that’s okay. Drag, drop, and reorganize your schedule instantly, keeping your trip stress-free even on the go.</p>
             </div>
           </div>
         </ScrollReveal>
